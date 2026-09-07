@@ -1,0 +1,2172 @@
+/* ==========================================================================
+   STEMBRIDGE AI (KOSHIKA) — ADVANCED CLINICAL BIOBANK & GENOMICS PLATFORM
+   ULTRA-MODERN BIOTECH INFORMATICS DESIGN SYSTEM & FLUID ANIMATION SUITE
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. DESIGN TOKENS & SYSTEM VARIABLES
+   -------------------------------------------------------------------------- */
+:root {
+  /* Radiant Biotech Color Palette */
+  --med-primary: #0284c7;
+  --med-primary-dark: #0369a1;
+  --med-primary-deep: #075985;
+  --med-primary-light: #e0f2fe;
+  --med-primary-subtle: rgba(2, 132, 199, 0.08);
+  --med-primary-glow: rgba(2, 132, 199, 0.35);
+
+  /* Clinical Accents & Telemetry Levels */
+  --med-teal: #0d9488;
+  --med-teal-light: #ccfbf1;
+  --med-teal-glow: rgba(13, 148, 136, 0.35);
+
+  --med-cyan: #06b6d4;
+  --med-cyan-dark: #0891b2;
+  --med-cyan-light: #cffafe;
+  --med-cyan-glow: rgba(6, 182, 212, 0.4);
+
+  --med-emerald: #10b981;
+  --med-emerald-dark: #059669;
+  --med-emerald-light: #d1fae5;
+  --med-emerald-glow: rgba(16, 185, 129, 0.35);
+
+  --med-amber: #f59e0b;
+  --med-amber-dark: #d97706;
+  --med-amber-light: #fef3c7;
+  --med-amber-glow: rgba(245, 158, 11, 0.35);
+
+  --med-rose: #f43f5e;
+  --med-rose-light: #ffe4e6;
+  --med-red: #ef4444;
+  --med-red-dark: #dc2626;
+  --med-red-glow: rgba(239, 68, 68, 0.35);
+
+  --med-purple: #8b5cf6;
+  --med-purple-dark: #7c3aed;
+  --med-purple-light: #ede9fe;
+  --med-purple-glow: rgba(139, 92, 246, 0.35);
+
+  /* Surfaces & High-Tech Canvas */
+  --med-bg: #f8fafc;
+  --med-bg-gradient: radial-gradient(circle at 10% 20%, rgba(2, 132, 199, 0.035) 0%, transparent 40%),
+                     radial-gradient(circle at 90% 80%, rgba(13, 148, 136, 0.035) 0%, transparent 40%),
+                     #f8fafc;
+  --med-surface: #ffffff;
+  --med-surface-glass: rgba(255, 255, 255, 0.88);
+  --med-surface-subtle: #f1f5f9;
+  --med-surface-elevated: #ffffff;
+  --med-border: #e2e8f0;
+  --med-border-subtle: #edf2f7;
+  --med-border-focus: #38bdf8;
+
+  /* Deep Clinical Slate Palette */
+  --med-slate-950: #090d16;
+  --med-slate-900: #0f172a;
+  --med-slate-800: #1e293b;
+  --med-slate-700: #334155;
+  --med-slate-600: #475569;
+  --med-slate-500: #64748b;
+  --med-slate-400: #94a3b8;
+  --med-slate-300: #cbd5e1;
+
+  /* Typography */
+  --font-sans: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-display: 'Space Grotesk', 'Plus Jakarta Sans', sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+  /* Radii */
+  --radius-xs: 6px;
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 26px;
+  --radius-full: 9999px;
+
+  /* Multi-Tier Kinetic Shadows */
+  --shadow-xs: 0 1px 2px rgba(15, 23, 42, 0.04);
+  --shadow-sm: 0 2px 8px -1px rgba(15, 23, 42, 0.06), 0 1px 3px -1px rgba(15, 23, 42, 0.03);
+  --shadow-md: 0 10px 25px -4px rgba(15, 23, 42, 0.08), 0 3px 8px -2px rgba(15, 23, 42, 0.04);
+  --shadow-lg: 0 20px 45px -8px rgba(15, 23, 42, 0.12), 0 6px 16px -4px rgba(15, 23, 42, 0.05);
+  --shadow-glow-blue: 0 8px 30px rgba(2, 132, 199, 0.28);
+  --shadow-glow-cyan: 0 8px 30px rgba(6, 182, 212, 0.32);
+  --shadow-glow-emerald: 0 8px 30px rgba(16, 185, 129, 0.3);
+
+  /* Legacy Compatibility Aliases */
+  --primary-color: var(--med-primary);
+  --primary-hover: var(--med-primary-dark);
+  --border-color: var(--med-border);
+  --font-family: var(--font-sans);
+}
+
+/* --------------------------------------------------------------------------
+   2. GLOBAL FOUNDATIONS & ULTRA-SMOOTH BASE
+   -------------------------------------------------------------------------- */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-sans);
+  background: var(--med-bg-gradient);
+  color: var(--med-slate-900);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* Modern Gradient Slim Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #94a3b8 0%, #64748b 100%);
+  border-radius: var(--radius-full);
+  border: 2px solid #f1f5f9;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #0284c7 0%, #0d9488 100%);
+}
+
+::selection {
+  background: #bae6fd;
+  color: #0369a1;
+}
+
+h1, h2, h3, h4, h5, h6,
+.h1, .h2, .h3, .h4, .h5, .h6 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  color: var(--med-slate-900);
+  letter-spacing: -0.02em;
+}
+
+.num-tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+.gradient-text {
+  background: linear-gradient(135deg, #0284c7 0%, #0d9488 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.gradient-text-purple {
+  background: linear-gradient(135deg, #8b5cf6 0%, #0284c7 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* --------------------------------------------------------------------------
+   3. ANIMATION SUITE & KINETIC PHYSICS
+   -------------------------------------------------------------------------- */
+
+/* General Card Entrance Stagger */
+@keyframes koshikaCardEntrance {
+  0% {
+    opacity: 0;
+    transform: translateY(18px) scale(0.97);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.koshika-animate-fadein {
+  animation: koshikaCardEntrance 0.48s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Floating Levitation */
+@keyframes koshikaFloatSubtle {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+.koshika-floating-icon {
+  display: inline-block;
+  animation: koshikaFloatSubtle 3.6s ease-in-out infinite;
+}
+
+/* Dual Concentric Pulse Ring */
+@keyframes pulseRingDual {
+  0% {
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.6), 0 0 0 0 rgba(16, 185, 129, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 0 5px rgba(16, 185, 129, 0.25), 0 0 0 10px rgba(16, 185, 129, 0.08);
+  }
+  100% {
+    box-shadow: 0 0 0 8px rgba(16, 185, 129, 0), 0 0 0 14px rgba(16, 185, 129, 0);
+  }
+}
+
+@keyframes pulseRingPrimary {
+  0% {
+    box-shadow: 0 0 0 0 rgba(2, 132, 199, 0.6), 0 0 0 0 rgba(2, 132, 199, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 0 5px rgba(2, 132, 199, 0.25), 0 0 0 10px rgba(2, 132, 199, 0.08);
+  }
+  100% {
+    box-shadow: 0 0 0 8px rgba(2, 132, 199, 0), 0 0 0 14px rgba(2, 132, 199, 0);
+  }
+}
+
+.pulse-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--med-emerald);
+  animation: pulseRingDual 2s infinite cubic-bezier(0.4, 0, 0.6, 1);
+  margin-right: 6px;
+  vertical-align: middle;
+}
+
+.pulse-dot.pulse-primary {
+  background-color: var(--med-primary);
+  animation: pulseRingPrimary 2s infinite cubic-bezier(0.4, 0, 0.6, 1);
+}
+
+/* Card Light Sheen Sweep */
+@keyframes subnavLightSheen {
+  0% { left: -75%; }
+  100% { left: 145%; }
+}
+
+/* Cardiac EKG Heartbeat Pulse */
+@keyframes heartPump {
+  0%, 100% { transform: scale(1); }
+  14% { transform: scale(1.36); }
+  28% { transform: scale(1.08); }
+  42% { transform: scale(1.28); }
+  56% { transform: scale(1); }
+}
+
+/* DNA Corkscrew Rotation */
+@keyframes dnaCorkscrew {
+  0% { transform: perspective(200px) rotateY(0deg) scale(1); }
+  50% { transform: perspective(200px) rotateY(180deg) scale(1.25); }
+  100% { transform: perspective(200px) rotateY(360deg) scale(1.15); }
+}
+
+/* High-Tech Laser Scan Line */
+@keyframes laserScanSweep {
+  0% {
+    top: 0%;
+    opacity: 0.8;
+  }
+  50% {
+    top: 100%;
+    opacity: 1;
+  }
+  100% {
+    top: 0%;
+    opacity: 0.8;
+  }
+}
+
+/* Moving Stripes on Progress Bars */
+@keyframes progressStripesMove {
+  0% { background-position: 1rem 0; }
+  100% { background-position: 0 0; }
+}
+
+/* --------------------------------------------------------------------------
+   4. TOP ENTERPRISE NAVBAR & GLOBAL SEARCH
+   -------------------------------------------------------------------------- */
+.top-navbar-wrapper {
+  position: relative;
+  z-index: 1020;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--med-border);
+  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
+  transition: all 0.25s ease;
+}
+
+.top-navbar {
+  padding: 0.65rem clamp(1rem, 2.5vw, 2.25rem);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1720px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* Institutional Logo Box */
+.institutional-logo-box {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #0284c7 0%, #0d9488 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.25rem;
+  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35);
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+}
+
+.navbar-brand-link:hover .institutional-logo-box {
+  transform: rotate(-6deg) scale(1.08);
+  box-shadow: 0 6px 20px rgba(2, 132, 199, 0.5);
+}
+
+.institutional-brand-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.2rem;
+  letter-spacing: -0.02em;
+  color: var(--med-slate-900);
+  line-height: 1.15;
+}
+
+.institutional-brand-badge {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--med-slate-500);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* Global Clinical Search Box */
+.nav-search-container {
+  position: relative;
+  width: clamp(200px, 22vw, 340px);
+}
+
+.nav-search-input {
+  width: 100%;
+  background: var(--med-surface-subtle);
+  border: 1px solid var(--med-border);
+  border-radius: 12px;
+  padding: 0.5rem 0.9rem 0.5rem 2.3rem;
+  font-size: 0.85rem;
+  color: var(--med-slate-900);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.nav-search-input:focus {
+  background: #ffffff;
+  border-color: var(--med-primary);
+  box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.18), 0 4px 14px rgba(2, 132, 199, 0.1);
+  outline: none;
+  transform: translateY(-1px);
+}
+
+.nav-search-icon {
+  position: absolute;
+  left: 0.8rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--med-slate-400);
+  font-size: 0.88rem;
+  pointer-events: none;
+  transition: color 0.2s;
+}
+
+.nav-search-container:focus-within .nav-search-icon {
+  color: var(--med-primary);
+}
+
+.nav-search-shortcut {
+  position: absolute;
+  right: 0.7rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.65rem;
+  font-weight: 700;
+  background: #ffffff;
+  border: 1px solid var(--med-border);
+  border-radius: 6px;
+  padding: 0.1rem 0.4rem;
+  color: var(--med-slate-500);
+  box-shadow: var(--shadow-xs);
+}
+
+/* --------------------------------------------------------------------------
+   5. SECONDARY 12-MODULE NAVIGATION BAR (KPI CARD BOX ARCHITECTURE)
+   -------------------------------------------------------------------------- */
+.navbar-subnav-bar {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 0.65rem;
+  padding: 0.75rem clamp(1rem, 2.5vw, 2.25rem);
+  max-width: 1720px;
+  margin: 0 auto;
+  width: 100%;
+  border-top: 1px solid rgba(226, 232, 240, 0.85);
+  background: rgba(248, 250, 252, 0.95);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+/* The Nav Card Box */
+.nav-card-box {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 0.8rem 0.95rem;
+  border-radius: 14px;
+  background: #ffffff;
+  border: 1px solid var(--med-border);
+  text-decoration: none;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.25s ease,
+              background 0.25s ease;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+  position: relative;
+  overflow: hidden;
+  min-height: 108px;
+  animation: subnavBoxEntrance 0.5s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+  animation-delay: calc(var(--pos-index, 0) * 0.035s);
+  cursor: pointer;
+  user-select: none;
+}
+
+@keyframes subnavBoxEntrance {
+  0% {
+    opacity: 0;
+    transform: translateY(16px) scale(0.92);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Shimmer Light Sheen Reflection Sweep */
+.nav-card-box::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -70%;
+  width: 45%;
+  height: 200%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.8), transparent);
+  transform: rotate(25deg);
+  pointer-events: none;
+  opacity: 0;
+}
+
+.nav-card-box:hover::after {
+  opacity: 1;
+  animation: subnavLightSheen 0.65s ease-out forwards;
+}
+
+/* Nav Card Header */
+.nav-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.3rem;
+}
+
+.nav-card-category {
+  font-size: 0.64rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--med-slate-500);
+}
+
+.nav-card-badge {
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: var(--med-slate-500);
+  background: var(--med-surface-subtle);
+  border: 1px solid var(--med-border);
+  border-radius: 6px;
+  padding: 0.1rem 0.4rem;
+  letter-spacing: 0.03em;
+  transition: all 0.2s ease;
+}
+
+/* Nav Card Body */
+.nav-card-body {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.3rem;
+  gap: 0.4rem;
+}
+
+.nav-card-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.nav-card-label {
+  font-family: var(--font-sans);
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: var(--med-slate-900);
+  line-height: 1.18;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: color 0.2s;
+}
+
+.nav-card-subtitle {
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: var(--med-slate-400);
+  margin-top: 0.12rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.nav-card-icon-box {
+  width: 36px;
+  height: 36px;
+  border-radius: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.15rem;
+  flex-shrink: 0;
+  box-shadow: 0 2px 5px rgba(15, 23, 42, 0.06);
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+}
+
+.nav-card-icon-box i.subnav-icon {
+  display: inline-block;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Nav Card Footer */
+.nav-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid var(--med-border-subtle);
+  padding-top: 0.35rem;
+  margin-top: 0.1rem;
+}
+
+.nav-card-status {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.66rem;
+  font-weight: 600;
+  padding: 0.12rem 0.45rem;
+  border-radius: 6px;
+  letter-spacing: 0.01em;
+}
+
+.nav-card-status.status-primary {
+  background-color: #e0f2fe;
+  color: #0284c7;
+}
+
+.nav-card-status.status-info {
+  background-color: #cffafe;
+  color: #0891b2;
+}
+
+.nav-card-status.status-warning {
+  background-color: #fef3c7;
+  color: #d97706;
+}
+
+.nav-card-status.status-danger {
+  background-color: #fee2e2;
+  color: #dc2626;
+}
+
+.nav-card-status.status-success {
+  background-color: #d1fae5;
+  color: #059669;
+}
+
+.nav-card-status.status-purple {
+  background-color: #ede9fe;
+  color: #7c3aed;
+}
+
+.nav-card-status.status-secondary {
+  background-color: #f1f5f9;
+  color: #475569;
+}
+
+.nav-card-cue {
+  font-size: 0.65rem;
+  color: var(--med-slate-400);
+}
+
+/* Active State — High-Tech Highlight with Glowing Neon Border */
+.nav-card-box.active {
+  border: 2px solid var(--theme-color, #0284c7) !important;
+  box-shadow: 0 8px 24px -4px rgba(2, 132, 199, 0.3), 0 0 0 1px var(--theme-color, #0284c7) !important;
+  background: #ffffff !important;
+  transform: translateY(-3px);
+}
+
+.nav-card-box.active .nav-card-badge {
+  background: var(--theme-color, #0284c7) !important;
+  color: #ffffff !important;
+  border-color: var(--theme-color, #0284c7) !important;
+}
+
+.nav-card-box.active .nav-card-label {
+  color: var(--theme-color, #0284c7);
+}
+
+/* --------------------------------------------------------------------------
+   6. BESPOKE ANIMATIONS FOR 12 SUBNAV POSITIONS
+   -------------------------------------------------------------------------- */
+
+/* --- Position 1: Dashboard (Cyber Grid Radar & Elevation) --- */
+@keyframes gridRadarTilt {
+  0% { transform: scale(1) perspective(140px) rotateY(0deg); }
+  50% { transform: scale(1.35) perspective(140px) rotateY(180deg); }
+  100% { transform: scale(1.2) perspective(140px) rotateY(360deg); }
+}
+.nav-card-box * {
+  pointer-events: none;
+}
+
+.nav-card-box:hover {
+  transform: translateY(-3px);
+}
+
+.subnav-pos-1:hover {
+  border-color: #0284c7;
+  background: linear-gradient(180deg, #ffffff 0%, #f0f9ff 100%);
+  box-shadow: 0 10px 24px -4px rgba(2, 132, 199, 0.25);
+}
+.subnav-pos-1:hover .subnav-icon-pos-1 {
+  animation: gridRadarTilt 0.75s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.subnav-pos-2:hover {
+  border-color: #0891b2;
+  background: linear-gradient(180deg, #ffffff 0%, #ecfeff 100%);
+  box-shadow: 0 10px 24px -4px rgba(8, 145, 178, 0.25);
+}
+.subnav-pos-2:hover .subnav-icon-pos-2 {
+  animation: aiCpuSpin 0.75s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.subnav-pos-3:hover {
+  border-color: #f59e0b;
+  box-shadow: 0 10px 24px -4px rgba(245, 158, 11, 0.25);
+  background: linear-gradient(90deg, #ffffff 0%, #fef3c7 50%, #ffffff 100%);
+}
+.subnav-pos-3:hover .subnav-icon-pos-3 {
+  animation: docScanMotion 0.8s ease-in-out infinite;
+}
+
+.subnav-pos-4:hover {
+  border-color: #ef4444;
+  background: linear-gradient(180deg, #ffffff 0%, #fef2f2 100%);
+  box-shadow: 0 10px 24px -4px rgba(239, 68, 68, 0.25);
+}
+.subnav-pos-4:hover .subnav-icon-pos-4 {
+  animation: heartPump 1.35s ease-in-out infinite;
+}
+
+.subnav-pos-5:hover {
+  border-color: #10b981;
+  background: linear-gradient(180deg, #ffffff 0%, #ecfdf5 100%);
+  box-shadow: 0 10px 24px -4px rgba(16, 185, 129, 0.25);
+}
+.subnav-pos-5:hover .subnav-icon-pos-5 {
+  animation: liquidDropStretch 0.55s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.subnav-pos-6:hover {
+  border-color: #06b6d4;
+  background: linear-gradient(180deg, #ffffff 0%, #cffafe 100%);
+  box-shadow: 0 10px 24px -4px rgba(6, 182, 212, 0.25);
+}
+.subnav-pos-6:hover .subnav-icon-pos-6 {
+  animation: snowflakeWhirl 0.85s ease-out forwards;
+}
+
+.subnav-pos-7:hover {
+  border-color: #f59e0b;
+  background: linear-gradient(180deg, #ffffff 0%, #fffbeb 100%);
+  box-shadow: 0 10px 24px -4px rgba(245, 158, 11, 0.25);
+}
+.subnav-pos-7:hover .subnav-icon-pos-7 {
+  animation: boxLidPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.subnav-pos-8:hover {
+  border-color: #8b5cf6;
+  background: linear-gradient(180deg, #ffffff 0%, #f5f3ff 100%);
+  box-shadow: 0 10px 24px -4px rgba(139, 92, 246, 0.25);
+}
+.subnav-pos-8:hover .subnav-icon-pos-8 {
+  animation: orbitalBeakerTilt 1.2s ease-in-out infinite;
+}
+
+.subnav-pos-9:hover {
+  border-color: #64748b;
+  background: linear-gradient(180deg, #ffffff 0%, #f1f5f9 100%);
+  box-shadow: 0 10px 24px -4px rgba(100, 116, 139, 0.25);
+}
+.subnav-pos-9:hover .subnav-icon-pos-9 {
+  animation: badge3DFlip 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.subnav-pos-10:hover {
+  border-color: #dc2626;
+  background: linear-gradient(180deg, #ffffff 0%, #fef2f2 100%);
+  box-shadow: 0 10px 24px -4px rgba(220, 38, 38, 0.25);
+}
+.subnav-pos-10:hover .subnav-icon-pos-10 {
+  animation: stampIconThump 0.5s ease-out;
+}
+
+.subnav-pos-11:hover {
+  border-color: #059669;
+  background: linear-gradient(180deg, #ffffff 0%, #ecfdf5 100%);
+  box-shadow: 0 10px 24px -4px rgba(5, 150, 105, 0.25);
+}
+.subnav-pos-11:hover .subnav-icon-pos-11 {
+  animation: dnaCorkscrew 0.75s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.subnav-pos-12:hover {
+  border-color: #0284c7;
+  background: linear-gradient(180deg, #ffffff 0%, #e0f2fe 100%);
+  box-shadow: 0 10px 24px -4px rgba(2, 132, 199, 0.25);
+}
+.subnav-pos-12:hover .subnav-icon-pos-12 {
+  animation: bookFlutter 0.95s ease-in-out infinite;
+}
+
+/* Responsive Subnav Columns */
+@media (max-width: 1440px) {
+  .navbar-subnav-bar {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (max-width: 992px) {
+  .navbar-subnav-bar {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .navbar-subnav-bar {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   7. WORKSPACE LAYOUT & CONTENT WRAPPERS
+   -------------------------------------------------------------------------- */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100%;
+}
+
+.main-content {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-width: 0;
+}
+
+.content-body {
+  width: 100%;
+  max-width: 1680px;
+  margin: 0 auto;
+  padding: 1.5rem clamp(1rem, 2.5vw, 2.5rem) 4rem;
+  flex-grow: 1;
+}
+
+/* --------------------------------------------------------------------------
+   8. DASHBOARD TELEMETRY & HERO HEADER
+   -------------------------------------------------------------------------- */
+.dashboard-container {
+  max-width: 1620px;
+  margin: 0 auto;
+}
+
+.dashboard-header-card {
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  border: 1px solid var(--med-border);
+  border-radius: var(--radius-lg);
+  padding: 1.6rem 1.85rem;
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  overflow: hidden;
+  transition: box-shadow 0.3s ease;
+}
+
+.dashboard-header-card:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.dashboard-header-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 5px;
+  height: 100%;
+  background: linear-gradient(180deg, var(--med-primary) 0%, var(--med-teal) 100%);
+}
+
+/* Dashboard Nav Tabs */
+.dashboard-nav-tabs {
+  border-bottom: 1px solid var(--med-border);
+  display: flex;
+  gap: 0.5rem;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.dashboard-nav-tabs .nav-link-btn {
+  background: none;
+  border: none;
+  padding: 0.7rem 1.2rem;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--med-slate-500);
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.22s ease;
+  border-radius: 8px 8px 0 0;
+}
+
+.dashboard-nav-tabs .nav-link-btn:hover {
+  color: var(--med-primary);
+  background-color: #f1f5f9;
+}
+
+.dashboard-nav-tabs .nav-link-btn.active {
+  color: var(--med-primary);
+  border-bottom: 2px solid var(--med-primary);
+  background-color: #e0f2fe;
+}
+
+/* --------------------------------------------------------------------------
+   9. ENTERPRISE KPI STAT CARDS
+   -------------------------------------------------------------------------- */
+.stat-card {
+  background: var(--med-surface);
+  border: 1px solid var(--med-border);
+  border-radius: 16px;
+  padding: 1.25rem 1.35rem;
+  box-shadow: var(--shadow-xs);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.3s ease,
+              border-color 0.25s ease;
+  position: relative;
+  overflow: hidden;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+  border-color: #cbd5e1;
+}
+
+.stat-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.5rem;
+}
+
+.stat-card-title {
+  font-size: 0.76rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--med-slate-500);
+}
+
+.stat-card-code {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--med-slate-400);
+  background: var(--med-surface-subtle);
+  border: 1px solid var(--med-border);
+  border-radius: 5px;
+  padding: 0.1rem 0.4rem;
+}
+
+.stat-card-value {
+  font-family: var(--font-display);
+  font-size: clamp(1.65rem, 2.4vw, 2.15rem);
+  font-weight: 800;
+  color: var(--med-slate-900);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  margin: 0.25rem 0 0.5rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.stat-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  border-top: 1px solid var(--med-border-subtle);
+  padding-top: 0.6rem;
+  margin-top: 0.35rem;
+}
+
+.stat-icon-wrapper {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  flex-shrink: 0;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* KPI Card Position Hovers on Dashboard */
+.kpi-card-pos-1:hover {
+  border-color: #ef4444 !important;
+  box-shadow: 0 12px 28px -4px rgba(239, 68, 68, 0.25) !important;
+}
+.kpi-card-pos-1:hover .stat-icon-wrapper {
+  animation: heartPump 1.2s infinite;
+}
+
+.kpi-card-pos-2:hover {
+  border-color: #10b981 !important;
+  box-shadow: 0 12px 28px -4px rgba(16, 185, 129, 0.25) !important;
+}
+.kpi-card-pos-2:hover .stat-icon-wrapper {
+  animation: liquidDropStretch 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.kpi-card-pos-3:hover {
+  border-color: #06b6d4 !important;
+  box-shadow: 0 12px 28px -4px rgba(6, 182, 212, 0.3) !important;
+}
+.kpi-card-pos-3:hover .stat-icon-wrapper {
+  animation: snowflakeWhirl 0.8s ease-out forwards;
+}
+
+.kpi-card-pos-4:hover {
+  border-color: #f59e0b !important;
+  box-shadow: 0 12px 28px -4px rgba(245, 158, 11, 0.25) !important;
+}
+.kpi-card-pos-4:hover .stat-icon-wrapper {
+  animation: boxLidPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.kpi-card-pos-5:hover {
+  border-color: #8b5cf6 !important;
+  box-shadow: 0 12px 28px -4px rgba(139, 92, 246, 0.25) !important;
+}
+.kpi-card-pos-5:hover .stat-icon-wrapper {
+  animation: orbitalBeakerTilt 1.2s ease-in-out infinite;
+}
+
+.kpi-card-pos-6:hover {
+  border-color: #64748b !important;
+  box-shadow: 0 12px 28px -4px rgba(100, 116, 139, 0.25) !important;
+}
+.kpi-card-pos-6:hover .stat-icon-wrapper {
+  animation: badge3DFlip 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Clinical Trend Badges */
+.trend-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.18rem 0.5rem;
+  border-radius: 6px;
+}
+
+.trend-indicator.positive {
+  background: var(--med-emerald-light);
+  color: #047857;
+}
+
+.trend-indicator.warning {
+  background: var(--med-amber-light);
+  color: #b45309;
+}
+
+.trend-indicator.neutral {
+  background: var(--med-surface-subtle);
+  color: var(--med-slate-600);
+}
+
+/* --------------------------------------------------------------------------
+   10. KOSHIKA AWARENESS & PUBLIC HEALTH CARDS
+   -------------------------------------------------------------------------- */
+.koshika-hero-card {
+  background: linear-gradient(135deg, #091a2e 0%, #0c2d3e 45%, #075985 100%);
+  border-radius: 24px;
+  padding: clamp(1.8rem, 3.5vw, 2.8rem);
+  color: #ffffff;
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  box-shadow: 0 20px 45px -8px rgba(9, 26, 46, 0.35);
+  position: relative;
+  overflow: hidden;
+  animation: koshikaCardEntrance 0.6s ease-out;
+}
+
+.koshika-hero-card::before {
+  content: '';
+  position: absolute;
+  top: -70px;
+  right: -70px;
+  width: 320px;
+  height: 320px;
+  background: radial-gradient(circle, rgba(14, 165, 233, 0.35) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+  animation: pulseRingPrimary 5s infinite;
+}
+
+.koshika-hero-card::after {
+  content: '';
+  position: absolute;
+  bottom: -50px;
+  left: 25%;
+  width: 240px;
+  height: 240px;
+  background: radial-gradient(circle, rgba(13, 148, 136, 0.25) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.koshika-highlight-box {
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  border-radius: 18px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.09);
+  transition: transform 0.25s ease;
+}
+
+.koshika-highlight-box:hover {
+  transform: translateY(-2px);
+}
+
+.koshika-def-card {
+  background: #ffffff;
+  border: 1px solid var(--med-border);
+  border-radius: 20px;
+  padding: 1.85rem;
+  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.04);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+}
+
+.koshika-def-card:hover {
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.08);
+  border-color: #cbd5e1;
+}
+
+.koshika-compare-box {
+  border-radius: 16px;
+  padding: 1.35rem;
+  height: 100%;
+  transition: transform 0.28s ease, box-shadow 0.28s ease;
+}
+
+.koshika-compare-box:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-sm);
+}
+
+.koshika-compare-normal {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-top: 4px solid #64748b;
+}
+
+.koshika-compare-stem {
+  background: linear-gradient(145deg, #f0fdf4 0%, #ecfdf5 100%);
+  border: 1px solid #a7f3d0;
+  border-top: 4px solid #10b981;
+}
+
+/* 4 Types of Stem Cells Cards */
+.koshika-type-card {
+  background: #ffffff;
+  border: 1px solid var(--med-border);
+  border-radius: 18px;
+  padding: 1.6rem;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.04);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.koshika-type-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 36px rgba(15, 23, 42, 0.1);
+  border-color: #94a3b8;
+}
+
+.koshika-type-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  margin-bottom: 1.1rem;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.koshika-type-card:hover .koshika-type-icon {
+  transform: scale(1.15) rotate(6deg);
+}
+
+/* 3 Benefits Cards */
+.koshika-benefit-card {
+  background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+  border: 1px solid var(--med-border);
+  border-radius: 18px;
+  padding: 1.75rem;
+  height: 100%;
+  position: relative;
+  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.05);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+}
+
+.koshika-benefit-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 18px 36px rgba(2, 132, 199, 0.14);
+  border-color: #38bdf8;
+}
+
+.koshika-benefit-num {
+  position: absolute;
+  top: 1rem;
+  right: 1.25rem;
+  font-family: var(--font-display);
+  font-size: 2.4rem;
+  font-weight: 800;
+  color: rgba(2, 132, 199, 0.12);
+  line-height: 1;
+}
+
+.koshika-benefit-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  margin-bottom: 1.1rem;
+}
+
+/* --------------------------------------------------------------------------
+   11. DATA TABLES & TRIAGE BADGES
+   -------------------------------------------------------------------------- */
+.koshika-table-card {
+  background: #ffffff;
+  border: 1px solid var(--med-border);
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.04);
+  transition: box-shadow 0.25s ease;
+}
+
+.koshika-table-card:hover {
+  box-shadow: 0 10px 28px rgba(15, 23, 42, 0.08);
+}
+
+.table-responsive {
+  border-radius: 12px;
+  border: 1px solid var(--med-border);
+  background: #ffffff;
+  overflow-x: auto;
+}
+
+.table {
+  margin-bottom: 0;
+  color: var(--med-slate-900);
+  vertical-align: middle;
+}
+
+.table thead th,
+.koshika-table thead th {
+  background-color: #f8fafc;
+  color: #475569;
+  font-size: 0.74rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.95rem 1.1rem;
+  border-bottom: 1px solid var(--med-border);
+  white-space: nowrap;
+}
+
+.table tbody td,
+.koshika-table tbody td {
+  padding: 0.95rem 1.1rem;
+  border-bottom: 1px solid #f1f5f9;
+  font-size: 0.88rem;
+  transition: background-color 0.18s ease;
+}
+
+.table tbody tr:hover td,
+.koshika-table tbody tr:hover td {
+  background-color: #f8fafc;
+}
+
+.table tbody tr:last-child td,
+.koshika-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+/* Clinical Triage & Status Pills */
+.triage-pill {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.22rem 0.6rem;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.triage-pill.critical {
+  background: #fee2e2;
+  color: #b91c1c;
+  border: 1px solid #fca5a5;
+  box-shadow: 0 1px 3px rgba(239, 68, 68, 0.15);
+}
+
+.triage-pill.urgent {
+  background: #fef3c7;
+  color: #b45309;
+  border: 1px solid #fcd34d;
+}
+
+.triage-pill.active {
+  background: #d1fae5;
+  color: #047857;
+  border: 1px solid #6ee7b7;
+}
+
+.triage-pill.quarantine {
+  background: #ede9fe;
+  color: #6d28d9;
+  border: 1px solid #c4b5fd;
+}
+
+/* Avatar Initials */
+.koshika-avatar-initials {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.84rem;
+  letter-spacing: -0.02em;
+  background: #e0f2fe;
+  color: #0284c7;
+  flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(2, 132, 199, 0.14);
+}
+
+.koshika-avatar-donor {
+  background: #dcfce7;
+  color: #15803d;
+  box-shadow: 0 2px 6px rgba(21, 128, 61, 0.14);
+}
+
+.koshika-avatar-staff {
+  background: #ede9fe;
+  color: #7c3aed;
+  box-shadow: 0 2px 6px rgba(124, 58, 237, 0.14);
+}
+
+/* Blood Group Badges */
+.koshika-badge-blood {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 0.28rem 0.65rem;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.koshika-badge-a {
+  background-color: #fee2e2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+}
+
+.koshika-badge-b {
+  background-color: #e0f2fe;
+  color: #0369a1;
+  border: 1px solid #bae6fd;
+}
+
+.koshika-badge-ab {
+  background-color: #f3e8ff;
+  color: #7e22ce;
+  border: 1px solid #e9d5ff;
+}
+
+.koshika-badge-o {
+  background-color: #dcfce7;
+  color: #15803d;
+  border: 1px solid #bbf7d0;
+}
+
+/* --------------------------------------------------------------------------
+   12. FLOATING AI ASSISTANT WIDGET & CHATBOT
+   -------------------------------------------------------------------------- */
+.floating-ai-wrapper {
+  position: fixed;
+  bottom: 26px;
+  right: 26px;
+  z-index: 1060;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  pointer-events: none;
+}
+
+.floating-ai-button,
+.floating-ai-window {
+  pointer-events: auto;
+}
+
+/* Floating Action Button */
+.floating-ai-button {
+  background: linear-gradient(135deg, #0284c7 0%, #0d9488 100%);
+  color: #ffffff;
+  border: none;
+  border-radius: var(--radius-full);
+  padding: 0.75rem 1.4rem;
+  font-size: 0.94rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  box-shadow: 0 10px 28px rgba(2, 132, 199, 0.45);
+  cursor: pointer;
+  transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  letter-spacing: 0.01em;
+}
+
+.floating-ai-button:hover {
+  transform: translateY(-4px) scale(1.03);
+  box-shadow: 0 16px 36px rgba(2, 132, 199, 0.55);
+  background: linear-gradient(135deg, #0369a1 0%, #0f766e 100%);
+}
+
+.floating-ai-button.active {
+  background: #0f172a;
+  box-shadow: 0 6px 20px rgba(15, 23, 42, 0.35);
+}
+
+.floating-ai-pulse-badge {
+  width: 9px;
+  height: 9px;
+  background-color: #22c55e;
+  border-radius: 50%;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.8), 0 0 10px #22c55e;
+  animation: pulseRingDual 2s infinite;
+}
+
+/* Floating Window / Drawer */
+.floating-ai-window {
+  width: 400px;
+  max-width: calc(100vw - 32px);
+  height: 540px;
+  max-height: calc(100vh - 120px);
+  background: #ffffff;
+  border: 1px solid var(--med-border);
+  border-radius: 20px;
+  margin-bottom: 14px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 25px 50px -10px rgba(15, 23, 42, 0.28), 0 0 0 1px rgba(15, 23, 42, 0.06);
+  animation: floatDrawerIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes floatDrawerIn {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.floating-ai-header {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  padding: 0.95rem 1.15rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.floating-ai-avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #0284c7 0%, #0d9488 100%);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.05rem;
+}
+
+.floating-ai-quick-prompts {
+  display: flex;
+  gap: 0.4rem;
+  padding: 0.6rem 0.9rem;
+  overflow-x: auto;
+  white-space: nowrap;
+  background: var(--med-surface-subtle);
+  border-bottom: 1px solid var(--med-border);
+  scrollbar-width: none;
+}
+.floating-ai-quick-prompts::-webkit-scrollbar {
+  display: none;
+}
+
+.floating-ai-chip {
+  background: #ffffff;
+  border: 1px solid var(--med-border);
+  border-radius: var(--radius-full);
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: var(--med-slate-700);
+  padding: 0.28rem 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.floating-ai-chip:hover {
+  background: var(--med-primary-light);
+  border-color: var(--med-primary);
+  color: var(--med-primary-dark);
+  transform: translateY(-1px);
+}
+
+.floating-ai-messages {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  background: #f8fafc;
+}
+
+.floating-msg-row {
+  display: flex;
+  width: 100%;
+}
+.floating-msg-row.user {
+  justify-content: flex-end;
+}
+.floating-msg-row.assistant {
+  justify-content: flex-start;
+}
+
+.floating-msg-bubble {
+  max-width: 88%;
+  border-radius: 14px;
+  padding: 0.75rem 1rem;
+  font-size: 0.85rem;
+  line-height: 1.55;
+}
+
+.floating-msg-row.user .floating-msg-bubble {
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+  color: #ffffff;
+  border-bottom-right-radius: 4px;
+  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);
+}
+
+.floating-msg-row.assistant .floating-msg-bubble {
+  background: #ffffff;
+  border: 1px solid var(--med-border);
+  color: var(--med-slate-900);
+  border-bottom-left-radius: 4px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+.floating-ai-input-form {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 0.95rem;
+  border-top: 1px solid var(--med-border);
+  background: #ffffff;
+  gap: 0.5rem;
+}
+
+.floating-ai-input {
+  flex-grow: 1;
+  border: 1px solid var(--med-border);
+  border-radius: 10px;
+  padding: 0.5rem 0.85rem;
+  font-size: 0.86rem;
+  outline: none;
+  background: #f8fafc;
+  transition: all 0.2s;
+}
+
+.floating-ai-input:focus {
+  background: #ffffff;
+  border-color: var(--med-primary);
+  box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.16);
+}
+
+.floating-ai-send-btn {
+  background: var(--med-primary);
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.18s;
+  flex-shrink: 0;
+}
+
+.floating-ai-send-btn:hover:not(:disabled) {
+  background: var(--med-primary-dark);
+  transform: scale(1.05);
+}
+
+.floating-ai-send-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* --------------------------------------------------------------------------
+   13. BUTTONS, FORMS & INTERACTIVE CONTROLS
+   -------------------------------------------------------------------------- */
+.btn {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  border-radius: 10px;
+  padding: 0.55rem 1.15rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  font-size: 0.88rem;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: var(--shadow-xs);
+  cursor: pointer;
+}
+
+.btn:active {
+  transform: scale(0.97);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+  border: 1px solid #0284c7;
+  color: #ffffff;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, #0369a1 0%, #075985 100%);
+  border-color: #0369a1;
+  color: #ffffff;
+  box-shadow: 0 6px 18px rgba(2, 132, 199, 0.35);
+  transform: translateY(-1px);
+}
+
+.btn-outline-primary {
+  color: var(--med-primary);
+  border-color: var(--med-primary);
+  background: transparent;
+}
+
+.btn-outline-primary:hover {
+  background: var(--med-primary);
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.3);
+  transform: translateY(-1px);
+}
+
+.btn-success {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  border-color: #10b981;
+  color: #ffffff;
+}
+
+.btn-success:hover {
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+  box-shadow: 0 6px 18px rgba(16, 185, 129, 0.35);
+  transform: translateY(-1px);
+}
+
+.form-control, .form-select {
+  border-radius: 10px;
+  border: 1px solid var(--med-border);
+  padding: 0.58rem 0.95rem;
+  font-size: 0.9rem;
+  color: var(--med-slate-900);
+  background-color: #ffffff;
+  transition: all 0.2s ease;
+}
+
+.form-control:focus, .form-select:focus {
+  border-color: var(--med-primary);
+  box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.16);
+  outline: none;
+}
+
+.koshika-search-box {
+  background: #ffffff;
+  border: 1px solid var(--med-border);
+  border-radius: 12px;
+  padding: 0.6rem 1.1rem;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.02);
+  transition: all 0.25s ease;
+}
+
+.koshika-search-box:focus-within {
+  border-color: var(--med-primary);
+  box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.14);
+}
+
+/* --------------------------------------------------------------------------
+   14. MOBILE DRAWER & RESPONSIVE BREAKPOINTS
+   -------------------------------------------------------------------------- */
+.navbar-mobile-drawer {
+  background: #ffffff;
+  border-bottom: 1px solid var(--med-border);
+  padding: 1.35rem 1.6rem;
+  animation: dropdownPop 0.25s ease both;
+  max-height: calc(100vh - 80px);
+  overflow-y: auto;
+}
+
+.mobile-section-label {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  color: var(--med-slate-400);
+  margin-bottom: 0.5rem;
+}
+
+.mobile-nav-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(135px, 1fr));
+  gap: 0.6rem;
+}
+
+.mobile-nav-card {
+  background: var(--med-surface-subtle);
+  border: 1px solid var(--med-border);
+  border-radius: 10px;
+  padding: 0.65rem 0.85rem;
+  color: var(--med-slate-800);
+  font-size: 0.86rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.mobile-nav-card:hover,
+.mobile-nav-card.active {
+  background: var(--med-primary-light);
+  color: var(--med-primary-dark);
+}
+
+@keyframes dropdownPop {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 991.98px) {
+  .nav-search-container {
+    display: none;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .floating-ai-wrapper {
+    bottom: 18px;
+    right: 18px;
+  }
+  .floating-ai-window {
+    width: calc(100vw - 32px);
+    height: 500px;
+  }
+  .stat-card {
+    padding: 1rem 1.1rem;
+  }
+  .stat-card-value {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .content-body {
+    padding: 1rem 0.75rem 4rem;
+  }
+  .stat-card-value {
+    font-size: 1.35rem;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   15. CLINICAL ACTION BANNERS, TABS & AWARENESS HUBS
+   -------------------------------------------------------------------------- */
+
+/* Operational Action Banner */
+.clinical-action-banner {
+  background: #ffffff;
+  border: 1px solid var(--med-border);
+  border-left: 5px solid var(--med-primary);
+  border-radius: 14px;
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1.6rem;
+  box-shadow: var(--shadow-xs);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  transition: all 0.25s ease;
+}
+
+.clinical-action-banner:hover {
+  box-shadow: var(--shadow-sm);
+  border-left-color: var(--med-teal);
+}
+
+/* Telemetry Ribbon */
+.clinical-telemetry-ribbon {
+  background: var(--med-slate-900);
+  color: #f8fafc;
+  padding: 0.35rem clamp(1rem, 2.5vw, 2.5rem);
+  font-size: 0.76rem;
+  font-weight: 500;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.telemetry-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--med-slate-300);
+}
+
+.telemetry-item .value {
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.telemetry-chip {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: var(--radius-full);
+  padding: 0.15rem 0.55rem;
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: #bae6fd;
+}
+
+/* Clinician Profile Badge */
+.clinician-profile-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.4rem 0.75rem;
+  border-radius: 12px;
+  border: 1px solid var(--med-border);
+  background: #ffffff;
+  transition: all 0.22s ease;
+}
+
+.clinician-profile-badge:hover {
+  border-color: var(--med-slate-400);
+  box-shadow: var(--shadow-xs);
+  transform: translateY(-1px);
+}
+
+.clinician-avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+/* Health Status Row */
+.health-status-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.8rem 1rem;
+  border-radius: 10px;
+  background-color: #f8fafc;
+  border: 1px solid #edf2f7;
+  margin-bottom: 0.65rem;
+  transition: all 0.2s ease;
+}
+
+.health-status-row:hover {
+  background-color: #f1f5f9;
+  transform: translateX(3px);
+}
+
+/* AI Assistant Banner (Dashboard) */
+.ai-assistant-banner {
+  background: linear-gradient(135deg, #091a2e 0%, #0f2b48 100%);
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 1.35rem 1.6rem;
+  color: #ffffff;
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  overflow: hidden;
+}
+
+.ai-chip-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  color: #e2e8f0;
+  font-size: 0.8rem;
+  font-weight: 500;
+  border-radius: var(--radius-full);
+  padding: 0.38rem 0.9rem;
+  cursor: pointer;
+  transition: all 0.22s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.ai-chip-btn:hover {
+  background: rgba(255, 255, 255, 0.22);
+  color: #ffffff;
+  border-color: #38bdf8;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(56, 189, 248, 0.25);
+}
+
+/* Top Segmented Workspace Tab Bar */
+.top-tabs-bar {
+  background: #ffffff;
+  border: 1px solid var(--med-border);
+  border-radius: 14px;
+  padding: 0.4rem 0.6rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.65rem;
+  margin-bottom: 1.6rem;
+  box-shadow: var(--shadow-xs);
+}
+
+.top-tabs-list {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+  flex-grow: 1;
+}
+
+.top-tabs-list::-webkit-scrollbar {
+  display: none;
+}
+
+.tab-btn {
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  padding: 0.52rem 1.1rem;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--med-slate-600);
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.tab-btn:hover {
+  background: var(--med-surface-subtle);
+  color: var(--med-slate-900);
+}
+
+.tab-btn.active {
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.35);
+  transform: translateY(-1px);
+}
+
+.tab-btn.active i {
+  color: #ffffff;
+}
+
+.tab-close-btn {
+  background: var(--med-surface-subtle);
+  border: 1px solid var(--med-border);
+  border-radius: 10px;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--med-slate-500);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tab-close-btn:hover {
+  background: #fee2e2;
+  color: var(--med-rose);
+  border-color: #fca5a5;
+  transform: scale(1.06);
+}
+
+/* Uses of Stem Cell Therapy Cards */
+.koshika-use-card {
+  background: #ffffff;
+  border: 1px solid var(--med-border);
+  border-radius: 18px;
+  padding: 1.5rem;
+  height: 100%;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
+  transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+}
+
+.koshika-use-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 14px 28px rgba(15, 23, 42, 0.09);
+  border-color: var(--med-primary);
+}
+
+.koshika-use-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 0.22rem 0.65rem;
+  border-radius: 6px;
+  display: inline-block;
+  margin-bottom: 0.7rem;
+}
+
+/* Safety & Advisory Banners */
+.koshika-safety-banner {
+  background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+  border: 1px solid #fde68a !important;
+  border-left: 6px solid #f59e0b !important;
+  border-radius: 18px;
+  box-shadow: var(--shadow-xs);
+}
+
+.koshika-warning-tag {
+  background: #ffffff;
+  border: 1px solid #fca5a5;
+  border-radius: 12px;
+  padding: 0.45rem 0.95rem;
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: #991b1b;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  box-shadow: 0 2px 5px rgba(239, 68, 68, 0.08);
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
+}
+
+.koshika-warning-tag:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(239, 68, 68, 0.15);
+}
+
+.koshika-ai-cta-card {
+  background: #ffffff;
+  border: 1px solid var(--med-border);
+  border-left: 6px solid var(--med-primary) !important;
+  border-radius: 18px;
+  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.05);
+  transition: all 0.25s ease;
+}
+
+.koshika-ai-cta-card:hover {
+  box-shadow: 0 8px 26px rgba(2, 132, 199, 0.12);
+  transform: translateY(-2px);
+}
+
+.koshika-ai-badge {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #0284c7 0%, #0d9488 100%);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.3);
+}
+
+.koshika-badge-pill {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 0.38rem 0.9rem;
+  border-radius: 9999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.koshika-section-title-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.35rem;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.koshika-page-title-badge {
+  font-size: 0.74rem;
+  font-weight: 700;
+  padding: 0.28rem 0.7rem;
+  border-radius: 9999px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* Footer & Institutional Links */
+.koshika-footer {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(12px);
+  border-top: 1px solid var(--med-border);
+}
+
+.hover-primary {
+  transition: color 0.18s ease;
+}
+
+.hover-primary:hover {
+  color: var(--med-primary) !important;
+}
+
+/* Subnav button alias */
+.subnav-action-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.48rem;
+  padding: 0.45rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--med-slate-700);
+  background: #ffffff;
+  border: 1px solid var(--med-border);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+.subnav-action-btn:hover {
+  border-color: var(--med-primary);
+  color: var(--med-primary);
+  transform: translateY(-1px);
+}
+
