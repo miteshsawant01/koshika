@@ -97,13 +97,13 @@ const Storage = () => {
         <div>
           <div className="d-flex align-items-center gap-2 mb-1">
             <span className="badge bg-info-subtle text-info-emphasis koshika-page-title-badge">
-              <i className="bi bi-snow2 me-1"></i> Biobank Preservation
+              <i className="bi bi-snow2 me-1"></i> CRYO STORAGE
             </span>
             <span className="badge bg-success-subtle text-success border border-success-subtle rounded-pill small">
               8 Active Cryo Locations (100 Items Each)
             </span>
           </div>
-          <h3 className="fw-bold mb-1 text-dark">Cryogenic Storage Vault</h3>
+          <h3 className="fw-bold mb-1 text-dark">Cryo Storage</h3>
           <p className="text-secondary mb-0 small">
             Precision liquid nitrogen vapor phase storage (-196°C), bio-banking sample inventory, and 10-year cryo integrity
           </p>

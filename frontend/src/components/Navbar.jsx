@@ -1,187 +1,25 @@
 import React, { useState, useEffect, useRef } from 'react';
-import {
-  NavLink,
-  Link,
-  useLocation,
-  useNavigate,
-} from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useRole, ROLES } from '../context/RoleContext';
 import api from '../api/client';
 
 const DEMO_API_KEY = 'AIzaSy-DEMO-KEY-FOR-TESTING-ONLY';
 
-const NAV_ITEMS = [
-  {
-    to: '/',
-    label: 'Dashboard',
-    category: 'SYSTEM TELEMETRY',
-    badge: 'LIVE',
-    icon: 'bi-grid-1x2-fill',
-    color: '#0284c7',
-    bg: '#e0f2fe',
-    status: 'Operational',
-    statusIcon: 'bi-check-circle-fill',
-    statusType: 'primary',
-    subtitle: 'Live Telemetry',
-    end: true
-  },
-  {
-    to: '/ml-match',
-    label: 'Donor Match (AI)',
-    category: 'MATCHING ENGINE',
-    badge: 'AI ML',
-    icon: 'bi-cpu-fill',
-    color: '#0891b2',
-    bg: '#cffafe',
-    status: '99.4% Accuracy',
-    statusIcon: 'bi-lightning-charge-fill',
-    statusType: 'info',
-    subtitle: 'HLA Algorithm'
-  },
-  {
-    to: '/ocr-reports',
-    label: 'Scan Reports',
-    category: 'DIGITIZATION',
-    badge: 'OCR',
-    icon: 'bi-file-earmark-medical-fill',
-    color: '#d97706',
-    bg: '#fef3c7',
-    status: 'Fast Ingest',
-    statusIcon: 'bi-upc-scan',
-    statusType: 'warning',
-    subtitle: 'Medical Reports'
-  },
-  {
-    to: '/patients',
-    label: 'Patients',
-    category: 'RECIPIENTS',
-    badge: 'PATIENTS',
-    icon: 'bi-person-heart',
-    color: '#ef4444',
-    bg: '#ffe4e6',
-    status: 'Immediate',
-    statusIcon: 'bi-exclamation-triangle-fill',
-    statusType: 'danger',
-    subtitle: 'Awaiting Match'
-  },
-  {
-    to: '/donors',
-    label: 'Donors',
-    category: 'VOLUNTEER POOL',
-    badge: 'DONORS',
-    icon: 'bi-droplet-fill',
-    color: '#10b981',
-    bg: '#d1fae5',
-    status: 'Available',
-    statusIcon: 'bi-graph-up-arrow',
-    statusType: 'success',
-    subtitle: 'HLA Ready'
-  },
-  {
-    to: '/storage',
-    label: 'Storage Vault',
-    category: 'CRYOPRESERVATION',
-    badge: 'CRYO VAULT',
-    icon: 'bi-snow2',
-    color: '#06b6d4',
-    bg: '#cffafe',
-    status: '-196°C Safe',
-    statusIcon: 'bi-shield-check',
-    statusType: 'info',
-    subtitle: 'Vials Preserved'
-  },
-  {
-    to: '/inventory',
-    label: 'Inventory Supplies',
-    category: 'LAB LOGISTICS',
-    badge: 'SUPPLIES',
-    icon: 'bi-box-seam-fill',
-    color: '#f59e0b',
-    bg: '#fef3c7',
-    status: 'In Stock',
-    statusIcon: 'bi-box-seam',
-    statusType: 'warning',
-    subtitle: 'Reagents & Kits'
-  },
-  {
-    to: '/research',
-    label: 'Research Studies',
-    category: 'CLINICAL TRIALS',
-    badge: 'STUDIES',
-    icon: 'bi-journal-medical',
-    color: '#8b5cf6',
-    bg: '#ede9fe',
-    status: 'Ongoing',
-    statusIcon: 'bi-activity',
-    statusType: 'purple',
-    subtitle: 'Active Research'
-  },
-  {
-    to: '/staff',
-    label: 'Staff & Doctors',
-    category: 'MEDICAL TEAM',
-    badge: 'PERSONNEL',
-    icon: 'bi-person-badge-fill',
-    color: '#64748b',
-    bg: '#f1f5f9',
-    status: 'Active',
-    statusIcon: 'bi-person-check-fill',
-    statusType: 'secondary',
-    subtitle: 'Care Team'
-  },
-  {
-    to: '/reports',
-    label: 'Official Reports',
-    category: 'GOVERNANCE',
-    badge: 'AUDIT',
-    icon: 'bi-file-earmark-pdf-fill',
-    color: '#dc2626',
-    bg: '#fee2e2',
-    status: 'Compliant',
-    statusIcon: 'bi-file-check-fill',
-    statusType: 'danger',
-    subtitle: 'Audit Logs & PDF'
-  },
-  {
-    to: '/bank',
-    label: 'Biobank Info',
-    category: 'INFRASTRUCTURE',
-    badge: 'BIOBANK',
-    icon: 'bi-hospital-fill',
-    color: '#059669',
-    bg: '#ccfbf1',
-    status: 'Accredited',
-    statusIcon: 'bi-building-check',
-    statusType: 'success',
-    subtitle: 'Repository Hub'
-  },
-  {
-    to: '/awareness',
-    label: 'Stem Cell Guide',
-    category: 'KNOWLEDGE BASE',
-    badge: 'GUIDE',
-    icon: 'bi-book-half',
-    color: '#0284c7',
-    bg: '#e0f2fe',
-    status: 'Verified Care',
-    statusIcon: 'bi-journal-bookmark-fill',
-    statusType: 'primary',
-    subtitle: 'Science & Support'
-  },
-];
-
-const Navbar = ({ onOpenAIAssistant }) => {
-  const location = useLocation();
+const Navbar = ({ onToggleMobileSidebar }) => {
   const navigate = useNavigate();
+  const { role, setRole, unreadCount, patientProfile } = useRole();
 
   const [backendStatus, setBackendStatus] = useState('checking');
   const [showKeyModal, setShowKeyModal] = useState(false);
+  const [showProfileModal, setShowProfileModal] = useState(false);
+  const [showRoleDropdown, setShowRoleDropdown] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   const [apiKeyInput, setApiKeyInput] = useState(
     () => localStorage.getItem('gemini_api_key') || DEMO_API_KEY
   );
-  const [searchQuery, setSearchQuery] = useState('');
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const navRef = useRef(null);
+  const roleDropdownRef = useRef(null);
+  const profileDropdownRef = useRef(null);
 
   // Initialize and persist default API key if not yet set
   useEffect(() => {
@@ -198,10 +36,19 @@ const Navbar = ({ onOpenAIAssistant }) => {
       .catch(() => setBackendStatus('offline'));
   }, []);
 
-  // Close mobile drawer when route changes
+  // Close dropdowns on outside click
   useEffect(() => {
-    setMobileMenuOpen(false);
-  }, [location.pathname]);
+    const handleClickOutside = (e) => {
+      if (roleDropdownRef.current && !roleDropdownRef.current.contains(e.target)) {
+        setShowRoleDropdown(false);
+      }
+      if (profileDropdownRef.current && !profileDropdownRef.current.contains(e.target)) {
+        setShowProfileModal(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   // Save Gemini API Key
   const saveApiKey = () => {
@@ -223,155 +70,168 @@ const Navbar = ({ onOpenAIAssistant }) => {
   // Global search handler
   const handleGlobalSearch = (e) => {
     e.preventDefault();
-
     if (!searchQuery.trim()) return;
-
     const query = searchQuery.trim().toLowerCase();
 
-    if (
-      query.includes('donor') ||
-      query.startsWith('don')
-    ) {
-      navigate('/donors');
-    } else if (
-      query.includes('patient') ||
-      query.startsWith('pat')
-    ) {
-      navigate('/patients');
-    } else if (
-      query.includes('storage') ||
-      query.includes('cryo') ||
-      query.includes('tank')
-    ) {
-      navigate('/storage');
-    } else if (
-      query.includes('report') ||
-      query.includes('ocr') ||
-      query.includes('scan')
-    ) {
+    if (query.includes('report') || query.includes('ocr') || query.includes('scan')) {
       navigate('/ocr-reports');
-    } else if (
-      query.includes('match') ||
-      query.includes('compatibility') ||
-      query.includes('ml')
-    ) {
+    } else if (query.includes('match') || query.includes('hla') || query.includes('donor match')) {
       navigate('/ml-match');
-    } else if (
-      query.includes('inventory') ||
-      query.includes('stock') ||
-      query.includes('suppl')
-    ) {
-      navigate('/inventory');
-    } else if (
-      query.includes('staff') ||
-      query.includes('doctor')
-    ) {
-      navigate('/staff');
-    } else if (
-      query.includes('research') ||
-      query.includes('study')
-    ) {
-      navigate('/research');
+    } else if (query.includes('assess') || query.includes('preliminary') || query.includes('eligibility')) {
+      navigate('/preliminary-assessment');
+    } else if (query.includes('doctor') || query.includes('physician') || query.includes('specialist')) {
+      navigate('/find-care/doctors');
+    } else if (query.includes('hospital') || query.includes('centre') || query.includes('center')) {
+      navigate('/find-care/centres');
+    } else if (query.includes('bank') || query.includes('biobank') || query.includes('cord')) {
+      navigate('/bank');
+    } else if (query.includes('appointment') || query.includes('consult')) {
+      navigate('/appointments');
+    } else if (query.includes('donor') && role === ROLES.ADMIN) {
+      navigate('/donors');
+    } else if (query.includes('patient') && role !== ROLES.PATIENT) {
+      navigate('/patients');
+    } else if (query.includes('cryo') || query.includes('storage') || query.includes('tank')) {
+      navigate('/storage');
+    } else if (query.includes('profile') || query.includes('history')) {
+      navigate('/my-health/profile');
     } else {
-      if (onOpenAIAssistant) {
-        onOpenAIAssistant();
-      } else {
-        navigate('/ai-assistant');
-      }
+      window.dispatchEvent(new CustomEvent('open-koshika-ai', { detail: { query } }));
     }
-
     setSearchQuery('');
+  };
+
+  const handleSelectRole = (newRole) => {
+    setRole(newRole);
+    setShowRoleDropdown(false);
+    if (newRole === ROLES.PATIENT) {
+      navigate('/');
+    } else if (newRole === ROLES.DOCTOR) {
+      navigate('/doctor');
+    } else if (newRole === ROLES.ADMIN) {
+      navigate('/admin');
+    }
   };
 
   return (
     <>
-      <header
-        className="top-navbar-wrapper"
-        ref={navRef}
-      >
-        <nav className="top-navbar">
+      <header className="top-navbar-wrapper sticky-top">
+        <nav className="top-navbar px-3 py-2 d-flex align-items-center justify-content-between">
+          {/* Left: Mobile Toggle + Brand Logo */}
+          <div className="d-flex align-items-center gap-2">
+            {/* Mobile Hamburger Button */}
+            <button
+              type="button"
+              className="btn btn-sm btn-light border d-lg-none p-2 rounded-3 me-1"
+              onClick={onToggleMobileSidebar}
+              aria-label="Toggle navigation menu"
+            >
+              <i className="bi bi-list fs-5"></i>
+            </button>
 
-          {/* Brand Identity: KOSHIKA */}
-          <div className="d-flex align-items-center gap-3">
+            {/* Brand Logo & Name */}
             <Link
-              to="/"
+              to={role === ROLES.ADMIN ? '/admin' : role === ROLES.DOCTOR ? '/doctor' : '/'}
               className="navbar-brand-link d-flex align-items-center gap-2 text-decoration-none"
             >
               <div
                 className="institutional-logo-box"
                 style={{
-                  background:
-                    'linear-gradient(135deg, #0284c7 0%, #0d9488 100%)',
+                  background: 'linear-gradient(135deg, #0284c7 0%, #0d9488 100%)',
                 }}
               >
                 <i className="bi bi-heart-pulse-fill"></i>
               </div>
-
               <div className="d-flex flex-column">
                 <span className="institutional-brand-title d-flex align-items-center gap-2">
                   <span>KOSHIKA</span>
-
-                  <span
-                    className="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill"
-                    style={{
-                      fontSize: '0.62rem',
-                      letterSpacing: '0.04em',
-                    }}
-                  >
-                    PATIENT SUPPORT
-                  </span>
                 </span>
-
                 <span className="institutional-brand-badge">
-                  AI Stem Cell Awareness &amp; Care
+                  Stem Cell Care Platform
                 </span>
               </div>
             </Link>
+
+            {/* Interactive Role Switcher Pill */}
+            <div className="dropdown position-relative ms-2 ms-xl-3" ref={roleDropdownRef}>
+              <button
+                type="button"
+                className="btn btn-sm btn-light border rounded-pill px-3 py-1 d-flex align-items-center gap-2 shadow-xs"
+                onClick={() => setShowRoleDropdown(!showRoleDropdown)}
+                title="Switch platform perspective"
+              >
+                <span className="fw-semibold small text-dark d-flex align-items-center gap-1">
+                  {role === ROLES.PATIENT && <>👤 <span className="d-none d-md-inline">Patient View</span></>}
+                  {role === ROLES.DOCTOR && <>👨‍⚕️ <span className="d-none d-md-inline">Doctor View</span></>}
+                  {role === ROLES.ADMIN && <>🏢 <span className="d-none d-md-inline">Admin View</span></>}
+                </span>
+                <i className="bi bi-chevron-down text-muted" style={{ fontSize: '0.7rem' }}></i>
+              </button>
+
+              {showRoleDropdown && (
+                <div className="dropdown-menu show shadow-lg border-0 rounded-3 p-2 position-absolute" style={{ top: '100%', left: 0, zIndex: 1050, minWidth: '220px' }}>
+                  <div className="dropdown-header small text-muted text-uppercase fw-bold pb-1" style={{ fontSize: '0.68rem' }}>
+                    Select Platform Role
+                  </div>
+                  <button
+                    type="button"
+                    className={`dropdown-item rounded-2 py-2 px-3 d-flex align-items-center gap-2 ${role === ROLES.PATIENT ? 'active bg-primary' : ''}`}
+                    onClick={() => handleSelectRole(ROLES.PATIENT)}
+                  >
+                    <span className="fs-6">👤</span>
+                    <div>
+                      <div className="fw-semibold">Patient View</div>
+                      <small className="opacity-75" style={{ fontSize: '0.72rem' }}>Personalized care, reports, &amp; matching</small>
+                    </div>
+                  </button>
+                  <button
+                    type="button"
+                    className={`dropdown-item rounded-2 py-2 px-3 d-flex align-items-center gap-2 mt-1 ${role === ROLES.DOCTOR ? 'active bg-success' : ''}`}
+                    onClick={() => handleSelectRole(ROLES.DOCTOR)}
+                  >
+                    <span className="fs-6">👨‍⚕️</span>
+                    <div>
+                      <div className="fw-semibold">Doctor View</div>
+                      <small className="opacity-75" style={{ fontSize: '0.72rem' }}>Clinician triage, consultations, &amp; reports</small>
+                    </div>
+                  </button>
+                  <button
+                    type="button"
+                    className={`dropdown-item rounded-2 py-2 px-3 d-flex align-items-center gap-2 mt-1 ${role === ROLES.ADMIN ? 'active bg-dark' : ''}`}
+                    onClick={() => handleSelectRole(ROLES.ADMIN)}
+                  >
+                    <span className="fs-6">🏢</span>
+                    <div>
+                      <div className="fw-semibold">Admin / Provider View</div>
+                      <small className="opacity-75" style={{ fontSize: '0.72rem' }}>Biobank telemetry, donors, &amp; inventory</small>
+                    </div>
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
 
-          {/* Quick Search Bar */}
+          {/* Center: Global Search Bar */}
           <form
-            className="nav-search-container d-none d-lg-block"
+            className="nav-search-container d-none d-md-block mx-3"
             onSubmit={handleGlobalSearch}
+            style={{ maxWidth: '420px', flex: '1 1 auto' }}
           >
             <i className="bi bi-search nav-search-icon"></i>
-
             <input
               type="text"
               className="nav-search-input"
-              placeholder="Search by keyword, donor, patient..."
+              placeholder="Search reports, doctor, stem cells, matching..."
               value={searchQuery}
-              onChange={(e) =>
-                setSearchQuery(e.target.value)
-              }
+              onChange={(e) => setSearchQuery(e.target.value)}
             />
-
-            <span className="nav-search-shortcut">
-              ↵
-            </span>
+            <span className="nav-search-shortcut">↵</span>
           </form>
 
-          {/* Right Action Tools: API Key Status + Backend Status + Mobile Toggle */}
+          {/* Right Tools: Backend Status, API Key, Notifications, Profile */}
           <div className="d-flex align-items-center gap-2">
-            {/* Gemini API Key Status Badge / Button */}
-            <button
-              type="button"
-              onClick={() => setShowKeyModal(true)}
-              className="btn btn-sm btn-light border d-flex align-items-center gap-1 rounded-pill px-3 py-1 shadow-xs"
-              title="Click to configure Gemini API Key"
-            >
-              <i className="bi bi-key-fill text-warning"></i>
-              <span className="small fw-semibold d-none d-sm-inline">API Key:</span>
-              <span
-                className="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2 py-0 font-monospace"
-                style={{ fontSize: '0.68rem' }}
-              >
-                AIzaSy... (Active)
-              </span>
-            </button>
-
             {/* Backend Status indicator */}
-            <div className="d-none d-lg-flex align-items-center gap-2 px-2 py-1 rounded-pill bg-light border small text-secondary">
+            <div className="d-none d-xl-flex align-items-center gap-1 px-2 py-1 rounded-pill bg-light border small text-secondary" style={{ fontSize: '0.74rem' }}>
               <span
                 className="d-inline-block rounded-circle"
                 style={{
@@ -381,239 +241,200 @@ const Navbar = ({ onOpenAIAssistant }) => {
                   boxShadow: backendStatus === 'online' ? '0 0 0 2px rgba(16, 185, 129, 0.2)' : 'none',
                 }}
               ></span>
-              <span style={{ fontSize: '0.74rem', fontWeight: 600 }}>
-                {backendStatus === 'online' ? 'Live System' : 'Connecting...'}
-              </span>
+              <span className="fw-semibold">{backendStatus === 'online' ? 'Live' : 'Connecting'}</span>
             </div>
 
-            {/* Mobile Hamburger Toggle */}
-            <button
-              type="button"
-              className="btn btn-light border d-xl-none d-flex align-items-center justify-content-center p-2 rounded-3"
-              onClick={() => setMobileMenuOpen((prev) => !prev)}
-              aria-label="Toggle navigation menu"
-              aria-expanded={mobileMenuOpen}
+            {/* Notifications Button */}
+            <Link
+              to="/notifications"
+              className="btn btn-sm btn-light border rounded-circle position-relative p-2 d-flex align-items-center justify-content-center"
+              style={{ width: '36px', height: '36px' }}
+              title="Notifications"
             >
-              <i className={`bi ${mobileMenuOpen ? 'bi-x-lg text-danger' : 'bi-list text-dark'} fs-5`}></i>
-            </button>
-          </div>
-        </nav>
+              <i className="bi bi-bell text-secondary"></i>
+              {unreadCount > 0 && (
+                <span
+                  className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                  style={{ fontSize: '0.62rem', padding: '0.25em 0.45em' }}
+                >
+                  {unreadCount}
+                </span>
+              )}
+            </Link>
 
-        {/* =====================================================
-            SECONDARY NAVIGATION — CARD BOXES (MATCHING KPI UI)
-        ====================================================== */}
-        <nav
-          className="navbar-subnav-bar"
-          aria-label="Secondary navigation"
-        >
-          {NAV_ITEMS.map((item, index) => (
-            <NavLink
-              key={item.to}
-              to={item.to}
-              end={item.end}
-              onClick={() => {
-                navigate(item.to);
-                window.scrollTo({ top: 0, behavior: 'instant' });
-              }}
-              className={({ isActive }) =>
-                `nav-card-box subnav-pos-${index + 1} ${
-                  isActive ? 'active' : ''
-                }`
-              }
-              style={{ '--pos-index': index, '--theme-color': item.color }}
-            >
-              <div className="nav-card-header">
-                <span className="nav-card-category">{item.category}</span>
-                <span className="nav-card-badge">{item.badge}</span>
-              </div>
-
-              <div className="nav-card-body">
-                <div className="nav-card-text">
-                  <div className="nav-card-label">{item.label}</div>
-                  <div className="nav-card-subtitle">{item.subtitle}</div>
-                </div>
+            {/* Profile Dropdown */}
+            <div className="position-relative" ref={profileDropdownRef}>
+              <button
+                type="button"
+                className="btn btn-sm btn-light border rounded-pill ps-2 pe-3 py-1 d-flex align-items-center gap-2 shadow-xs"
+                onClick={() => setShowProfileModal(!showProfileModal)}
+              >
                 <div
-                  className="nav-card-icon-box"
+                  className="rounded-circle text-white d-flex align-items-center justify-content-center fw-bold"
                   style={{
-                    backgroundColor: item.bg,
-                    color: item.color,
+                    width: '28px',
+                    height: '28px',
+                    background: 'linear-gradient(135deg, #0284c7 0%, #0ea5e9 100%)',
+                    fontSize: '0.78rem'
                   }}
                 >
-                  <i
-                    className={`bi ${item.icon} subnav-icon subnav-icon-pos-${index + 1}`}
-                  ></i>
+                  {patientProfile.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()}
                 </div>
-              </div>
+                <div className="d-none d-sm-block text-start">
+                  <div className="fw-bold text-dark lh-1" style={{ fontSize: '0.78rem' }}>
+                    {role === ROLES.PATIENT ? patientProfile.name : role === ROLES.DOCTOR ? 'Dr. Aris Thorne' : 'Biobank Admin'}
+                  </div>
+                  <small className="text-muted" style={{ fontSize: '0.68rem' }}>
+                    {role === ROLES.PATIENT ? 'Patient' : role === ROLES.DOCTOR ? 'Clinician' : 'Administrator'}
+                  </small>
+                </div>
+                <i className="bi bi-chevron-down text-muted" style={{ fontSize: '0.65rem' }}></i>
+              </button>
 
-              <div className="nav-card-footer">
-                <span className={`nav-card-status status-${item.statusType}`}>
-                  <i className={`bi ${item.statusIcon} me-1`}></i>
-                  <span>{item.status}</span>
-                </span>
-                <span className="nav-card-cue">vs last cycle</span>
-              </div>
-            </NavLink>
-          ))}
-        </nav>
-
-        {/* Responsive Mobile Drawer */}
-        {mobileMenuOpen && (
-          <div className="navbar-mobile-drawer shadow-lg">
-            <div className="mobile-drawer-inner">
-
-              {/* Mobile Search */}
-              <div className="mb-3">
-                <form onSubmit={handleGlobalSearch}>
-                  <div className="input-group">
-                    <input
-                      type="text"
-                      className="form-control form-control-sm"
-                      placeholder="Search donor, patient, storage..."
-                      value={searchQuery}
-                      onChange={(e) =>
-                        setSearchQuery(
-                          e.target.value
-                        )
-                      }
-                    />
-
-                    <button
-                      className="btn btn-sm btn-primary"
-                      type="submit"
+              {showProfileModal && (
+                <div className="dropdown-menu show shadow-lg border-0 rounded-3 p-3 position-absolute end-0 mt-2" style={{ zIndex: 1050, width: '280px' }}>
+                  <div className="d-flex align-items-center gap-2 pb-2 mb-2 border-bottom">
+                    <div
+                      className="rounded-circle text-white d-flex align-items-center justify-content-center fw-bold"
+                      style={{
+                        width: '40px',
+                        height: '40px',
+                        background: 'linear-gradient(135deg, #0284c7 0%, #0d9488 100%)',
+                        fontSize: '0.9rem'
+                      }}
                     >
-                      Search
+                      {patientProfile.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()}
+                    </div>
+                    <div>
+                      <div className="fw-bold text-dark">{patientProfile.name}</div>
+                      <small className="text-secondary">{patientProfile.patientId} • {patientProfile.bloodGroup}</small>
+                    </div>
+                  </div>
+
+                  <div className="mb-2">
+                    <Link
+                      to="/my-health/profile"
+                      className="dropdown-item rounded-2 py-1 px-2 d-flex align-items-center gap-2 small"
+                      onClick={() => setShowProfileModal(false)}
+                    >
+                      <i className="bi bi-person text-primary"></i>
+                      <span>My Patient Profile</span>
+                    </Link>
+                    <Link
+                      to="/my-health/history"
+                      className="dropdown-item rounded-2 py-1 px-2 d-flex align-items-center gap-2 small"
+                      onClick={() => setShowProfileModal(false)}
+                    >
+                      <i className="bi bi-clock-history text-secondary"></i>
+                      <span>Medical History</span>
+                    </Link>
+                    <Link
+                      to="/appointments"
+                      className="dropdown-item rounded-2 py-1 px-2 d-flex align-items-center gap-2 small"
+                      onClick={() => setShowProfileModal(false)}
+                    >
+                      <i className="bi bi-calendar-check text-success"></i>
+                      <span>My Appointments</span>
+                    </Link>
+                  </div>
+
+                  <div className="pt-2 border-top">
+                    <button
+                      type="button"
+                      className="dropdown-item rounded-2 py-1 px-2 d-flex align-items-center gap-2 small"
+                      onClick={() => {
+                        setShowProfileModal(false);
+                        setShowKeyModal(true);
+                      }}
+                    >
+                      <i className="bi bi-key-fill text-warning"></i>
+                      <span>Configure Gemini API Key</span>
                     </button>
                   </div>
-                </form>
-              </div>
-
-              <div className="mobile-section-label">
-                Platform Modules &amp; Education
-              </div>
-
-              <div className="mobile-nav-grid mb-3">
-                {NAV_ITEMS.map((item) => (
-                  <NavLink
-                    key={item.to}
-                    to={item.to}
-                    end={item.end}
-                    className="mobile-nav-card"
-                    onClick={() => {
-                      setMobileMenuOpen(false);
-                      navigate(item.to);
-                      window.scrollTo({ top: 0, behavior: 'instant' });
-                    }}
-                  >
-                    <i className={`bi ${item.icon}`} style={{ color: item.color }}></i>
-                    <span>{item.label}</span>
-                  </NavLink>
-                ))}
-              </div>
-
-              {/* API Key Button */}
-              <div className="d-flex justify-content-between align-items-center pt-3 border-top">
-                <span className="small text-muted font-monospace">API Key Active</span>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setMobileMenuOpen(false);
-                    setShowKeyModal(true);
-                  }}
-                  className="btn btn-sm btn-outline-primary rounded-pill px-3"
-                >
-                  <i className="bi bi-key-fill me-1"></i>
-                  Manage Key
-                </button>
-              </div>
-
+                </div>
+              )}
             </div>
           </div>
-        )}
+        </nav>
       </header>
 
-      {/* Gemini API Key Setup Modal */}
+      {/* Gemini API Key Modal */}
       {showKeyModal && (
         <div
-          className="modal show d-block"
+          className="modal fade show d-block"
           tabIndex="-1"
-          style={{
-            backgroundColor: 'rgba(15, 23, 42, 0.65)',
-            backdropFilter: 'blur(8px)',
-          }}
+          style={{ backgroundColor: 'rgba(15, 23, 42, 0.65)', backdropFilter: 'blur(4px)', zIndex: 1060 }}
+          role="dialog"
+          aria-modal="true"
         >
-          <div className="modal-dialog modal-dialog-centered">
-            <div className="modal-content border-0 shadow-lg">
-
-              {/* Modal Header */}
-              <div className="modal-header bg-light border-bottom">
-                <h5 className="modal-title d-flex align-items-center gap-2">
-                  <i className="bi bi-key-fill text-warning"></i>
-                  Google Gemini AI API Key
-                </h5>
-
+          <div className="modal-dialog modal-dialog-centered" role="document">
+            <div className="modal-content border-0 shadow-lg rounded-4">
+              <div className="modal-header border-bottom px-4 py-3">
+                <div className="d-flex align-items-center gap-2">
+                  <div
+                    className="p-2 rounded-circle"
+                    style={{ backgroundColor: '#fef3c7', color: '#d97706' }}
+                  >
+                    <i className="bi bi-key-fill fs-5"></i>
+                  </div>
+                  <div>
+                    <h5 className="modal-title fw-bold text-dark mb-0">Gemini API Key</h5>
+                    <small className="text-secondary">Configure Google Gemini AI connection</small>
+                  </div>
+                </div>
                 <button
                   type="button"
                   className="btn-close"
                   onClick={() => setShowKeyModal(false)}
+                  aria-label="Close"
                 ></button>
               </div>
 
-              {/* Modal Body */}
-              <div className="modal-body">
+              <div className="modal-body px-4 py-3">
                 <p className="text-secondary small mb-3">
-                  This key powers <strong>KOSHIKA AI</strong> patient consultations, real-time stem cell clinical analysis, and medical report interpretations.
+                  KOSHIKA uses Gemini AI for clinical report explanations, conversational Q&amp;A, and patient guidance.
                 </p>
 
                 <div className="mb-3">
-                  <div className="d-flex justify-content-between align-items-center mb-1">
-                    <label className="form-label fw-semibold mb-0">
-                      Gemini API Key
-                    </label>
-                    <span className="badge bg-success-subtle text-success border border-success-subtle rounded-pill">
-                      Active &amp; Connected
-                    </span>
-                  </div>
-
+                  <label className="form-label small fw-semibold text-dark">API Key</label>
                   <input
-                    type="text"
-                    className="form-control font-monospace"
+                    type="password"
+                    className="form-control"
                     placeholder="AIzaSy..."
                     value={apiKeyInput}
                     onChange={(e) => setApiKeyInput(e.target.value)}
                   />
-
-                  <div className="form-text mt-2 d-flex justify-content-between align-items-center">
-                    <span>Default demo key is configured for live testing.</span>
-                    <button
-                      type="button"
-                      onClick={resetToDemoKey}
-                      className="btn btn-link btn-sm text-decoration-none p-0 text-primary"
-                    >
-                      Reset to Default Demo Key
-                    </button>
+                  <div className="form-text small text-muted">
+                    Stored locally in your browser session for security.
                   </div>
                 </div>
               </div>
 
-              {/* Modal Footer */}
-              <div className="modal-footer">
+              <div className="modal-footer border-top px-4 py-3 d-flex justify-content-between">
                 <button
                   type="button"
-                  className="btn btn-secondary"
-                  onClick={() => setShowKeyModal(false)}
+                  className="btn btn-outline-secondary btn-sm rounded-pill px-3"
+                  onClick={resetToDemoKey}
                 >
-                  Cancel
+                  Reset Demo Key
                 </button>
-
-                <button
-                  type="button"
-                  className="btn btn-primary px-4"
-                  onClick={saveApiKey}
-                >
-                  Save Key
-                </button>
+                <div className="d-flex gap-2">
+                  <button
+                    type="button"
+                    className="btn btn-light btn-sm rounded-pill px-3"
+                    onClick={() => setShowKeyModal(false)}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-primary btn-sm rounded-pill px-4"
+                    onClick={saveApiKey}
+                  >
+                    Save Key
+                  </button>
+                </div>
               </div>
-
             </div>
           </div>
         </div>

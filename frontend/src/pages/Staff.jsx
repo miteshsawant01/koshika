@@ -68,13 +68,13 @@ const Staff = () => {
         <div>
           <div className="d-flex align-items-center gap-2 mb-1">
             <span className="badge bg-secondary-subtle text-secondary koshika-page-title-badge">
-              <i className="bi bi-person-badge me-1"></i> Medical Specialists
+              <i className="bi bi-person-badge me-1"></i> DOCTORS &amp; SPECIALISTS
             </span>
             <span className="badge bg-light text-muted border rounded-pill small">
               {staff.length} Active Staff Members
             </span>
           </div>
-          <h3 className="fw-bold mb-1 text-dark">Clinical &amp; Laboratory Staff</h3>
+          <h3 className="fw-bold mb-1 text-dark">Doctors &amp; Specialists</h3>
           <p className="text-secondary mb-0 small">
             Directory of hematologists, biobank cryo-engineers, molecular geneticists, and laboratory directors
           </p>

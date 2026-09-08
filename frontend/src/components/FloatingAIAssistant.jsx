@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import api from '../api/client';
 
 const QUICK_PROMPTS = [
@@ -12,6 +12,7 @@ const QUICK_PROMPTS = [
 
 const FloatingAIAssistant = ({ isOpenExternal, onCloseExternal }) => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([
     {
@@ -105,6 +106,11 @@ const FloatingAIAssistant = ({ isOpenExternal, onCloseExternal }) => {
     if (onCloseExternal) onCloseExternal();
     navigate('/ai-assistant');
   };
+
+  // Do not render duplicate floating widget if already on the full /ai-assistant page
+  if (location.pathname === '/ai-assistant') {
+    return null;
+  }
 
   return (
     <div className="floating-ai-wrapper">
