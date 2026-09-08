@@ -3,7 +3,7 @@ import { NavLink } from 'react-router-dom';
 import { useRole, ROLES } from '../context/RoleContext';
 
 const Sidebar = ({ mobileOpen, onCloseMobile }) => {
-  const { role, unreadCount, openChatWithQuery } = useRole();
+  const { role, unreadCount } = useRole();
 
   // Collapsible sub-groups state
   const [openGroups, setOpenGroups] = useState({
@@ -23,13 +23,6 @@ const Sidebar = ({ mobileOpen, onCloseMobile }) => {
     }
   };
 
-  const handleOpenAIChat = () => {
-    openChatWithQuery('');
-    if (onCloseMobile) {
-      onCloseMobile();
-    }
-  };
-
   return (
     <>
       {/* Mobile Backdrop */}
@@ -42,48 +35,22 @@ const Sidebar = ({ mobileOpen, onCloseMobile }) => {
       )}
 
       <aside className={`koshika-sidebar ${mobileOpen ? 'mobile-open' : ''}`}>
-        {/* Sidebar Header: Brand & Active Perspective */}
-        <div className="sidebar-header d-flex flex-column gap-2 p-3 border-bottom">
-          <div className="d-flex align-items-center justify-content-between">
-            <div className="d-flex align-items-center gap-2">
-              <div className="sidebar-logo-icon">
-                <i className="bi bi-heart-pulse-fill text-white"></i>
-              </div>
-              <div>
-                <span className="sidebar-brand-text fw-bold">KOSHIKA</span>
-                <span className="sidebar-brand-sub text-muted d-block small">Stem Cell Platform</span>
-              </div>
-            </div>
-            {onCloseMobile && (
-              <button
-                type="button"
-                className="btn btn-sm btn-light d-lg-none p-1 rounded-circle"
-                onClick={onCloseMobile}
-                aria-label="Close sidebar"
-              >
-                <i className="bi bi-x-lg"></i>
-              </button>
-            )}
+        {/* Mobile Close Bar */}
+        {onCloseMobile && (
+          <div className="d-lg-none d-flex justify-content-end p-2 border-bottom">
+            <button
+              type="button"
+              className="btn btn-sm btn-light p-1 rounded-circle"
+              onClick={onCloseMobile}
+              aria-label="Close sidebar"
+            >
+              <i className="bi bi-x-lg"></i>
+            </button>
           </div>
-
-          {/* Role Indicator Badge */}
-          <div className="sidebar-role-banner px-2 py-1 rounded-2 d-flex align-items-center justify-content-between">
-            <span className="small text-muted fw-semibold text-uppercase" style={{ fontSize: '0.68rem', letterSpacing: '0.05em' }}>
-              Perspective
-            </span>
-            <span className={`badge rounded-pill ${
-              role === ROLES.PATIENT ? 'bg-primary-subtle text-primary' :
-              role === ROLES.DOCTOR ? 'bg-success-subtle text-success' : 'bg-dark text-white'
-            }`} style={{ fontSize: '0.72rem' }}>
-              {role === ROLES.PATIENT && '👤 Patient'}
-              {role === ROLES.DOCTOR && '👨‍⚕️ Clinician'}
-              {role === ROLES.ADMIN && '🏢 Admin / Provider'}
-            </span>
-          </div>
-        </div>
+        )}
 
         {/* Navigation Menus based on Role */}
-        <div className="sidebar-scrollable flex-grow-1 p-2">
+        <div className="sidebar-scrollable flex-grow-1 p-2 pt-3">
           {/* =========================================================
               1. PATIENT NAVIGATION (PRIMARY / DEFAULT)
           ========================================================== */}
@@ -466,18 +433,6 @@ const Sidebar = ({ mobileOpen, onCloseMobile }) => {
               </li>
             </ul>
           )}
-        </div>
-
-        {/* Sidebar Footer: Ask KOSHIKA AI Button */}
-        <div className="sidebar-footer p-3 border-top">
-          <button
-            type="button"
-            className="btn btn-koshika-ai-sidebar w-100 d-flex align-items-center justify-content-center gap-2 py-2"
-            onClick={handleOpenAIChat}
-          >
-            <i className="bi bi-robot"></i>
-            <span className="fw-semibold">Ask KOSHIKA AI</span>
-          </button>
         </div>
       </aside>
     </>
