@@ -1,4 +1,4 @@
-﻿import { supabase } from '../utils/supabase';
+import { supabase } from '../utils/supabase';
 
 export const API_BASE_URL = import.meta.env.VITE_SUPABASE_URL || 'https://hytzgimcitwdvsdzgjxz.supabase.co';
 
