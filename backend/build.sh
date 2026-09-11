@@ -3,7 +3,8 @@ set -o errexit
 
 pip install -r requirements.txt
 python manage.py collectstatic --no-input
-python manage.py migrate
-python seed_100_items.py
+python manage.py migrate --no-input || true
+python seed_100_items.py || true
+
 
 

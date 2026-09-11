@@ -1,10 +1,10 @@
-# STEMBRIDGE AI — Zero-Cost Production Deployment Guide
+# STEMBRIDGE AI â€” Zero-Cost Production Deployment Guide
 ### Architecture: Vercel (Frontend) + Render (Backend & Database)
 
 This full-stack application is pre-configured for free deployment:
 - **Frontend (Vite + React 19):** Hosted on **Vercel** with global CDN and automatic SPA routing.
 - **Backend (Django 5 + REST):** Hosted on **Render** (Free Web Service) with Gunicorn & WhiteNoise.
-- **Database:** Render Free Managed PostgreSQL or Cloud MySQL (Aiven/TiDB).
+- **Database:** Supabase PostgreSQL (Permanent Free Tier - Recommended), Render PostgreSQL, or Cloud MySQL.
 
 ---
 
@@ -113,4 +113,4 @@ pm run build
    - Global CORS headers allowing cross-origin API calls from Vercel.
 
 5. [render.yaml](file:///c:/Users/MITESH%20SAWANT/Downloads/STEMBRIDGE%20AI/render.yaml):
-   Infrastructure-as-Code blueprint for 1-click backend and database provisioning.
+   Infrastructure-as-Code blueprint for 1-click backend and database provisioning.

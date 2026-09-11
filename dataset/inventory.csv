@@ -1,0 +1,101 @@
+item_id,item_name,quantity,unit,last_updated
+1,Cryogenic Vials 1.8 mL (Internal Thread),1178,vials,2026-09-10 06:15:47.881921
+2,Cryogenic Vials 4.5 mL (External Thread),560,vials,2026-09-10 06:15:47.881921
+3,Liquid Nitrogen (Medical Grade),625,litres,2026-09-10 06:15:47.881921
+4,DMSO 99.9% USP Grade Cryoprotectant,100,bottles,2026-09-10 06:15:47.881921
+5,RPMI-1640 Medium w/ L-Glutamine (500 mL),98,bottles,2026-09-10 06:15:47.881921
+6,Fetal Bovine Serum (Stem Cell Certified),37,bottles,2026-09-10 06:15:47.881921
+7,Ficoll-Paque PLUS Density Gradient Media,55,bottles,2026-09-10 06:15:47.881921
+8,Apheresis Collection Kits (Single-Use Sterile),127,kits,2026-09-10 06:15:47.881921
+9,CD34+ MicroBead Cell Separation Kits,33,kits,2026-09-10 06:15:47.881921
+10,StemSpan SFEM II Expansion Medium,36,bottles,2026-09-10 06:15:47.881921
+11,Cryo-Preservation Cassettes 25 mL,400,pcs,2026-09-10 06:15:47.881921
+12,Cryo-Preservation Cassettes 50 mL,310,pcs,2026-09-10 06:15:47.881921
+13,Liquid Nitrogen Cryo Gloves (Mid-Arm),29,pairs,2026-09-10 06:15:47.881921
+14,Cryo Face Shields (UV & Splash Rated),16,pcs,2026-09-10 06:15:47.881921
+15,Cryogenic Barcode Labels (Low-Temp Resistant),3042,labels,2026-09-10 06:15:47.881921
+16,Thermal Transfer Ribbon for Cryo Printers,12,rolls,2026-09-10 06:15:47.881921
+17,Automated Cell Counter Chamber Slides,259,slides,2026-09-10 06:15:47.881921
+18,Trypan Blue Stain 0.4% Solution (100 mL),31,bottles,2026-09-10 06:15:47.881921
+19,Sterile Filter Pipette Tips 1000 uL,1506,tips,2026-09-10 06:15:47.881921
+20,Sterile Filter Pipette Tips 200 uL,1876,tips,2026-09-10 06:15:47.881921
+21,Sterile Filter Pipette Tips 10 uL,2321,tips,2026-09-10 06:15:47.881921
+22,Conical Centrifuge Tubes 50 mL Sterile,810,tubes,2026-09-10 06:15:47.881921
+23,Conical Centrifuge Tubes 15 mL Sterile,1244,tubes,2026-09-10 06:15:47.881921
+24,Umbilical Cord Blood Collection Bags (CPD),124,bags,2026-09-10 06:15:47.881921
+25,Bone Marrow Harvest Needles 11G Jamshidi,87,needles,2026-09-10 06:15:47.881921
+26,Heparin Sodium 5000 IU/mL Injection,112,vials,2026-09-10 06:15:47.881921
+27,"Phosphate Buffered Saline (PBS 1X, pH 7.4)",177,bottles,2026-09-10 06:15:47.881921
+28,Flow Cytometry 7-Color Calibration Beads,27,kits,2026-09-10 06:15:47.881921
+29,CD45-FITC / CD34-PE Dual Antibody Cocktail,31,vials,2026-09-10 06:15:47.881921
+30,7-AAD Cell Viability Dye Solution,34,vials,2026-09-10 06:15:47.881921
+31,Cryogenic Freezer Racks (100-Place Stainless),32,racks,2026-09-10 06:15:47.881921
+32,LN2 Level Monitoring Wireless Sensors,13,units,2026-09-10 06:15:47.881921
+33,Oxygen Deficiency Room Safety Monitors,9,units,2026-09-10 06:15:47.881921
+34,Thermal Paper Rolls for Controlled Freezers,76,rolls,2026-09-10 06:15:47.881921
+35,CryoMACS 250 Stem Cell Freezing Bags,213,bags,2026-09-10 06:15:47.881921
+36,CryoMACS 50 Stem Cell Freezing Bags,213,bags,2026-09-10 06:15:47.881921
+37,Syringes 20 mL Luer-Lock Sterile,857,pcs,2026-09-10 06:15:47.881921
+38,Syringes 10 mL Luer-Lock Sterile,736,pcs,2026-09-10 06:15:47.881921
+39,Syringes 5 mL Luer-Lock Sterile,1172,pcs,2026-09-10 06:15:47.881921
+40,Microcentrifuge Tubes 1.5 mL Safe-Lock,2962,tubes,2026-09-10 06:15:47.881921
+41,Petri Dishes 100 mm (TC Treated),407,dishes,2026-09-10 06:15:47.881921
+42,6-Well Tissue Culture Plates,171,plates,2026-09-10 06:15:47.881921
+43,96-Well Flat-Bottom Microplates,348,plates,2026-09-10 06:15:47.881921
+44,Serological Pipettes 25 mL Sterile,440,pipettes,2026-09-10 06:15:47.881921
+45,Serological Pipettes 10 mL Sterile,1107,pipettes,2026-09-10 06:15:47.881921
+46,Serological Pipettes 5 mL Sterile,572,pipettes,2026-09-10 06:15:47.881921
+47,Polycarbonate Cryo Boxes (81-Well 2-inch),144,boxes,2026-09-10 06:15:47.881921
+48,LN2 Transfer Hose 6ft Vacuum Insulated,8,hoses,2026-09-10 06:15:47.881921
+49,Biohazard Autoclave Bags Heavy Duty,418,bags,2026-09-10 06:15:47.881921
+50,Nitrile Gloves Powder-Free Medium,1004,pairs,2026-09-10 06:15:47.881921
+51,Nitrile Gloves Powder-Free Large,1437,pairs,2026-09-10 06:15:47.881921
+52,Isopropanol 70% Disinfection Wipes Canister,98,tubs,2026-09-10 06:15:47.881921
+53,Ethanol 100% Molecular Biology Grade (4L),19,bottles,2026-09-10 06:15:47.881921
+54,Parafilm M Sealing Film (4 in x 125 ft),28,rolls,2026-09-10 06:15:47.881921
+55,Electronic Pipette Controllers (Cordless),9,units,2026-09-10 06:15:47.881921
+56,Vortex Mixer Rubber Cup Replacements,10,caps,2026-09-10 06:15:47.881921
+57,Centrifuge Bucket Adapters 50 mL,22,adapters,2026-09-10 06:15:47.881921
+58,Cryo Marker Pens (Resistant to -196C),62,pens,2026-09-10 06:15:47.881921
+59,Cryogenic Long Tongs Stainless Steel 45cm,10,pcs,2026-09-10 06:15:47.881921
+60,Dry Ice Vapor Shippers (IATA Compliant),8,shippers,2026-09-10 06:15:47.881921
+61,NIST Traceable Ultra-Low Temp Loggers,21,loggers,2026-09-10 06:15:47.881921
+62,StemPro MSC SFM Medium (500 mL),41,bottles,2026-09-10 06:15:47.881921
+63,Recombinant Human G-CSF (Filgrastim 300mcg),76,vials,2026-09-10 06:15:47.882927
+64,MACS Separation Columns (Large Scale LS),202,columns,2026-09-10 06:15:47.882927
+65,Pre-Separation Filters 30 um,289,filters,2026-09-10 06:15:47.882927
+66,Sterile Biopsy Punches 4 mm,113,punches,2026-09-10 06:15:47.882927
+67,Cryo-Sleeve Protective Shrink Wrap Rolls,31,rolls,2026-09-10 06:15:47.882927
+68,Cell Strainer 70 um Nylon Mesh,477,strainers,2026-09-10 06:15:47.882927
+69,Cell Strainer 40 um Nylon Mesh,392,strainers,2026-09-10 06:15:47.882927
+70,Cryopreservation Solution CS10 (100 mL),55,bottles,2026-09-10 06:15:47.882927
+71,Cryopreservation Solution CS5 (100 mL),43,bottles,2026-09-10 06:15:47.882927
+72,Methylcellulose Complete Media with Cytokines,76,tubes,2026-09-10 06:15:47.882927
+73,HSA 20% Human Serum Albumin Solution,106,vials,2026-09-10 06:15:47.882927
+74,Gentamicin Sulfate Reagent Solution (50 mg/mL),62,vials,2026-09-10 06:15:47.882927
+75,Penicillin-Streptomycin Solution 100X,80,bottles,2026-09-10 06:15:47.882927
+76,Sterile Drape Sheets for Bone Marrow Harvest,166,sheets,2026-09-10 06:15:47.882927
+77,Bone Marrow Filter Units 200 um,88,units,2026-09-10 06:15:47.882927
+78,Sterile Tubing Welding Wafers (Terumo TSCD),692,wafers,2026-09-10 06:15:47.882927
+79,Sterile Connection Devices Tubing Cartridges,87,cartridges,2026-09-10 06:15:47.882927
+80,LN2 Dipsticks for Liquid Level Measurement,14,sticks,2026-09-10 06:15:47.882927
+81,Cryo-Aprons (Waterproof Low-Temp Safe),7,aprons,2026-09-10 06:15:47.882927
+82,Sterile Syringe Filters 0.22 um PES Membrane,614,filters,2026-09-10 06:15:47.882927
+83,Sterile Syringe Filters 0.45 um PES Membrane,387,filters,2026-09-10 06:15:47.882927
+84,Cryo-Vial Color Coders (Assorted Insert Caps),2001,caps,2026-09-10 06:15:47.882927
+85,Specimen Transport Bags (95 kPa Certified),626,bags,2026-09-10 06:15:47.882927
+86,Bleach 10% Hospital Grade Surface Cleaner,65,bottles,2026-09-10 06:15:47.882927
+87,Sterile Surgical Scalpels #11,404,blades,2026-09-10 06:15:47.882927
+88,Sterile Surgical Scalpels #15,211,blades,2026-09-10 06:15:47.882927
+89,ELISA Wash Buffer 10X Concentrate (1L),39,bottles,2026-09-10 06:15:47.882927
+90,TMB Substrate Reagent Set for ELISA,23,sets,2026-09-10 06:15:47.882927
+91,Cryo-Grip Forceps 25 cm Insulated,12,forceps,2026-09-10 06:15:47.882927
+92,Sterile Gauze Swabs 10x10 cm (Pack of 5),806,packs,2026-09-10 06:15:47.882927
+93,Chlorhexidine Gluconate 2% Skin Prep Swabs,682,swabs,2026-09-10 06:15:47.882927
+94,Adhesive Wound Dressing Sterile (Tegaderm),565,dressings,2026-09-10 06:15:47.882927
+95,Endotoxin Detection LAL Reagent Kits,16,kits,2026-09-10 06:15:47.882927
+96,Mycoplasma PCR Detection Primers Kit,13,kits,2026-09-10 06:15:47.882927
+97,Bactec Blood Culture Bottles (Aerobic),139,bottles,2026-09-10 06:15:47.882927
+98,Bactec Blood Culture Bottles (Anaerobic),160,bottles,2026-09-10 06:15:47.882927
+99,LN2 Exhaust Ventilation Filter Cartridges,14,cartridges,2026-09-10 06:15:47.882927
+100,HEPA Air Filters for Class 100 Cleanroom,10,filters,2026-09-10 06:15:47.882927

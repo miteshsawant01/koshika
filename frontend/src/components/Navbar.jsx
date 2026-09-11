@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useRole, ROLES } from '../context/RoleContext';
-import api from '../api/client';
+import api, { getApiBaseUrl, testBackendConnection, normalizeApiUrl } from '../api/client';
 
 const DEMO_API_KEY = 'AIzaSy-DEMO-KEY-FOR-TESTING-ONLY';
 
@@ -9,17 +9,39 @@ const Navbar = ({ onToggleMobileSidebar }) => {
   const navigate = useNavigate();
   const { role, setRole, unreadCount, patientProfile } = useRole();
 
-  const [backendStatus, setBackendStatus] = useState('checking');
+  const [backendStatus, setBackendStatus] = useState('checking'); // 'online' | 'waking' | 'offline' | 'checking'
+  const [backendHealth, setBackendHealth] = useState(null);
   const [showKeyModal, setShowKeyModal] = useState(false);
+  const [showBackendModal, setShowBackendModal] = useState(false);
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [showRoleDropdown, setShowRoleDropdown] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [backendUrlInput, setBackendUrlInput] = useState(() => getApiBaseUrl());
+  const [testingUrl, setTestingUrl] = useState(false);
+  const [testResult, setTestResult] = useState(null);
   const [apiKeyInput, setApiKeyInput] = useState(
     () => localStorage.getItem('gemini_api_key') || DEMO_API_KEY
   );
 
   const roleDropdownRef = useRef(null);
   const profileDropdownRef = useRef(null);
+
+  // Check and keep backend status in sync
+  const checkConnection = async (url) => {
+    try {
+      const res = await testBackendConnection(url);
+      if (res.ok) {
+        setBackendStatus('online');
+        setBackendHealth(res.data);
+      } else {
+        setBackendStatus('offline');
+      }
+      return res;
+    } catch {
+      setBackendStatus('offline');
+      return { ok: false };
+    }
+  };
 
   // Initialize and persist default API key if not yet set
   useEffect(() => {
@@ -28,12 +50,18 @@ const Navbar = ({ onToggleMobileSidebar }) => {
     }
   }, []);
 
-  // Check backend status
+  // Check backend status on mount
   useEffect(() => {
-    api
-      .get('/dashboard/stats/')
-      .then(() => setBackendStatus('online'))
-      .catch(() => setBackendStatus('offline'));
+    checkConnection();
+
+    const handleStatusEvent = (e) => {
+      if (e.detail?.status) {
+        setBackendStatus(e.detail.status);
+      }
+    };
+
+    window.addEventListener('koshika-backend-status', handleStatusEvent);
+    return () => window.removeEventListener('koshika-backend-status', handleStatusEvent);
   }, []);
 
   // Close dropdowns on outside click

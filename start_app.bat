@@ -4,7 +4,7 @@ echo ===================================================
 echo Starting STEMBRIDGE AI (Stem Cell DBMS)
 echo Backend: Python Django + REST API (Port 8000)
 echo Frontend: React.js + Vite (Port 5173)
-echo Database: MySQL (stemcelldb)
+echo Database: Supabase PostgreSQL (Cloud) / SQLite (Fallback)
 echo ===================================================
 
 start "STEMBRIDGE Backend (Django)" cmd /k "cd backend && python manage.py runserver 127.0.0.1:8000"
