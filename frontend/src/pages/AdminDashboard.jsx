@@ -53,7 +53,7 @@ const AdminDashboard = () => {
   };
 
   const handleDownloadPDF = () => {
-    window.open(`${API_BASE_URL}/reports/pdf/`, '_blank');
+    window.print();
   };
 
   if (loading) {

@@ -21,7 +21,7 @@ const Reports = () => {
   };
 
   const handleDownloadPDF = () => {
-    window.open(`${API_BASE_URL}/reports/pdf/`, '_blank');
+    window.print();
   };
 
   const [filterOp, setFilterOp] = useState('');
