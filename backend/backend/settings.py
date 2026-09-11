@@ -175,6 +175,7 @@ CORS_ALLOW_HEADERS = list(default_headers) + [
 ]
 
 CSRF_TRUSTED_ORIGINS = [
+    'https://koshika-ai.vercel.app',
     'https://*.vercel.app',
     'https://*.onrender.com',
     'http://localhost:5173',
