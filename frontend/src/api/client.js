@@ -287,21 +287,47 @@ const api = {
 
     // 1. Patients Create
     if (cleanUrl === 'patients') {
-      const { data, error } = await supabase.from('patients').insert([body]).select();
+      const payload = { ...body };
+      if ('age' in payload && payload.age !== '' && payload.age !== null && payload.age !== undefined) {
+        payload.age = Number(payload.age);
+      }
+      const { data, error } = await supabase.from('patients').insert([payload]).select();
       if (error) throw error;
       return { data: data[0] };
     }
 
     // 2. Donors Create
     if (cleanUrl === 'donors') {
-      const { data, error } = await supabase.from('donors').insert([body]).select();
+      const payload = { ...body };
+      if ('age' in payload && payload.age !== '' && payload.age !== null && payload.age !== undefined) {
+        payload.age = Number(payload.age);
+      }
+      if ('patient' in payload) {
+        payload.patient_id = payload.patient ? Number(payload.patient) : null;
+        delete payload.patient;
+      }
+      if ('patient_id' in payload && (payload.patient_id === '' || isNaN(payload.patient_id))) {
+        payload.patient_id = null;
+      }
+      const { data, error } = await supabase.from('donors').insert([payload]).select();
       if (error) throw error;
       return { data: data[0] };
     }
 
     // 3. Storage Create
     if (cleanUrl === 'storage') {
-      const { data, error } = await supabase.from('storage').insert([body]).select();
+      const payload = { ...body };
+      if ('donor' in payload) {
+        payload.donor_id = payload.donor ? Number(payload.donor) : null;
+        delete payload.donor;
+      }
+      if ('donor_id' in payload && (payload.donor_id === '' || isNaN(payload.donor_id))) {
+        payload.donor_id = null;
+      }
+      if ('units' in payload) {
+        payload.units = Number(payload.units) || 1;
+      }
+      const { data, error } = await supabase.from('storage').insert([payload]).select();
       if (error) throw error;
       return { data: data[0] };
     }
@@ -322,7 +348,11 @@ const api = {
 
     // 6. Inventory Create
     if (cleanUrl === 'inventory') {
-      const { data, error } = await supabase.from('inventory').insert([body]).select();
+      const payload = { ...body };
+      if ('quantity' in payload) {
+        payload.quantity = Number(payload.quantity) || 0;
+      }
+      const { data, error } = await supabase.from('inventory').insert([payload]).select();
       if (error) throw error;
       return { data: data[0] };
     }
@@ -457,13 +487,67 @@ const api = {
     const id = parts[1];
 
     if (resource === 'patients') {
-      const { data, error } = await supabase.from('patients').update(body).eq('patient_id', id).select();
+      const payload = { ...body };
+      if ('age' in payload && payload.age !== '' && payload.age !== null && payload.age !== undefined) {
+        payload.age = Number(payload.age);
+      }
+      const { data, error } = await supabase.from('patients').update(payload).eq('patient_id', id).select();
       if (error) throw error;
       return { data: data[0] };
     }
 
     if (resource === 'donors') {
-      const { data, error } = await supabase.from('donors').update(body).eq('donor_id', id).select();
+      const payload = { ...body };
+      if ('age' in payload && payload.age !== '' && payload.age !== null && payload.age !== undefined) {
+        payload.age = Number(payload.age);
+      }
+      if ('patient' in payload) {
+        payload.patient_id = payload.patient ? Number(payload.patient) : null;
+        delete payload.patient;
+      }
+      if ('patient_id' in payload && (payload.patient_id === '' || isNaN(payload.patient_id))) {
+        payload.patient_id = null;
+      }
+      const { data, error } = await supabase.from('donors').update(payload).eq('donor_id', id).select();
+      if (error) throw error;
+      return { data: data[0] };
+    }
+
+    if (resource === 'storage') {
+      const payload = { ...body };
+      if ('donor' in payload) {
+        payload.donor_id = payload.donor ? Number(payload.donor) : null;
+        delete payload.donor;
+      }
+      if ('donor_id' in payload && (payload.donor_id === '' || isNaN(payload.donor_id))) {
+        payload.donor_id = null;
+      }
+      if ('units' in payload) {
+        payload.units = Number(payload.units) || 1;
+      }
+      const { data, error } = await supabase.from('storage').update(payload).eq('storage_id', id).select();
+      if (error) throw error;
+      return { data: data[0] };
+    }
+
+    if (resource === 'staff') {
+      const { data, error } = await supabase.from('staff').update(body).eq('staff_id', id).select();
+      if (error) throw error;
+      return { data: data[0] };
+    }
+
+    if (resource === 'research') {
+      const { data, error } = await supabase.from('research').update(body).eq('research_id', id).select();
+      if (error) throw error;
+      return { data: data[0] };
+    }
+
+    if (resource === 'inventory') {
+      const payload = { ...body };
+      if ('quantity' in payload) {
+        payload.quantity = Number(payload.quantity) || 0;
+      }
+      const { data, error } = await supabase.from('inventory').update(payload).eq('item_id', id).select();
       if (error) throw error;
       return { data: data[0] };
     }

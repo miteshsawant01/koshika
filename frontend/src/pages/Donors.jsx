@@ -73,7 +73,7 @@ const Donors = () => {
       contact: d.contact || '',
       donation_date: d.donation_date || '',
       notes: d.notes || '',
-      patient: d.patient || '',
+      patient: d.patient_id || d.patient || '',
     });
     setShowModal(true);
   };
@@ -81,8 +81,13 @@ const Donors = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const payload = {
-      ...formData,
-      patient: formData.patient ? parseInt(formData.patient) : null
+      name: formData.name,
+      age: formData.age ? parseInt(formData.age) : null,
+      blood_group: formData.blood_group,
+      contact: formData.contact,
+      donation_date: formData.donation_date || null,
+      notes: formData.notes,
+      patient_id: formData.patient ? parseInt(formData.patient) : null
     };
 
     try {

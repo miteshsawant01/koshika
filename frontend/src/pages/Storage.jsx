@@ -69,8 +69,15 @@ const Storage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const payload = {
+      donor_id: formData.donor ? parseInt(formData.donor) : null,
+      storage_location: formData.storage_location,
+      collected_date: formData.collected_date || null,
+      expiry_date: formData.expiry_date || null,
+      units: formData.units ? parseInt(formData.units) : 1
+    };
     try {
-      await api.post('/storage/', formData);
+      await api.post('/storage/', payload);
       setShowModal(false);
       fetchStorage();
     } catch (err) {
