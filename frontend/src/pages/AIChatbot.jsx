@@ -45,7 +45,7 @@ I am your clinical-grade guide for stem cell biology, bone marrow transplantatio
 - ⚠️ **Patient Safety:** Evidence-based facts and warnings against unproven clinics
 
 *Ask any clinical question or select a suggested topic below to begin.*`,
-      source: 'KOSHIKA Gemini AI (gemini-flash-latest)'
+      source: 'KOSHIKA Gemini AI'
     }
   ]);
   const [input, setInput] = useState('');
@@ -106,7 +106,7 @@ I am your clinical-grade guide for stem cell biology, bone marrow transplantatio
       const botMsg = {
         sender: 'assistant',
         text: res.data?.response || 'No response returned.',
-        source: res.data?.source || 'KOSHIKA Gemini AI (gemini-flash-latest)',
+        source: res.data?.source || 'KOSHIKA Gemini AI',
         notice: res.data?.notice
       };
       setMessages((prev) => [...prev, botMsg]);
