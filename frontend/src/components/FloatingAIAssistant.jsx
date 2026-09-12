@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import api from '../api/client';
+import MarkdownRenderer from './MarkdownRenderer';
 
 const QUICK_PROMPTS = [
   '🧬 What are stem cells?',
@@ -14,12 +15,13 @@ const FloatingAIAssistant = ({ isOpenExternal, onCloseExternal }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
+  const [copiedIdx, setCopiedIdx] = useState(null);
   const [messages, setMessages] = useState([
     {
       sender: 'assistant',
       text: '👋 Hello! I am **KOSHIKA AI**, your patient-friendly guide to stem cells.\n\nAsk me about:\n- 🧬 **Stem cells & their types**\n- 🩸 **Transplantation options & research limitations**\n- 🤝 **HLA donor matching & registries**\n- ⚠️ **False cure warnings & patient safety**\n- 📚 **Myths vs. evidence-based facts**\n\n*Note: KOSHIKA provides educational support and does not replace professional medical advice.*',
       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      source: 'KOSHIKA Patient AI Guide'
+      source: 'KOSHIKA Gemini AI'
     }
   ]);
   const [input, setInput] = useState('');
@@ -72,19 +74,21 @@ const FloatingAIAssistant = ({ isOpenExternal, onCloseExternal }) => {
       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     };
 
-    setMessages((prev) => [...prev, userMsg]);
+    const updatedMessages = [...messages, userMsg];
+    setMessages(updatedMessages);
     setInput('');
     setLoading(true);
 
     try {
       const res = await api.post('/ai/chat/', {
-        message: `Answer in simple, patient-friendly, reassuring, evidence-based language: ${query}`
+        message: query,
+        history: updatedMessages
       });
       const botMsg = {
         sender: 'assistant',
-        text: res.data.response || 'No response received from model.',
-        source: res.data.source || 'KOSHIKA Patient AI Guide',
-        notice: res.data.notice,
+        text: res.data?.response || 'No response received from model.',
+        source: res.data?.source || 'KOSHIKA Gemini AI',
+        notice: res.data?.notice,
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       };
       setMessages((prev) => [...prev, botMsg]);
@@ -191,9 +195,33 @@ const FloatingAIAssistant = ({ isOpenExternal, onCloseExternal }) => {
                     <span className="floating-msg-sender">
                       {m.sender === 'user' ? 'You' : 'KOSHIKA AI'}
                     </span>
-                    <span className="floating-msg-time">{m.time}</span>
+                    <div className="d-flex align-items-center gap-1">
+                      <span className="floating-msg-time">{m.time}</span>
+                      {m.sender === 'assistant' && (
+                        <button
+                          type="button"
+                          className="btn btn-link btn-sm p-0 text-white-50 ms-1"
+                          onClick={() => {
+                            if (navigator.clipboard) {
+                              navigator.clipboard.writeText(m.text);
+                              setCopiedIdx(idx);
+                              setTimeout(() => setCopiedIdx(null), 2000);
+                            }
+                          }}
+                          title="Copy message"
+                        >
+                          <i className={`bi ${copiedIdx === idx ? 'bi-check-lg text-success' : 'bi-clipboard'}`} style={{ fontSize: '0.75rem' }}></i>
+                        </button>
+                      )}
+                    </div>
                   </div>
-                  <div className="floating-msg-text">{m.text}</div>
+                  <div className="floating-msg-text">
+                    {m.sender === 'user' ? (
+                      m.text
+                    ) : (
+                      <MarkdownRenderer content={m.text} />
+                    )}
+                  </div>
                   {m.source && (
                     <div className="floating-msg-source">
                       <span>{m.source}</span>

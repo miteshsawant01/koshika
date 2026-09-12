@@ -455,24 +455,97 @@ const api = {
     // 9. AI Assistant Chat
     if (cleanUrl === 'ai/chat') {
       const query = (body.message || '').trim();
-      let reply = '';
+      const storedKey = typeof window !== 'undefined' ? localStorage.getItem('gemini_api_key') : null;
+      const apiKey = (storedKey && storedKey.trim()) ? storedKey.trim() : (import.meta.env.VITE_GEMINI_API_KEY || '');
 
+      if (apiKey && !apiKey.startsWith('AIzaSy-DEMO')) {
+        try {
+          const systemPrompt = `You are KOSHIKA AI Assistant, an advanced clinical and patient-friendly AI specializing in stem cell biology, hematopoietic stem cell transplants (HSCT), bone marrow donation, HLA tissue typing, cryopreservation biobanking, and regenerative medicine.
+Core Principles:
+1. Provide clear, accurate, reassuring, and structured answers in markdown (using headers, bullet points, and bold terms).
+2. Detail clinical facts: HLA allele matching (8/8 or 10/10 high-resolution match), CD34+ cell yield targets (>= 2.0 to 5.0 x 10^6 cells/kg), Graft-versus-Host Disease (GvHD) prevention, and cryopreservation (-196°C liquid nitrogen vapor).
+3. Patient Safety & Ethics: Remind users that stem cell therapies are evidence-based treatments for specific conditions (leukemia, lymphoma, severe aplastic anemia, sickle cell disease, thalassemia), NOT a universal or miracle cure. Warn against unproven, unregulated commercial stem cell injections.
+4. Maintain a warm, encouraging, and clinically responsible tone, recommending patients consult their licensed hematologist or oncologist.`;
+
+          // Construct multi-turn contents
+          const rawTurns = [];
+          if (Array.isArray(body.history) && body.history.length > 0) {
+            for (const msg of body.history.slice(-8)) {
+              if (msg.sender === 'user' && msg.text?.trim()) {
+                rawTurns.push({ role: 'user', text: msg.text.trim() });
+              } else if (msg.sender === 'assistant' && msg.text?.trim()) {
+                rawTurns.push({ role: 'model', text: msg.text.trim() });
+              }
+            }
+          }
+          rawTurns.push({ role: 'user', text: query });
+
+          // Gemini requires role alternation starting with 'user'
+          const contents = [];
+          let lastRole = null;
+          for (const turn of rawTurns) {
+            if (contents.length === 0 && turn.role !== 'user') continue;
+            if (turn.role === lastRole) {
+              contents[contents.length - 1].parts[0].text += `\n\n${turn.text}`;
+            } else {
+              contents.push({ role: turn.role, parts: [{ text: turn.text }] });
+              lastRole = turn.role;
+            }
+          }
+
+          const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${apiKey}`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-goog-api-key': apiKey
+            },
+            body: JSON.stringify({
+              contents: contents.length > 0 ? contents : [{ role: 'user', parts: [{ text: query }] }],
+              systemInstruction: { parts: [{ text: systemPrompt }] },
+              generationConfig: {
+                temperature: 0.7,
+                topP: 0.95,
+                maxOutputTokens: 2048
+              }
+            })
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            const aiText = data.candidates?.[0]?.content?.parts?.[0]?.text;
+            if (aiText) {
+              return {
+                data: {
+                  response: aiText,
+                  source: 'KOSHIKA Gemini AI (gemini-flash-latest)',
+                  has_api_key: true
+                }
+              };
+            }
+          }
+        } catch (geminiErr) {
+          console.warn('Direct Gemini API call failed, falling back to KOSHIKA clinical knowledge base:', geminiErr);
+        }
+      }
+
+      let reply = '';
       if (/hla|match|compatible|score/i.test(query)) {
-        reply = "KOSHIKA AI Compatibility Analysis:\nHuman Leukocyte Antigen (HLA) matching evaluates HLA-A, B, C, DRB1, and DQB1 loci. A 10/10 high-resolution match offers the highest event-free survival rate and minimizes graft-versus-host disease (GvHD). You can test potential donor matches in the 'ML Compatibility' page.";
+        reply = "### 🧬 HLA Compatibility Analysis\nHuman Leukocyte Antigen (HLA) matching evaluates HLA-A, B, C, DRB1, and DQB1 loci.\n\n- **10/10 High-Resolution Match:** Offers the highest event-free survival rate and minimizes graft-versus-host disease (GvHD).\n- **Haploidentical Option:** Half-matched family donors (5/10) with post-transplant cyclophosphamide when full matches aren't found.\n- You can test potential donor matches in the 'ML Compatibility' page.";
       } else if (/donor|donate|registry/i.test(query)) {
-        reply = "KOSHIKA Donor Protocol:\nStem cell donation is safe, voluntary, and life-saving. Donors undergo HLA high-resolution typing and infectious disease screening. Peripheral blood stem cell (PBSC) apheresis is used in over 90% of collections after brief G-CSF mobilization.";
+        reply = "### 🤝 KOSHIKA Donor Protocol\nStem cell donation is safe, voluntary, and life-saving.\n\n- **Evaluation:** Donors undergo HLA high-resolution typing, CBC, and infectious disease screening.\n- **Collection:** Peripheral blood stem cell (PBSC) apheresis is used in >90% of collections following 4–5 days of G-CSF mobilization.\n- **Recovery:** Bone marrow regenerates naturally within 2–3 weeks.";
       } else if (/cryo|storage|nitrogen|temp/i.test(query)) {
-        reply = "KOSHIKA Cryo Vault Specifications:\nAll stem cell graft units are preserved in liquid nitrogen vapor phase storage at -196.0°C. Storage integrity is monitored 24/7 with automatic LN2 top-up, dual RTD telemetry, and barcode tracking across 8 secure vault sectors.";
+        reply = "### ❄️ Cryo Vault Specifications\n- **Equilibrium:** All stem cell graft units are preserved in liquid nitrogen vapor phase storage at **-196.0°C**.\n- **Cryoprotection:** Uses controlled-rate freezing with 10% DMSO to avoid osmotic shock.\n- **Telemetry:** Continuous 24/7 RTD sensors, automated LN2 top-up, and tamper-proof biobank barcodes.";
       } else if (/patient|disease|treatment/i.test(query)) {
-        reply = "Clinical Transplant Indications:\nAllogeneic stem cell transplantation is an established curative therapy for hematologic malignancies including Acute Myeloid Leukemia (AML), ALL, Myelodysplastic Syndrome (MDS), Severe Aplastic Anemia (SAA), and Beta Thalassemia Major.";
+        reply = "### 🩸 Clinical Indications\nAllogeneic stem cell transplantation is an established, curative standard of care for:\n- Acute Myeloid Leukemia (AML) & Acute Lymphoblastic Leukemia (ALL)\n- Myelodysplastic Syndrome (MDS)\n- Severe Aplastic Anemia (SAA)\n- Beta Thalassemia Major & Sickle Cell Disease\n\n*Note: Stem cells are not a cure-all. Consult your oncologist for individual eligibility.*";
       } else {
-        reply = `Thank you for your question. KOSHIKA AI is connected directly to your Supabase biobank registry. All 100 patient profiles, donor registries, and cryogenic units are indexed and accessible in real-time. Feel free to ask about patient matching, cryo vault capacity, or transplant protocols!`;
+        reply = `### 🧬 KOSHIKA Clinical Assistant\nThank you for your question. KOSHIKA AI is connected directly to your biobank registry and Google Gemini AI.\n\nAll 102 patient profiles, donor registries, and cryogenic units are indexed and accessible in real-time. Feel free to ask about patient matching, cryo vault capacity, or transplant protocols!`;
       }
 
       return {
         data: {
           response: reply,
-          source: 'KOSHIKA Supabase AI Engine'
+          source: 'KOSHIKA Clinical Knowledge Base',
+          has_api_key: Boolean(apiKey && !apiKey.startsWith('AIzaSy-DEMO'))
         }
       };
     }

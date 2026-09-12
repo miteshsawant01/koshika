@@ -6,12 +6,13 @@ from .gemini_service import ask_gemini, interpret_report_with_ai
 class ChatbotView(APIView):
     def post(self, request):
         message = request.data.get('message', '').strip()
+        history = request.data.get('history', [])
         custom_key = request.data.get('api_key', '').strip() or request.headers.get('X-Gemini-API-Key', '').strip()
         
         if not message:
             return Response({'error': 'Message content is required'}, status=status.HTTP_400_BAD_REQUEST)
             
-        result = ask_gemini(message, custom_key or None)
+        result = ask_gemini(message, custom_key or None, history=history)
         return Response(result)
 
 class AIReportInterpretView(APIView):

@@ -189,7 +189,7 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 100,
 }
 
-GEMINI_API_KEY = os.getenv('GEMINI_API_KEY', 'AIzaSy-DEMO-KEY-FOR-TESTING-ONLY')
+GEMINI_API_KEY = os.getenv('GEMINI_API_KEY', '')
 TESSERACT_CMD = os.getenv('TESSERACT_CMD', '')
 
 # Supabase API Settings (optional direct client access)

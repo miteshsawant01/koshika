@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useRole, ROLES } from '../context/RoleContext';
 import api, { getApiBaseUrl, testBackendConnection, normalizeApiUrl } from '../api/client';
 
-const DEMO_API_KEY = 'AIzaSy-DEMO-KEY-FOR-TESTING-ONLY';
+const DEMO_API_KEY = import.meta.env.VITE_GEMINI_API_KEY || '';
 
 const Navbar = ({ onToggleMobileSidebar }) => {
   const navigate = useNavigate();
@@ -20,7 +20,10 @@ const Navbar = ({ onToggleMobileSidebar }) => {
   const [testingUrl, setTestingUrl] = useState(false);
   const [testResult, setTestResult] = useState(null);
   const [apiKeyInput, setApiKeyInput] = useState(
-    () => localStorage.getItem('gemini_api_key') || DEMO_API_KEY
+    () => {
+      const k = localStorage.getItem('gemini_api_key');
+      return (!k || k === 'AIzaSy-DEMO-KEY-FOR-TESTING-ONLY') ? (DEMO_API_KEY || '') : k;
+    }
   );
 
   const roleDropdownRef = useRef(null);
@@ -43,10 +46,12 @@ const Navbar = ({ onToggleMobileSidebar }) => {
     }
   };
 
-  // Initialize and persist default API key if not yet set
+  // Initialize and persist active API key if not yet set or outdated
   useEffect(() => {
-    if (!localStorage.getItem('gemini_api_key')) {
+    const existing = localStorage.getItem('gemini_api_key');
+    if ((!existing || existing === 'AIzaSy-DEMO-KEY-FOR-TESTING-ONLY') && DEMO_API_KEY) {
       localStorage.setItem('gemini_api_key', DEMO_API_KEY);
+      setApiKeyInput(DEMO_API_KEY);
     }
   }, []);
 
@@ -423,17 +428,28 @@ const Navbar = ({ onToggleMobileSidebar }) => {
                   KOSHIKA uses Gemini AI for clinical report explanations, conversational Q&amp;A, and patient guidance.
                 </p>
 
+                <div className="p-3 mb-3 rounded-3 bg-light border">
+                  <div className="d-flex justify-content-between align-items-center mb-1">
+                    <span className="small fw-semibold text-dark">Active Project:</span>
+                    <span className="badge bg-success bg-opacity-10 text-success font-monospace">projects/420640460683</span>
+                  </div>
+                  <div className="d-flex justify-content-between align-items-center">
+                    <span className="small text-secondary">Default Model:</span>
+                    <span className="badge bg-primary bg-opacity-10 text-primary">gemini-flash-latest</span>
+                  </div>
+                </div>
+
                 <div className="mb-3">
                   <label className="form-label small fw-semibold text-dark">API Key</label>
                   <input
                     type="password"
                     className="form-control"
-                    placeholder="AIzaSy..."
+                    placeholder="Enter Gemini API key..."
                     value={apiKeyInput}
                     onChange={(e) => setApiKeyInput(e.target.value)}
                   />
                   <div className="form-text small text-muted">
-                    Stored locally in your browser session for security.
+                    Stored securely in your browser local storage for direct, ultra-fast AI inference.
                   </div>
                 </div>
               </div>

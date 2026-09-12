@@ -1,4 +1,7 @@
 import os
+import json
+import ssl
+import urllib.request
 from django.conf import settings
 
 try:
@@ -20,22 +23,99 @@ KNOWLEDGE_FALLBACKS = {
     "hello": "👋 Hello! I am **KOSHIKA AI**, your patient-friendly stem cell awareness and clinical assistant. You can ask me about what stem cells are, cell types (ESCs, Adult, iPSCs, HSCs), proven therapies, donor HLA matching, or biobank cryopreservation."
 }
 
-def ask_gemini(message, custom_api_key=None):
-    api_key = custom_api_key or getattr(settings, 'GEMINI_API_KEY', '') or os.getenv('GEMINI_API_KEY', '')
-    if api_key and HAS_GENAI:
-        try:
-            genai.configure(api_key=api_key)
-            for model_name in ['gemini-1.5-flash', 'gemini-1.5-pro', 'gemini-2.0-flash', 'gemini-pro']:
-                try:
-                    model = genai.GenerativeModel(model_name=model_name, system_instruction=SYSTEM_PROMPT)
-                    resp = model.generate_content(message)
-                    if resp and resp.text:
-                        return {'response': resp.text, 'source': f'KOSHIKA Gemini AI ({model_name})', 'has_api_key': True}
-                except Exception:
-                    continue
-        except Exception:
-            pass
+def _format_history_contents(message, history=None):
+    raw_turns = []
+    if history and isinstance(history, list):
+        for msg in history[-8:]:
+            if isinstance(msg, dict):
+                sender = msg.get('sender')
+                text = (msg.get('text') or '').strip()
+                if sender == 'user' and text:
+                    raw_turns.append({'role': 'user', 'text': text})
+                elif sender == 'assistant' and text:
+                    raw_turns.append({'role': 'model', 'text': text})
+    
+    raw_turns.append({'role': 'user', 'text': message.strip()})
+    
+    contents = []
+    last_role = None
+    for turn in raw_turns:
+        if not contents and turn['role'] != 'user':
+            continue
+        if turn['role'] == last_role:
+            contents[-1]['parts'][0]['text'] += f"\n\n{turn['text']}"
+        else:
+            contents.append({'role': turn['role'], 'parts': [{'text': turn['text']}]})
+            last_role = turn['role']
+            
+    return contents if contents else [{"parts": [{"text": message}]}]
 
+def _call_gemini_rest(message, api_key, model_name="gemini-flash-latest", history=None):
+    """Direct HTTPS REST call to Gemini API for high reliability across platforms."""
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent?key={api_key}"
+    contents = _format_history_contents(message, history)
+    payload = {
+        "contents": contents,
+        "systemInstruction": {"parts": [{"text": SYSTEM_PROMPT}]}
+    }
+    data = json.dumps(payload).encode("utf-8")
+    req = urllib.request.Request(
+        url,
+        data=data,
+        headers={
+            "Content-Type": "application/json",
+            "X-goog-api-key": api_key
+        }
+    )
+    
+    # Try standard SSL first, then unverified fallback for local environments
+    for get_ctx in [ssl.create_default_context, ssl._create_unverified_context]:
+        try:
+            ctx = get_ctx()
+            with urllib.request.urlopen(req, data=data, context=ctx, timeout=25) as res:
+                body = json.loads(res.read().decode("utf-8"))
+                candidates = body.get("candidates", [])
+                if candidates:
+                    parts = candidates[0].get("content", {}).get("parts", [])
+                    if parts and parts[0].get("text"):
+                        return parts[0].get("text").strip()
+        except Exception:
+            continue
+    return None
+
+def ask_gemini(message, custom_api_key=None, history=None):
+    api_key = custom_api_key or getattr(settings, 'GEMINI_API_KEY', '') or os.getenv('GEMINI_API_KEY', '')
+    
+    if api_key and not api_key.startswith("AIzaSy-DEMO"):
+        # 1. Try direct high-performance REST call
+        for model_name in ['gemini-flash-latest', 'gemini-2.5-flash', 'gemini-pro-latest']:
+            try:
+                rest_result = _call_gemini_rest(message, api_key, model_name=model_name, history=history)
+                if rest_result:
+                    return {
+                        'response': rest_result,
+                        'source': f'KOSHIKA Gemini AI ({model_name})',
+                        'has_api_key': True
+                    }
+            except Exception:
+                pass
+
+        # 2. Try SDK if available
+        if HAS_GENAI:
+            try:
+                genai.configure(api_key=api_key)
+                for model_name in ['gemini-flash-latest', 'gemini-2.5-flash', 'gemini-pro-latest', 'gemini-1.5-flash']:
+                    try:
+                        model = genai.GenerativeModel(model_name=model_name, system_instruction=SYSTEM_PROMPT)
+                        resp = model.generate_content(message)
+                        if resp and resp.text:
+                            return {'response': resp.text, 'source': f'KOSHIKA Gemini AI ({model_name})', 'has_api_key': True}
+                    except Exception:
+                        continue
+            except Exception:
+                pass
+
+    # 3. Knowledge base fallback
     msg_low = message.lower()
     for key, ans in KNOWLEDGE_FALLBACKS.items():
         if key in msg_low:
@@ -50,3 +130,4 @@ def ask_gemini(message, custom_api_key=None):
 def interpret_report_with_ai(report_text, custom_api_key=None):
     prompt = f"Analyze this medical/stem cell report:\n\n{report_text}\n\nProvide a clinical summary, evaluation of CD34+ yield, ABO status, and guidelines."
     return ask_gemini(prompt, custom_api_key)
+
