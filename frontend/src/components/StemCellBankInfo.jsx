@@ -1,96 +1,80 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import api from '../api/client';
+
+export const DEFAULT_STEM_CELL_BANKS = [
+  { id: 1, bank_name: 'LifeCell International Pvt. Ltd.', location: 'Chennai, Tamil Nadu; storage facility also in Gurugram, Haryana' },
+  { id: 2, bank_name: 'CryoViva Biotech India Pvt. Ltd.', location: 'Gurugram, Haryana' },
+  { id: 3, bank_name: 'Cordlife Sciences India Pvt. Ltd.', location: 'Kolkata / Bishnupur, West Bengal' },
+  { id: 4, bank_name: 'BioCell / Regrow Biosciences Pvt. Ltd.', location: 'Maharashtra' },
+  { id: 5, bank_name: 'Cryo StemCell', location: 'Bengaluru, Karnataka' },
+  { id: 6, bank_name: 'Cryovault Biotech Pvt. Ltd.', location: 'Bengaluru, Karnataka' },
+  { id: 7, bank_name: 'Novacord / Totipotent RX Cell Therapy Pvt. Ltd.', location: 'Gurugram, Haryana' },
+  { id: 8, bank_name: 'ReeLabs Pvt. Ltd.', location: 'Mumbai' },
+  { id: 9, bank_name: 'Reliance Life Sciences Pvt. Ltd.', location: 'Navi Mumbai, Maharashtra' },
+  { id: 10, bank_name: 'StemPlus Cryopreservation Pvt. Ltd.', location: 'Sangli, Maharashtra' },
+  { id: 11, bank_name: 'StemCyte India Therapeutics Pvt. Ltd.', location: 'Gandhinagar, Gujarat' },
+  { id: 12, bank_name: 'Narayana Hrudayalaya Tissue Bank & Stem Cells Research Centre', location: 'Bengaluru, Karnataka' },
+  { id: 13, bank_name: 'Cryo Save (India) Pvt. Ltd.', location: 'Bengaluru, Karnataka' },
+  { id: 14, bank_name: 'International Stem Cell Services Ltd. (ISSL)', location: 'Bengaluru, Karnataka' },
+  { id: 15, bank_name: 'Unistem Bio Sciences Pvt. Ltd.', location: 'Gurugram, Haryana' },
+  { id: 16, bank_name: 'Best Wellcare Management Services Pvt. Ltd. (Indu Stem Cell Bank)', location: 'Vadodara, Gujarat' },
+  { id: 17, bank_name: 'Path Care Labs Pvt. Ltd.', location: 'Ranga Reddy district, Andhra Pradesh in the government record' },
+  { id: 18, bank_name: 'Cryobanks International India Pvt. Ltd.', location: 'Gurugram, Haryana' }
+];
 
 const StemCellBankInfo = () => {
+  const [banks, setBanks] = useState(DEFAULT_STEM_CELL_BANKS);
+  const [loading, setLoading] = useState(false);
   const [bankSearch, setBankSearch] = useState('');
-  const [bankTypeFilter, setBankTypeFilter] = useState('all');
+  const [stateFilter, setStateFilter] = useState('ALL');
   const [selectedStorageSample, setSelectedStorageSample] = useState('cord_blood');
+  const [showModal, setShowModal] = useState(false);
+  const [formData, setFormData] = useState({ bank_name: '', location: '' });
 
-  const certifiedBanks = [
-    {
-      id: 1,
-      name: 'DATRI Blood Stem Cell Donors Registry',
-      country: 'India (National Registry)',
-      type: 'Public / Registry',
-      accreditation: 'WMDA Qualified, ISO 9001',
-      storageTemp: '-196°C Liquid Nitrogen',
-      capacity: '500,000+ Donors Registered',
-      contact: 'info@datri.org | 1800-300-32874',
-      website: 'datri.org',
-      highlight: 'Largest voluntary unrelated stem cell donor registry in India'
-    },
-    {
-      id: 2,
-      name: 'NMDP / Be The Match',
-      country: 'USA / International',
-      type: 'Public / Registry',
-      accreditation: 'FACT, AABB, CLIA Certified',
-      storageTemp: '-196°C Liquid Nitrogen Vapor',
-      capacity: '41,000,000+ Global Donors',
-      contact: 'support@nmdp.org | 1-800-627-7692',
-      website: 'bethematch.org',
-      highlight: 'Operates the world\'s most diverse donor registry and cord blood repository'
-    },
-    {
-      id: 3,
-      name: 'LifeCell International',
-      country: 'India & South Asia',
-      type: 'Community & Private Biobank',
-      accreditation: 'AABB, FACT, CAP, ISO Accredited',
-      storageTemp: '-196°C Cryotanks',
-      capacity: '400,000+ Units Banked',
-      contact: 'care@lifecell.in | 1800-266-5533',
-      website: 'lifecell.in',
-      highlight: 'Pioneer of community stem cell banking with shared family inventory access'
-    },
-    {
-      id: 4,
-      name: 'Cordlife Group Ltd',
-      country: 'Singapore & Asia-Pacific',
-      type: 'Private Biobank',
-      accreditation: 'AABB Accredited, ISO 9001',
-      storageTemp: '-196°C MVE Cryosystems',
-      capacity: '600,000+ Family Clients',
-      contact: 'info@cordlife.com',
-      website: 'cordlife.com',
-      highlight: 'Dual-location storage with international biomedical standards'
-    },
-    {
-      id: 5,
-      name: 'Cryo-Cell International',
-      country: 'USA (Florida)',
-      type: 'Private Biobank',
-      accreditation: 'FACT, AABB, FDA Registered',
-      storageTemp: '-196°C Vapor Phase',
-      capacity: '500,000+ Samples Worldwide',
-      contact: 'clientcare@cryo-cell.com',
-      website: 'cryo-cell.com',
-      highlight: 'World’s first private cord blood bank operating continuously since 1989'
-    },
-    {
-      id: 6,
-      name: 'Anthony Nolan Trust',
-      country: 'United Kingdom',
-      type: 'Public / Registry & Cord Bank',
-      accreditation: 'WMDA, JACIE Accredited, HTA',
-      storageTemp: '-196°C Cryogenic Bio-repository',
-      capacity: '900,000+ Registry Members',
-      contact: 'register@anthonynolan.org',
-      website: 'anthonynolan.org',
-      highlight: 'First stem cell registry in the world, pioneering cord blood research since 1974'
-    },
-    {
-      id: 7,
-      name: 'DKMS Blood Stem Cell Registry',
-      country: 'Germany / Poland / India / USA',
-      type: 'Public / International Registry',
-      accreditation: 'WMDA, EFI, FACT Accredited',
-      storageTemp: '-196°C Certified Freezers',
-      capacity: '11,500,000+ Registered Donors',
-      contact: 'donor@dkms.org',
-      website: 'dkms.org',
-      highlight: 'World\'s largest donor center, facilitated over 105,000 stem cell transplants'
+  useEffect(() => {
+    fetchBanks();
+  }, []);
+
+  const fetchBanks = async () => {
+    setLoading(true);
+    try {
+      const res = await api.get('/stem-cell-banks/');
+      const data = res.data.results || res.data;
+      if (Array.isArray(data) && data.length > 0) {
+        setBanks(data);
+      }
+    } catch (e) {
+      console.warn('Using default certified stem cell banks:', e);
+    } finally {
+      setLoading(false);
     }
-  ];
+  };
+
+  const handleAddBank = async (e) => {
+    e.preventDefault();
+    if (!formData.bank_name.trim() || !formData.location.trim()) return;
+    try {
+      await api.post('/stem-cell-banks/', {
+        bank_name: formData.bank_name.trim(),
+        location: formData.location.trim()
+      });
+      setShowModal(false);
+      setFormData({ bank_name: '', location: '' });
+      fetchBanks();
+    } catch (err) {
+      alert('Error adding bank: ' + (err.response?.data?.message || err.message));
+    }
+  };
+
+  const handleDeleteBank = async (id) => {
+    if (!window.confirm(`Remove stem cell bank entry #${id}?`)) return;
+    try {
+      await api.delete(`/stem-cell-banks/${id}/`);
+      fetchBanks();
+    } catch (err) {
+      alert('Error deleting bank: ' + err.message);
+    }
+  };
 
   const sampleTypes = {
     cord_blood: {
@@ -127,16 +111,38 @@ const StemCellBankInfo = () => {
     }
   };
 
-  const filteredBanks = certifiedBanks.filter((bank) => {
+  const getStateBadge = (loc) => {
+    if (!loc) return 'bg-secondary-subtle text-secondary border';
+    if (loc.includes('Karnataka') || loc.includes('Bengaluru')) return 'bg-primary-subtle text-primary border border-primary-subtle';
+    if (loc.includes('Maharashtra') || loc.includes('Mumbai') || loc.includes('Sangli')) return 'bg-danger-subtle text-danger border border-danger-subtle';
+    if (loc.includes('Haryana') || loc.includes('Gurugram')) return 'bg-success-subtle text-success border border-success-subtle';
+    if (loc.includes('Gujarat') || loc.includes('Gandhinagar') || loc.includes('Vadodara')) return 'bg-warning-subtle text-warning-emphasis border border-warning-subtle';
+    if (loc.includes('Tamil Nadu') || loc.includes('Chennai')) return 'bg-info-subtle text-info border border-info-subtle';
+    if (loc.includes('West Bengal') || loc.includes('Kolkata')) return 'bg-purple-subtle text-purple border border-purple-subtle';
+    if (loc.includes('Andhra Pradesh')) return 'bg-secondary-subtle text-dark border';
+    return 'bg-light text-secondary border';
+  };
+
+  const extractState = (loc) => {
+    if (!loc) return 'India';
+    if (loc.includes('Karnataka')) return 'Karnataka';
+    if (loc.includes('Maharashtra')) return 'Maharashtra';
+    if (loc.includes('Haryana')) return 'Haryana';
+    if (loc.includes('Gujarat')) return 'Gujarat';
+    if (loc.includes('Tamil Nadu')) return 'Tamil Nadu';
+    if (loc.includes('West Bengal')) return 'West Bengal';
+    if (loc.includes('Andhra Pradesh')) return 'Andhra Pradesh';
+    return 'India';
+  };
+
+  const filteredBanks = banks.filter((bank) => {
+    const name = bank.bank_name || bank.name || '';
+    const loc = bank.location || bank.country || '';
     const matchesSearch =
-      bank.name.toLowerCase().includes(bankSearch.toLowerCase()) ||
-      bank.country.toLowerCase().includes(bankSearch.toLowerCase()) ||
-      bank.accreditation.toLowerCase().includes(bankSearch.toLowerCase());
-    const matchesType =
-      bankTypeFilter === 'all' ||
-      (bankTypeFilter === 'public' && bank.type.toLowerCase().includes('public')) ||
-      (bankTypeFilter === 'private' && (bank.type.toLowerCase().includes('private') || bank.type.toLowerCase().includes('community')));
-    return matchesSearch && matchesType;
+      name.toLowerCase().includes(bankSearch.toLowerCase()) ||
+      loc.toLowerCase().includes(bankSearch.toLowerCase());
+    const matchesState = stateFilter === 'ALL' || loc.includes(stateFilter);
+    return matchesSearch && matchesState;
   });
 
   const activeSample = sampleTypes[selectedStorageSample];
@@ -344,33 +350,60 @@ const StemCellBankInfo = () => {
       <div className="card border-0 shadow-sm p-4">
         <div className="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mb-3">
           <div>
-            <h4 className="fw-bold mb-1 d-flex align-items-center gap-2">
+            <div className="d-flex align-items-center gap-2 mb-1">
+              <span className="badge bg-primary-subtle text-primary fw-semibold px-2 py-1 rounded-pill small">
+                <i className="bi bi-shield-check me-1"></i> GOVERNMENT &amp; CLINICAL DIRECTORY
+              </span>
+              <span className="badge bg-light text-muted border rounded-pill small">
+                {banks.length} Licensed Indian Biobanks
+              </span>
+            </div>
+            <h4 className="fw-bold mb-1 text-dark d-flex align-items-center gap-2">
               <i className="bi bi-building-check text-primary"></i>
-              Certified Global &amp; National Stem Cell Banks Directory
+              Certified Stem Cell Banks &amp; Repositories Directory
             </h4>
-            <p className="text-secondary small mb-0">Accredited registries and repositories adhering to FACT-JACIE, AABB, and WMDA standards</p>
+            <p className="text-secondary small mb-0">
+              Authorized cord blood and stem cell banking organizations across India
+            </p>
           </div>
-          <div className="d-flex flex-wrap gap-2">
-            <div className="input-group input-group-sm" style={{ width: '220px' }}>
-              <span className="input-group-text bg-white"><i className="bi bi-search"></i></span>
+          <div className="d-flex flex-wrap gap-2 align-items-center">
+            <div className="input-group input-group-sm" style={{ width: '240px' }}>
+              <span className="input-group-text bg-white border-end-0"><i className="bi bi-search text-muted"></i></span>
               <input
                 type="text"
-                className="form-control"
-                placeholder="Search bank or city..."
+                className="form-control border-start-0"
+                placeholder="Search bank name or city..."
                 value={bankSearch}
                 onChange={(e) => setBankSearch(e.target.value)}
               />
+              {bankSearch && (
+                <button className="btn btn-sm btn-link text-muted pe-2" onClick={() => setBankSearch('')}>
+                  <i className="bi bi-x-circle-fill"></i>
+                </button>
+              )}
             </div>
             <select
               className="form-select form-select-sm"
-              style={{ width: '130px' }}
-              value={bankTypeFilter}
-              onChange={(e) => setBankTypeFilter(e.target.value)}
+              style={{ width: '160px' }}
+              value={stateFilter}
+              onChange={(e) => setStateFilter(e.target.value)}
             >
-              <option value="all">All Types</option>
-              <option value="public">Public</option>
-              <option value="private">Private</option>
+              <option value="ALL">All States / UTs</option>
+              <option value="Karnataka">Karnataka</option>
+              <option value="Maharashtra">Maharashtra</option>
+              <option value="Haryana">Haryana</option>
+              <option value="Gujarat">Gujarat</option>
+              <option value="Tamil Nadu">Tamil Nadu</option>
+              <option value="West Bengal">West Bengal</option>
+              <option value="Andhra Pradesh">Andhra Pradesh</option>
             </select>
+            <button
+              onClick={() => setShowModal(true)}
+              className="btn btn-sm btn-primary rounded-pill px-3 py-1 shadow-xs d-flex align-items-center gap-1"
+            >
+              <i className="bi bi-plus-circle-fill"></i>
+              <span>Add Bank</span>
+            </button>
           </div>
         </div>
 
@@ -378,38 +411,55 @@ const StemCellBankInfo = () => {
           <table className="table table-hover align-middle mb-0">
             <thead className="table-light">
               <tr>
-                <th>Bank &amp; Registry Name</th>
-                <th>Location / Jurisdiction</th>
-                <th>Type</th>
-                <th>Accreditation</th>
-                <th>Registered Capacity</th>
-                <th>Key Highlights</th>
+                <th style={{ width: '60px' }}>#</th>
+                <th>Stem Cell Bank Name</th>
+                <th>Location / Storage Facility</th>
+                <th>State / Region</th>
+                <th>Accreditation Status</th>
+                <th className="text-end pe-3">Actions</th>
               </tr>
             </thead>
             <tbody>
-              {filteredBanks.map((b) => (
-                <tr key={b.id}>
-                  <td>
-                    <div className="fw-bold text-dark">{b.name}</div>
-                    <small className="text-muted"><i className="bi bi-globe me-1"></i>{b.website}</small>
+              {loading ? (
+                <tr>
+                  <td colSpan="6" className="text-center py-4">
+                    <div className="spinner-border spinner-border-sm text-secondary me-2"></div>
+                    <span className="text-muted">Loading stem cell bank directory...</span>
                   </td>
-                  <td>{b.country}</td>
-                  <td>
-                    <span className={`badge ${b.type.includes('Public') ? 'bg-primary-subtle text-primary' : 'bg-success-subtle text-success'} rounded-pill`}>
-                      {b.type}
-                    </span>
-                  </td>
-                  <td>
-                    <span className="badge bg-light text-dark border">
-                      <i className="bi bi-shield-check text-success me-1"></i>
-                      {b.accreditation}
-                    </span>
-                  </td>
-                  <td className="small fw-semibold">{b.capacity}</td>
-                  <td><small className="text-secondary">{b.highlight}</small></td>
                 </tr>
-              ))}
-              {filteredBanks.length === 0 && (
+              ) : filteredBanks.length > 0 ? (
+                filteredBanks.map((b) => (
+                  <tr key={b.id}>
+                    <td className="text-muted font-monospace small">#{b.id}</td>
+                    <td>
+                      <div className="fw-bold text-dark">{b.bank_name || b.name}</div>
+                    </td>
+                    <td>
+                      <span className="small text-secondary">{b.location || b.country}</span>
+                    </td>
+                    <td>
+                      <span className={`badge rounded-pill px-2 py-1 ${getStateBadge(b.location || b.country)}`}>
+                        {extractState(b.location || b.country)}
+                      </span>
+                    </td>
+                    <td>
+                      <span className="badge bg-light text-dark border">
+                        <i className="bi bi-patch-check-fill text-primary me-1"></i>
+                        Licensed Biobank
+                      </span>
+                    </td>
+                    <td className="text-end pe-3">
+                      <button
+                        onClick={() => handleDeleteBank(b.id)}
+                        className="btn btn-sm btn-light border text-danger rounded-3 px-2 py-1"
+                        title="Delete Bank Entry"
+                      >
+                        <i className="bi bi-trash"></i>
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
                 <tr>
                   <td colSpan="6" className="text-center text-muted py-4">No banks matched your search criteria.</td>
                 </tr>
@@ -418,6 +468,49 @@ const StemCellBankInfo = () => {
           </table>
         </div>
       </div>
+
+      {showModal && (
+        <div className="modal show d-block" tabIndex="-1" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
+          <div className="modal-dialog">
+            <div className="modal-content border-0 shadow">
+              <form onSubmit={handleAddBank}>
+                <div className="modal-header bg-light">
+                  <h5 className="modal-title">Add Stem Cell Bank</h5>
+                  <button type="button" className="btn-close" onClick={() => setShowModal(false)}></button>
+                </div>
+                <div className="modal-body">
+                  <div className="mb-3">
+                    <label className="form-label">Bank Name *</label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      required
+                      placeholder="e.g. LifeCell International Pvt. Ltd."
+                      value={formData.bank_name}
+                      onChange={(e) => setFormData({ ...formData, bank_name: e.target.value })}
+                    />
+                  </div>
+                  <div className="mb-3">
+                    <label className="form-label">Location / Storage Facility *</label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      required
+                      placeholder="e.g. Chennai, Tamil Nadu; Gurugram, Haryana"
+                      value={formData.location}
+                      onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+                    />
+                  </div>
+                </div>
+                <div className="modal-footer">
+                  <button type="button" className="btn btn-secondary" onClick={() => setShowModal(false)}>Cancel</button>
+                  <button type="submit" className="btn btn-primary">Save Bank</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

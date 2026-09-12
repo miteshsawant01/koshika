@@ -88,10 +88,9 @@ This directory contains the entire dataset collection for the **STEMBRIDGE AI** 
 
 ### 5. Staff (`staff.csv`)
 - `staff_id` (PK): Personnel ID
-- `name`: Healthcare professional / scientist name
-- `role`: Role title (e.g. Chief Medical Officer, Lead Cryopreservation Scientist)
-- `department`: Department (Bone Marrow Transplant, Cryo Preservation Vault, etc.)
-- `contact`: Telephone contact
+- `name`: Healthcare professional / specialist name
+- `role`: Role title (e.g. Doctor, Senior Consultant)
+- `department`: Department / Clinical focus
 - `created_at`: Registration timestamp
 
 ### 6. Research (`research.csv`)

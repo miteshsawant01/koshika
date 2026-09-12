@@ -74,7 +74,7 @@ def run_migration():
     sq_conn.row_factory = sqlite3.Row
     sq_cur = sq_conn.cursor()
 
-    from stemcell_core.models import Patient, Donor, Storage, Staff, Research, Inventory, AuditLog
+    from stemcell_core.models import Patient, Donor, Storage, Staff, Research, Inventory, AuditLog, StemCellBank
 
     tables_config = [
         ('patients', Patient, 'patient_id', [
@@ -87,7 +87,7 @@ def run_migration():
             'storage_id', 'donor_id', 'storage_location', 'collected_date', 'expiry_date', 'units'
         ]),
         ('staff', Staff, 'staff_id', [
-            'staff_id', 'name', 'role', 'department', 'contact', 'created_at'
+            'staff_id', 'name', 'role', 'department', 'created_at'
         ]),
         ('research', Research, 'research_id', [
             'research_id', 'project_name', 'lead_scientist', 'start_date', 'status', 'summary', 'created_at'
@@ -97,6 +97,9 @@ def run_migration():
         ]),
         ('audit_logs', AuditLog, 'id', [
             'id', 'table_name', 'operation', 'record_id', 'changed_at', 'changed_by', 'old_values', 'new_values'
+        ]),
+        ('stem_cell_banks', StemCellBank, 'id', [
+            'id', 'bank_name', 'location'
         ]),
     ]
 

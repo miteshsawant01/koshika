@@ -1,10 +1,11 @@
 from rest_framework import viewsets, filters
 from rest_framework.pagination import PageNumberPagination
 from django.db.models import Q
-from .models import Patient, Donor, Storage, Staff, Research, Inventory, AuditLog
+from .models import Patient, Donor, Storage, Staff, Research, Inventory, AuditLog, StemCellBank
 from .serializers import (
     PatientSerializer, DonorSerializer, StorageSerializer,
-    StaffSerializer, ResearchSerializer, InventorySerializer, AuditLogSerializer
+    StaffSerializer, ResearchSerializer, InventorySerializer, AuditLogSerializer,
+    StemCellBankSerializer
 )
 
 class FlexiblePagination(PageNumberPagination):
@@ -77,6 +78,8 @@ class StorageViewSet(viewsets.ModelViewSet):
 class StaffViewSet(viewsets.ModelViewSet):
     queryset = Staff.objects.all()
     serializer_class = StaffSerializer
+    pagination_class = FlexiblePagination
+
 
     def get_queryset(self):
         qs = super().get_queryset()
@@ -127,3 +130,22 @@ class InventoryViewSet(viewsets.ModelViewSet):
 class AuditLogViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = AuditLog.objects.all()
     serializer_class = AuditLogSerializer
+
+
+class StemCellBankViewSet(viewsets.ModelViewSet):
+    queryset = StemCellBank.objects.all()
+    serializer_class = StemCellBankSerializer
+    pagination_class = FlexiblePagination
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        search = self.request.query_params.get('search', '').strip()
+        location = self.request.query_params.get('location', '').strip()
+        if search:
+            qs = qs.filter(
+                Q(bank_name__icontains=search) |
+                Q(location__icontains=search)
+            )
+        if location:
+            qs = qs.filter(location__icontains=location)
+        return qs

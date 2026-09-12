@@ -35,7 +35,7 @@ export const RoleProvider = ({ children }) => {
     {
       id: 3,
       title: 'Upcoming Consultation',
-      message: 'Consultation with Dr. Aris Thorne (Hematology) scheduled for tomorrow at 10:30 AM.',
+      message: 'Consultation with Dr. Sharat Damodar (Haemato-Oncology & BMT) scheduled for tomorrow at 10:30 AM.',
       time: '3 hours ago',
       type: 'appointment',
       read: true,
@@ -55,9 +55,9 @@ export const RoleProvider = ({ children }) => {
   const [appointments, setAppointments] = useState([
     {
       id: 101,
-      doctorName: 'Dr. Aris Thorne, MD',
-      specialty: 'Clinical Hematology & Bone Marrow Transplant',
-      hospital: 'National Stem Cell Institute & Research Centre',
+      doctorName: 'Dr. Sharat Damodar, MD',
+      specialty: 'Adult Haemato-Oncology & BMT; Cellular Therapy; CAR-T',
+      hospital: 'Narayana Health & Mazumdar Shaw Cancer Centre, Bengaluru',
       date: 'Tomorrow, 10:30 AM',
       mode: 'In-Person Consultation',
       status: 'Confirmed',
@@ -66,9 +66,9 @@ export const RoleProvider = ({ children }) => {
     },
     {
       id: 102,
-      doctorName: 'Dr. Evelyn Vance, PhD',
-      specialty: 'Immunogenomics & HLA Matching',
-      hospital: 'Metro Biobank & Regenerative Health',
+      doctorName: 'Dr. Sunil Bhat, MD',
+      specialty: 'Paediatric Haemato-Oncology & BMT; Stem-Cell Transplantation',
+      hospital: 'Narayana Health & Mazumdar Shaw Cancer Centre, Bengaluru',
       date: 'Next Tuesday, 2:00 PM',
       mode: 'Tele-Consultation (Video)',
       status: 'Confirmed',
@@ -85,8 +85,8 @@ export const RoleProvider = ({ children }) => {
     condition: 'Acute Myeloid Leukemia (AML)',
     remissionStatus: 'First Complete Remission (CR1)',
     hlaStatus: 'HLA-A, B, C, DRB1 Typed',
-    primaryDoctor: 'Dr. Aris Thorne, MD',
-    hospital: 'National Stem Cell Institute',
+    primaryDoctor: 'Dr. Sharat Damodar, MD',
+    hospital: 'Narayana Health & Mazumdar Shaw Cancer Centre',
     emergencyContact: '+91 98200 12345',
     reportsCount: 3,
     assessmentStatus: 'ML Assessment Completed'

@@ -1,6 +1,6 @@
-import { supabase } from '../utils/supabase';
+import { supabase } from '../utils/supabase.js';
 
-export const API_BASE_URL = import.meta.env.VITE_SUPABASE_URL || 'https://hytzgimcitwdvsdzgjxz.supabase.co';
+export const API_BASE_URL = (typeof import.meta !== 'undefined' && import.meta.env?.VITE_SUPABASE_URL) || 'https://hytzgimcitwdvsdzgjxz.supabase.co';
 
 export function normalizeApiUrl(rawUrl) {
   if (!rawUrl || typeof rawUrl !== 'string') return '';
@@ -53,6 +53,170 @@ const interceptorHandlers = {
   request: [],
   response: []
 };
+
+// -------------------------------------------------------------
+// Certified 17 Doctors & Specialists Default Dataset & Local Persistence
+// -------------------------------------------------------------
+export const DEFAULT_STAFF = [
+  {
+    staff_id: 1,
+    name: 'Dr. Sharat Damodar',
+    role: 'Doctor',
+    department: 'Adult Haemato-Oncology & BMT; cellular therapy; CAR-T',
+    created_at: '2026-09-12T19:22:39+05:30'
+  },
+  {
+    staff_id: 2,
+    name: 'Dr. Shilpa Prabhu',
+    role: 'Doctor',
+    department: 'Adult Haemato-Oncology & BMT; cellular therapy; CAR-T',
+    created_at: '2026-09-12T19:22:39+05:30'
+  },
+  {
+    staff_id: 3,
+    name: 'Dr. Sunil Bhat',
+    role: 'Doctor',
+    department: 'Paediatric Haemato-Oncology & BMT; paediatric stem-cell transplantation; CAR-T',
+    created_at: '2026-09-12T19:22:39+05:30'
+  },
+  {
+    staff_id: 4,
+    name: 'Dr. Pooja P. Mallya',
+    role: 'Doctor',
+    department: 'Paediatric Haemato-Oncology & BMT; paediatric BMT and cellular therapy',
+    created_at: '2026-09-12T19:22:39+05:30'
+  },
+  {
+    staff_id: 5,
+    name: 'Dr. Shobha B',
+    role: 'Doctor',
+    department: 'Paediatric Haemato-Oncology & BMT; paediatric BMT/cellular therapy',
+    created_at: '2026-09-12T19:22:39+05:30'
+  },
+  {
+    staff_id: 6,
+    name: 'Dr. Suparno Chakrabarti',
+    role: 'Doctor',
+    department: 'Senior Consultant & HOD, Haemato-Oncology & Bone Marrow Transplant',
+    created_at: '2026-09-12T19:22:39+05:30'
+  },
+  {
+    staff_id: 7,
+    name: 'Dr. Sarita Rani Jaiswal',
+    role: 'Doctor',
+    department: 'Program Director, Haploidentical BMT; BMT & Haematology',
+    created_at: '2026-09-12T19:22:39+05:30'
+  },
+  {
+    staff_id: 8,
+    name: 'Dr. Megha Saroha',
+    role: 'Doctor',
+    department: 'Paediatric Haemato-Oncology & Bone Marrow Transplant',
+    created_at: '2026-09-12T19:22:39+05:30'
+  },
+  {
+    staff_id: 9,
+    name: 'Dr. Ashish Dixit',
+    role: 'Doctor',
+    department: 'Clinical Haematology; Blood & Marrow Transplant',
+    created_at: '2026-09-12T19:22:39+05:30'
+  },
+  {
+    staff_id: 10,
+    name: 'Dr. Dharma Choudhary',
+    role: 'Doctor',
+    department: 'Haematology and BMT',
+    created_at: '2026-09-12T19:22:39+05:30'
+  },
+  {
+    staff_id: 11,
+    name: 'Dr. Lalit Kumar',
+    role: 'Doctor',
+    department: 'Haematology/oncology; blood stem-cell/bone-marrow transplantation',
+    created_at: '2026-09-12T19:22:39+05:30'
+  },
+  {
+    staff_id: 12,
+    name: 'Dr. Ashray Kole',
+    role: 'Doctor',
+    department: 'Haematology & BMT; haemato-oncology and bone-marrow transplantation',
+    created_at: '2026-09-12T19:22:39+05:30'
+  },
+  {
+    staff_id: 13,
+    name: 'Dr. Shyam Rathi',
+    role: 'Doctor',
+    department: 'Haematology and Bone Marrow Transplant',
+    created_at: '2026-09-12T19:22:39+05:30'
+  },
+  {
+    staff_id: 14,
+    name: 'Dr. Prathamesh Kulkarni',
+    role: 'Doctor',
+    department: 'Haematology, haemato-oncology & stem-cell transplantation',
+    created_at: '2026-09-12T19:22:39+05:30'
+  },
+  {
+    staff_id: 15,
+    name: 'Dr. Santanu Sen',
+    role: 'Doctor',
+    department: 'Paediatric haematology, oncology, BMT & cellular therapy',
+    created_at: '2026-09-12T19:22:39+05:30'
+  },
+  {
+    staff_id: 16,
+    name: 'Dr. Shrinath Kshirsaga',
+    role: 'Doctor',
+    department: 'Haematology, haemato-oncology & BMT',
+    created_at: '2026-09-12T19:22:39+05:30'
+  },
+  {
+    staff_id: 17,
+    name: 'Dr. Lalit Raut',
+    role: 'Doctor',
+    department: 'Haematology & Bone Marrow Transplant',
+    created_at: '2026-09-12T19:22:39+05:30'
+  }
+];
+
+export function getLocalStaff(search = '') {
+  let list = null;
+  if (typeof window !== 'undefined') {
+    try {
+      const stored = localStorage.getItem('koshika_local_staff');
+      if (stored) {
+        list = JSON.parse(stored);
+      }
+    } catch (e) {
+      console.warn('Failed to parse koshika_local_staff from localStorage', e);
+    }
+  }
+  if (!Array.isArray(list) || list.length === 0) {
+    list = [...DEFAULT_STAFF];
+    if (typeof window !== 'undefined') {
+      try {
+        localStorage.setItem('koshika_local_staff', JSON.stringify(list));
+      } catch (e) {}
+    }
+  }
+  if (search && search.trim()) {
+    const s = search.toLowerCase().trim();
+    return list.filter(item =>
+      (item.name && item.name.toLowerCase().includes(s)) ||
+      (item.role && item.role.toLowerCase().includes(s)) ||
+      (item.department && item.department.toLowerCase().includes(s))
+    );
+  }
+  return list;
+}
+
+export function saveLocalStaff(list) {
+  if (typeof window !== 'undefined') {
+    try {
+      localStorage.setItem('koshika_local_staff', JSON.stringify(list));
+    } catch (e) {}
+  }
+}
 
 // -------------------------------------------------------------
 // Core Supabase API Adapter
@@ -133,7 +297,7 @@ const api = {
             patients: patients.length,
             donors: donors.length,
             storage_units: totalStorageUnits,
-            staff: stRes.count || 100,
+            staff: (stRes?.count && stRes.count > 0) ? stRes.count : (getLocalStaff().length || 17),
             research: research.length,
             inventory: inventory.length
           },
@@ -208,15 +372,58 @@ const api = {
 
     // 6. Staff List
     if (cleanUrl === 'staff') {
-      let q = supabase.from('staff').select('*');
-      if (params.search) {
-        q = q.or(`name.ilike.%${params.search}%,role.ilike.%${params.search}%,department.ilike.%${params.search}%`);
+      const isLocal = typeof window !== 'undefined' && (
+        window.location.hostname === 'localhost' ||
+        window.location.hostname === '127.0.0.1' ||
+        window.location.hostname === ''
+      );
+
+      // 1. If running on local machine, attempt querying local Django backend
+      if (isLocal) {
+        try {
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 1500);
+          const searchParam = params.search ? `?search=${encodeURIComponent(params.search)}` : '';
+          const localUrl = window.location.port === '8000'
+            ? `/api/staff/${searchParam}`
+            : `http://127.0.0.1:8000/api/staff/${searchParam}`;
+          const res = await fetch(localUrl, {
+            signal: controller.signal,
+            headers: { 'Accept': 'application/json' }
+          });
+          clearTimeout(timeoutId);
+          if (res.ok) {
+            const data = await res.json();
+            const results = data.results || (Array.isArray(data) ? data : []);
+            if (results.length > 0) {
+              return { data: { count: data.count || results.length, results } };
+            }
+          }
+        } catch (e) {
+          // Local Django not available or timed out, proceed to Supabase / fallback
+        }
       }
-      q = q.order('staff_id', { ascending: true });
-      const { data, error } = await q;
-      if (error) throw error;
-      return { data: { count: data?.length || 0, results: data || [] } };
+
+      // 2. Attempt Supabase query
+      try {
+        let q = supabase.from('staff').select('*');
+        if (params.search) {
+          q = q.or(`name.ilike.%${params.search}%,role.ilike.%${params.search}%,department.ilike.%${params.search}%`);
+        }
+        q = q.order('staff_id', { ascending: true });
+        const { data, error } = await q;
+        if (!error && data && data.length > 0) {
+          return { data: { count: data.length, results: data } };
+        }
+      } catch (e) {
+        console.warn('Supabase staff query error, using local fallback:', e);
+      }
+
+      // 3. Resilient fallback: 17 Doctors & Specialists with localStorage persistence
+      const staffList = getLocalStaff(params.search);
+      return { data: { count: staffList.length, results: staffList } };
     }
+
 
     // 7. Research List
     if (cleanUrl === 'research') {
@@ -251,6 +458,49 @@ const api = {
         .limit(100);
       if (error) throw error;
       return { data: { count: data?.length || 0, results: data || [] } };
+    }
+
+    // 10. Stem Cell Banks List
+    if (cleanUrl === 'stem-cell-banks' || cleanUrl === 'stem_cell_banks') {
+      try {
+        let q = supabase.from('stem_cell_banks').select('*');
+        if (params.search) {
+          q = q.or(`bank_name.ilike.%${params.search}%,location.ilike.%${params.search}%`);
+        }
+        q = q.order('id', { ascending: true });
+        const { data, error } = await q;
+        if (!error && data && data.length > 0) {
+          return { data: { count: data.length, results: data } };
+        }
+      } catch (e) {
+        console.warn('Supabase stem_cell_banks fetch error, using fallback:', e);
+      }
+      // Fallback: 18 Certified Indian Stem Cell Banks
+      let banks = [
+        { id: 1, bank_name: 'LifeCell International Pvt. Ltd.', location: 'Chennai, Tamil Nadu; storage facility also in Gurugram, Haryana' },
+        { id: 2, bank_name: 'CryoViva Biotech India Pvt. Ltd.', location: 'Gurugram, Haryana' },
+        { id: 3, bank_name: 'Cordlife Sciences India Pvt. Ltd.', location: 'Kolkata / Bishnupur, West Bengal' },
+        { id: 4, bank_name: 'BioCell / Regrow Biosciences Pvt. Ltd.', location: 'Maharashtra' },
+        { id: 5, bank_name: 'Cryo StemCell', location: 'Bengaluru, Karnataka' },
+        { id: 6, bank_name: 'Cryovault Biotech Pvt. Ltd.', location: 'Bengaluru, Karnataka' },
+        { id: 7, bank_name: 'Novacord / Totipotent RX Cell Therapy Pvt. Ltd.', location: 'Gurugram, Haryana' },
+        { id: 8, bank_name: 'ReeLabs Pvt. Ltd.', location: 'Mumbai' },
+        { id: 9, bank_name: 'Reliance Life Sciences Pvt. Ltd.', location: 'Navi Mumbai, Maharashtra' },
+        { id: 10, bank_name: 'StemPlus Cryopreservation Pvt. Ltd.', location: 'Sangli, Maharashtra' },
+        { id: 11, bank_name: 'StemCyte India Therapeutics Pvt. Ltd.', location: 'Gandhinagar, Gujarat' },
+        { id: 12, bank_name: 'Narayana Hrudayalaya Tissue Bank & Stem Cells Research Centre', location: 'Bengaluru, Karnataka' },
+        { id: 13, bank_name: 'Cryo Save (India) Pvt. Ltd.', location: 'Bengaluru, Karnataka' },
+        { id: 14, bank_name: 'International Stem Cell Services Ltd. (ISSL)', location: 'Bengaluru, Karnataka' },
+        { id: 15, bank_name: 'Unistem Bio Sciences Pvt. Ltd.', location: 'Gurugram, Haryana' },
+        { id: 16, bank_name: 'Best Wellcare Management Services Pvt. Ltd. (Indu Stem Cell Bank)', location: 'Vadodara, Gujarat' },
+        { id: 17, bank_name: 'Path Care Labs Pvt. Ltd.', location: 'Ranga Reddy district, Andhra Pradesh in the government record' },
+        { id: 18, bank_name: 'Cryobanks International India Pvt. Ltd.', location: 'Gurugram, Haryana' }
+      ];
+      if (params.search) {
+        const s = params.search.toLowerCase();
+        banks = banks.filter(b => b.bank_name.toLowerCase().includes(s) || b.location.toLowerCase().includes(s));
+      }
+      return { data: { count: banks.length, results: banks } };
     }
 
     // 10. OCR Samples
@@ -334,10 +584,56 @@ const api = {
 
     // 4. Staff Create
     if (cleanUrl === 'staff') {
-      const { data, error } = await supabase.from('staff').insert([body]).select();
-      if (error) throw error;
-      return { data: data[0] };
+      const isLocal = typeof window !== 'undefined' && (
+        window.location.hostname === 'localhost' ||
+        window.location.hostname === '127.0.0.1' ||
+        window.location.hostname === ''
+      );
+
+      // Attempt sync with local Django if accessible
+      if (isLocal) {
+        try {
+          const res = await fetch('http://127.0.0.1:8000/api/staff/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body)
+          });
+          if (res.ok) {
+            const newDoctor = await res.json();
+            const existing = getLocalStaff();
+            existing.unshift(newDoctor);
+            saveLocalStaff(existing);
+            return { data: newDoctor };
+          }
+        } catch (e) {}
+      }
+
+      // Attempt sync with Supabase
+      try {
+        const { data, error } = await supabase.from('staff').insert([body]).select();
+        if (!error && data && data.length > 0) {
+          const existing = getLocalStaff();
+          existing.unshift(data[0]);
+          saveLocalStaff(existing);
+          return { data: data[0] };
+        }
+      } catch (e) {}
+
+      // Local storage fallback creation
+      const existing = getLocalStaff();
+      const nextId = existing.reduce((max, s) => Math.max(max, Number(s.staff_id) || 0), 0) + 1;
+      const newDoctor = {
+        staff_id: nextId,
+        name: body.name || 'New Specialist',
+        role: body.role || 'Doctor',
+        department: body.department || 'Haemato-Oncology & BMT',
+        created_at: new Date().toISOString()
+      };
+      existing.unshift(newDoctor);
+      saveLocalStaff(existing);
+      return { data: newDoctor };
     }
+
 
     // 5. Research Create
     if (cleanUrl === 'research') {
@@ -357,7 +653,14 @@ const api = {
       return { data: data[0] };
     }
 
-    // 7. ML Compatibility Prediction
+    // 7. Stem Cell Bank Create
+    if (cleanUrl === 'stem-cell-banks' || cleanUrl === 'stem_cell_banks') {
+      const { data, error } = await supabase.from('stem_cell_banks').insert([body]).select();
+      if (error) throw error;
+      return { data: data[0] };
+    }
+
+    // 8. ML Compatibility Prediction
     if (cleanUrl === 'ml/predict') {
       const pAge = Number(body.patient_age) || 35;
       const dAge = Number(body.donor_age) || 30;
@@ -465,7 +768,8 @@ const api = {
       })();
       const apiKey = (storedKey && storedKey.trim() && !storedKey.startsWith('AIzaSy-DEMO'))
         ? storedKey.trim()
-        : (import.meta.env.VITE_GEMINI_API_KEY || defaultKey);
+        : ((typeof import.meta !== 'undefined' && import.meta.env?.VITE_GEMINI_API_KEY) || defaultKey);
+
 
       // Prioritized list of active Gemini models with high free-tier quotas and fast response times
       const GEMINI_MODELS = [
@@ -872,10 +1176,56 @@ Thank you for your question regarding **"${query}"**. Here is an evidence-based 
     }
 
     if (resource === 'staff') {
-      const { data, error } = await supabase.from('staff').update(body).eq('staff_id', id).select();
-      if (error) throw error;
-      return { data: data[0] };
+      const isLocal = typeof window !== 'undefined' && (
+        window.location.hostname === 'localhost' ||
+        window.location.hostname === '127.0.0.1' ||
+        window.location.hostname === ''
+      );
+
+      if (isLocal) {
+        try {
+          const res = await fetch(`http://127.0.0.1:8000/api/staff/${id}/`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body)
+          });
+          if (res.ok) {
+            const updated = await res.json();
+            const existing = getLocalStaff();
+            const idx = existing.findIndex(s => String(s.staff_id) === String(id));
+            if (idx >= 0) {
+              existing[idx] = { ...existing[idx], ...updated };
+              saveLocalStaff(existing);
+            }
+            return { data: updated };
+          }
+        } catch (e) {}
+      }
+
+      try {
+        const { data, error } = await supabase.from('staff').update(body).eq('staff_id', id).select();
+        if (!error && data && data.length > 0) {
+          const existing = getLocalStaff();
+          const idx = existing.findIndex(s => String(s.staff_id) === String(id));
+          if (idx >= 0) {
+            existing[idx] = { ...existing[idx], ...data[0] };
+            saveLocalStaff(existing);
+          }
+          return { data: data[0] };
+        }
+      } catch (e) {}
+
+      const existing = getLocalStaff();
+      const idx = existing.findIndex(s => String(s.staff_id) === String(id));
+      let updatedObj = { ...body, staff_id: Number(id) };
+      if (idx >= 0) {
+        existing[idx] = { ...existing[idx], ...body };
+        updatedObj = existing[idx];
+        saveLocalStaff(existing);
+      }
+      return { data: updatedObj };
     }
+
 
     if (resource === 'research') {
       const { data, error } = await supabase.from('research').update(body).eq('research_id', id).select();
@@ -889,6 +1239,12 @@ Thank you for your question regarding **"${query}"**. Here is an evidence-based 
         payload.quantity = Number(payload.quantity) || 0;
       }
       const { data, error } = await supabase.from('inventory').update(payload).eq('item_id', id).select();
+      if (error) throw error;
+      return { data: data[0] };
+    }
+
+    if (resource === 'stem-cell-banks' || resource === 'stem_cell_banks') {
+      const { data, error } = await supabase.from('stem_cell_banks').update(body).eq('id', id).select();
       if (error) throw error;
       return { data: data[0] };
     }
@@ -936,10 +1292,28 @@ Thank you for your question regarding **"${query}"**. Here is an evidence-based 
     }
 
     if (resource === 'staff') {
-      const { error } = await supabase.from('staff').delete().eq('staff_id', id);
-      if (error) throw error;
+      const isLocal = typeof window !== 'undefined' && (
+        window.location.hostname === 'localhost' ||
+        window.location.hostname === '127.0.0.1' ||
+        window.location.hostname === ''
+      );
+
+      if (isLocal) {
+        try {
+          await fetch(`http://127.0.0.1:8000/api/staff/${id}/`, { method: 'DELETE' });
+        } catch (e) {}
+      }
+
+      try {
+        await supabase.from('staff').delete().eq('staff_id', id);
+      } catch (e) {}
+
+      const existing = getLocalStaff();
+      const updated = existing.filter(s => String(s.staff_id) !== String(id));
+      saveLocalStaff(updated);
       return { data: { success: true } };
     }
+
 
     if (resource === 'research') {
       const { error } = await supabase.from('research').delete().eq('research_id', id);
@@ -949,6 +1323,12 @@ Thank you for your question regarding **"${query}"**. Here is an evidence-based 
 
     if (resource === 'inventory') {
       const { error } = await supabase.from('inventory').delete().eq('item_id', id);
+      if (error) throw error;
+      return { data: { success: true } };
+    }
+
+    if (resource === 'stem-cell-banks' || resource === 'stem_cell_banks') {
+      const { error } = await supabase.from('stem_cell_banks').delete().eq('id', id);
       if (error) throw error;
       return { data: { success: true } };
     }

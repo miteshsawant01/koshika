@@ -55,15 +55,14 @@ class Storage(models.Model):
 
 class Staff(models.Model):
     staff_id = models.AutoField(primary_key=True, db_column='staff_id')
-    name = models.CharField(max_length=150)
+    name = models.CharField(max_length=255)
     role = models.CharField(max_length=100, null=True, blank=True)
-    department = models.CharField(max_length=100, null=True, blank=True)
-    contact = models.CharField(max_length=50, null=True, blank=True)
+    department = models.CharField(max_length=255, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         db_table = 'staff'
-        ordering = ['-staff_id']
+        ordering = ['staff_id']
 
     def __str__(self):
         return f'{self.name} - {self.role}'
@@ -117,3 +116,16 @@ class AuditLog(models.Model):
 
     def __str__(self):
         return f'{self.table_name} {self.operation} #{self.record_id}'
+
+
+class StemCellBank(models.Model):
+    id = models.AutoField(primary_key=True)
+    bank_name = models.CharField(max_length=255)
+    location = models.CharField(max_length=255)
+
+    class Meta:
+        db_table = 'stem_cell_banks'
+        ordering = ['id']
+
+    def __str__(self):
+        return f'{self.bank_name} ({self.location})'

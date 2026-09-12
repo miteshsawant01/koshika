@@ -5,13 +5,14 @@ const Appointments = () => {
   const { appointments, addAppointment } = useRole();
   const [showModal, setShowModal] = useState(false);
   const [formData, setFormData] = useState({
-    doctorName: 'Dr. Aris Thorne, MD',
-    specialty: 'Clinical Hematology & Bone Marrow Transplant',
-    hospital: 'National Stem Cell Institute & Research Centre',
+    doctorName: 'Dr. Sharat Damodar, MD',
+    specialty: 'Adult Haemato-Oncology & BMT; Cellular Therapy; CAR-T',
+    hospital: 'Narayana Health & Mazumdar Shaw Cancer Centre, Bengaluru',
     date: 'Upcoming Friday, 11:00 AM',
     mode: 'In-Person Consultation',
     notes: 'Follow-up discussion on donor HLA compatibility report and conditioning protocol.'
   });
+
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -143,20 +144,27 @@ const Appointments = () => {
                       value={formData.doctorName}
                       onChange={(e) => {
                         const val = e.target.value;
-                        if (val.includes('Aris')) {
-                          setFormData({ ...formData, doctorName: val, specialty: 'Clinical Hematology & Bone Marrow Transplant' });
-                        } else if (val.includes('Evelyn')) {
-                          setFormData({ ...formData, doctorName: val, specialty: 'Immunogenomics & HLA Tissue Typing' });
+                        if (val.includes('Sharat')) {
+                          setFormData({ ...formData, doctorName: val, specialty: 'Adult Haemato-Oncology & BMT; Cellular Therapy; CAR-T', hospital: 'Narayana Health & Mazumdar Shaw Cancer Centre, Bengaluru' });
+                        } else if (val.includes('Sunil')) {
+                          setFormData({ ...formData, doctorName: val, specialty: 'Paediatric Haemato-Oncology & BMT; Stem-Cell Transplantation', hospital: 'Narayana Health & Mazumdar Shaw Cancer Centre, Bengaluru' });
+                        } else if (val.includes('Suparno')) {
+                          setFormData({ ...formData, doctorName: val, specialty: 'Senior Consultant & HOD, Haemato-Oncology & BMT', hospital: 'Dharamshila Narayana Super Speciality Hospital, New Delhi' });
+                        } else if (val.includes('Ashish')) {
+                          setFormData({ ...formData, doctorName: val, specialty: 'Clinical Haematology; Blood & Marrow Transplant', hospital: 'Manipal Hospital Old Airport Road, Bengaluru' });
                         } else {
-                          setFormData({ ...formData, doctorName: val, specialty: 'Pediatric Stem Cell Transplant' });
+                          setFormData({ ...formData, doctorName: val, specialty: 'Haematology and Bone Marrow Transplant', hospital: 'Sanar International Hospital, Delhi NCR' });
                         }
                       }}
                     >
-                      <option value="Dr. Aris Thorne, MD">Dr. Aris Thorne, MD (Hematology &amp; BMT)</option>
-                      <option value="Dr. Evelyn Vance, PhD, MD">Dr. Evelyn Vance, PhD, MD (HLA &amp; Genetics)</option>
-                      <option value="Dr. Vikram Malhotra, MBBS, DNB">Dr. Vikram Malhotra, MBBS, DNB (Pediatric BMT)</option>
+                      <option value="Dr. Sharat Damodar, MD">Dr. Sharat Damodar, MD (Adult Haemato-Oncology &amp; BMT)</option>
+                      <option value="Dr. Sunil Bhat, MD">Dr. Sunil Bhat, MD (Paediatric Haemato-Oncology &amp; BMT)</option>
+                      <option value="Dr. Suparno Chakrabarti, MD">Dr. Suparno Chakrabarti, MD (Senior Consultant &amp; HOD, BMT)</option>
+                      <option value="Dr. Ashish Dixit, MD">Dr. Ashish Dixit, MD (Clinical Haematology &amp; BMT)</option>
+                      <option value="Dr. Dharma Choudhary, MD">Dr. Dharma Choudhary, MD (Haematology &amp; BMT)</option>
                     </select>
                   </div>
+
 
                   <div className="mb-3">
                     <label className="form-label small fw-semibold">Consultation Mode</label>

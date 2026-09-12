@@ -39,7 +39,7 @@ const DoctorDashboard = () => {
               </span>
             </div>
             <h2 className="fw-bold text-dark mb-1">
-              Welcome, Dr. Aris Thorne, MD
+              Welcome, Dr. Sharat Damodar, MD
             </h2>
             <p className="text-secondary mb-0 small">
               Manage patient candidates for hematopoietic stem cell transplant, review clinical reports, and evaluate HLA compatibility.

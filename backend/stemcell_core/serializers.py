@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Patient, Donor, Storage, Staff, Research, Inventory, AuditLog
+from .models import Patient, Donor, Storage, Staff, Research, Inventory, AuditLog, StemCellBank
 
 
 class PatientSerializer(serializers.ModelSerializer):
@@ -51,4 +51,10 @@ class InventorySerializer(serializers.ModelSerializer):
 class AuditLogSerializer(serializers.ModelSerializer):
     class Meta:
         model = AuditLog
+        fields = '__all__'
+
+
+class StemCellBankSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = StemCellBank
         fields = '__all__'

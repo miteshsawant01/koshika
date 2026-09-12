@@ -53,11 +53,10 @@ CREATE TABLE IF NOT EXISTS storage (
 -- -------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS staff (
     staff_id SERIAL PRIMARY KEY,
-    name VARCHAR(150) NOT NULL,
+    name VARCHAR(255) NOT NULL,
     role VARCHAR(100),
-    department VARCHAR(100),
-    contact VARCHAR(50),
-    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+    department VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- -------------------------------------------------------------
@@ -96,6 +95,15 @@ CREATE TABLE IF NOT EXISTS audit_logs (
     changed_by VARCHAR(128),
     old_values JSONB,
     new_values JSONB
+);
+
+-- -------------------------------------------------------------
+-- 8. Table: stem_cell_banks
+-- -------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS stem_cell_banks (
+    id SERIAL PRIMARY KEY,
+    bank_name VARCHAR(255) NOT NULL,
+    location VARCHAR(255) NOT NULL
 );
 
 -- -------------------------------------------------------------
@@ -180,13 +188,14 @@ ALTER TABLE staff ENABLE ROW LEVEL SECURITY;
 ALTER TABLE research ENABLE ROW LEVEL SECURITY;
 ALTER TABLE inventory ENABLE ROW LEVEL SECURITY;
 ALTER TABLE audit_logs ENABLE ROW LEVEL SECURITY;
+ALTER TABLE stem_cell_banks ENABLE ROW LEVEL SECURITY;
 
 -- Allow full access for backend service role and authenticated app requests
 DO $$
 DECLARE
     tbl text;
 BEGIN
-    FOR tbl IN SELECT unnest(ARRAY['patients', 'donors', 'storage', 'staff', 'research', 'inventory', 'audit_logs'])
+    FOR tbl IN SELECT unnest(ARRAY['patients', 'donors', 'storage', 'staff', 'research', 'inventory', 'audit_logs', 'stem_cell_banks'])
     LOOP
         EXECUTE format('DROP POLICY IF EXISTS "Allow full access for %I" ON %I;', tbl, tbl);
         EXECUTE format('CREATE POLICY "Allow full access for %I" ON %I FOR ALL USING (true) WITH CHECK (true);', tbl, tbl);

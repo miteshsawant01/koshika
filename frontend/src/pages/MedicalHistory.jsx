@@ -9,7 +9,7 @@ const MedicalHistory = () => {
       category: 'Assessment',
       badge: 'bg-info-subtle text-info',
       icon: 'bi-shield-check',
-      doctor: 'Dr. Aris Thorne, MD',
+      doctor: 'Dr. Sharat Damodar, MD',
       description: 'Candidate scored 89% for allogeneic stem cell transplantation. Recommended initiation of matched unrelated donor (MUD) registry search.',
     },
     {
@@ -18,7 +18,7 @@ const MedicalHistory = () => {
       category: 'Lab Diagnostics',
       badge: 'bg-primary-subtle text-primary',
       icon: 'bi-dna',
-      doctor: 'Dr. Evelyn Vance, PhD',
+      doctor: 'Dr. Sunil Bhat, MD',
       description: 'High-resolution NGS sequencing performed for HLA-A, B, C, DRB1, DQB1 loci. Ready for automated ML donor matching.',
     },
     {

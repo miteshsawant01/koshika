@@ -70,9 +70,20 @@ if not DATABASE_URL and os.getenv('SUPABASE_DB_HOST'):
 if DATABASE_URL:
     try:
         import dj_database_url
+        import socket
+        from urllib.parse import urlparse
+
         is_supabase = 'supabase.co' in DATABASE_URL or 'pooler.supabase.com' in DATABASE_URL
         is_cloud = is_supabase or any(k in DATABASE_URL for k in ['render.com', 'neon.tech', 'aws', 'aiven'])
         is_transaction_pooler = ':6543' in DATABASE_URL
+
+        # Verify that the database host is resolvable to prevent local server crash
+        parsed = urlparse(DATABASE_URL)
+        if parsed.hostname:
+            try:
+                socket.getaddrinfo(parsed.hostname, parsed.port or 5432)
+            except socket.gaierror:
+                raise ConnectionError(f"Host '{parsed.hostname}' cannot be resolved from this environment.")
 
         db_config = dj_database_url.config(
             default=DATABASE_URL,
@@ -91,7 +102,7 @@ if DATABASE_URL:
 
         DATABASES = {'default': db_config}
     except Exception as e:
-        print(f"Warning: Failed to parse DATABASE_URL ({e}), falling back to SQLite.")
+        print(f"Notice: Using local SQLite database (backend/db.sqlite3) - Reason: {e}")
         DATABASES = {
             'default': {
                 'ENGINE': 'django.db.backends.sqlite3',

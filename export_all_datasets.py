@@ -111,7 +111,7 @@ def export_sqlite_tables():
     print(f"Exporting database tables from {DB_PATH}...")
     conn = sqlite3.connect(DB_PATH)
     
-    tables = ['patients', 'donors', 'storage', 'inventory', 'staff', 'research', 'audit_logs']
+    tables = ['patients', 'donors', 'storage', 'inventory', 'staff', 'research', 'audit_logs', 'stem_cell_banks']
     exported_dfs = {}
     
     for table in tables:
@@ -228,10 +228,9 @@ CREATE TABLE inventory (
 
 CREATE TABLE staff (
   staff_id INT AUTO_INCREMENT PRIMARY KEY,
-  name VARCHAR(150) NOT NULL,
+  name VARCHAR(255) NOT NULL,
   role VARCHAR(100),
-  department VARCHAR(100),
-  contact VARCHAR(50),
+  department VARCHAR(255),
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -262,7 +261,7 @@ CREATE TABLE audit_logs (
 """
         f.write(schema_sql)
         
-        insert_order = ['patients', 'donors', 'storage', 'inventory', 'staff', 'research', 'audit_logs']
+        insert_order = ['patients', 'donors', 'storage', 'inventory', 'staff', 'research', 'audit_logs', 'stem_cell_banks']
         for table in insert_order:
             df = table_dfs[table]
             f.write(f"\n-- Data for {table} ({len(df)} rows)\n")
@@ -379,10 +378,9 @@ This directory contains the entire dataset collection for the **STEMBRIDGE AI** 
 
 ### 5. Staff (`staff.csv`)
 - `staff_id` (PK): Personnel ID
-- `name`: Healthcare professional / scientist name
-- `role`: Role title (e.g. Chief Medical Officer, Lead Cryopreservation Scientist)
-- `department`: Department (Bone Marrow Transplant, Cryo Preservation Vault, etc.)
-- `contact`: Telephone contact
+- `name`: Healthcare professional / specialist name
+- `role`: Role title (e.g. Doctor, Senior Consultant)
+- `department`: Department / Clinical focus
 - `created_at`: Registration timestamp
 
 ### 6. Research (`research.csv`)

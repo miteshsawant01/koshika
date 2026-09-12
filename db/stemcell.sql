@@ -39,10 +39,9 @@ CREATE TABLE IF NOT EXISTS storage (
 -- staff
 CREATE TABLE IF NOT EXISTS staff (
   staff_id INT AUTO_INCREMENT PRIMARY KEY,
-  name VARCHAR(150) NOT NULL,
+  name VARCHAR(255) NOT NULL,
   role VARCHAR(100),
-  department VARCHAR(100),
-  contact VARCHAR(50),
+  department VARCHAR(255),
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -66,6 +65,13 @@ CREATE TABLE IF NOT EXISTS inventory (
   last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
+-- stem_cell_banks
+CREATE TABLE IF NOT EXISTS stem_cell_banks (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  bank_name VARCHAR(255) NOT NULL,
+  location VARCHAR(255) NOT NULL
+);
+
 -- sample inserts
 INSERT INTO donors (name, age, blood_group, contact, donation_date, notes) VALUES
 ('Ravi Kumar', 28, 'A+', '9876543210', '2025-01-15', 'Healthy donor'),
@@ -75,9 +81,10 @@ INSERT INTO patients (name, age, blood_group, contact, disease) VALUES
 ('Rahul Verma', 45, 'A+', '9988776655', 'Leukemia'),
 ('Anita Desai', 30, 'B+', '9870012345', 'Aplastic anemia');
 
-INSERT INTO staff (name, role, department, contact) VALUES
-('Dr. Meera Joshi', 'Lead Scientist', 'Research', '9012345678'),
-('Amit Singh', 'Lab Technician', 'Storage', '9090909090');
+INSERT INTO staff (name, role, department) VALUES
+('Dr. Sharat Damodar', 'Doctor', 'Adult Haemato-Oncology & BMT; cellular therapy; CAR-T'),
+('Dr. Shilpa Prabhu', 'Doctor', 'Adult Haemato-Oncology & BMT; cellular therapy; CAR-T'),
+('Dr. Sunil Bhat', 'Doctor', 'Paediatric Haemato-Oncology & BMT; paediatric stem-cell transplantation; CAR-T');
 
 INSERT INTO research (project_name, lead_scientist, start_date, status, summary) VALUES
 ('Stem cell engraftment study', 'Dr. Meera Joshi', '2025-03-01', 'Ongoing', 'Study on engraftment rates');
@@ -89,3 +96,23 @@ INSERT INTO inventory (item_name, quantity, unit) VALUES
 INSERT INTO storage (donor_id, storage_location, collected_date, expiry_date, units) VALUES
 (1, 'CryoTank-A1', '2025-01-15', '2035-01-15', 2),
 (2, 'CryoTank-B3', '2025-06-10', '2035-06-10', 1);
+
+INSERT INTO stem_cell_banks (bank_name, location) VALUES
+('LifeCell International Pvt. Ltd.', 'Chennai, Tamil Nadu; storage facility also in Gurugram, Haryana'),
+('CryoViva Biotech India Pvt. Ltd.', 'Gurugram, Haryana'),
+('Cordlife Sciences India Pvt. Ltd.', 'Kolkata / Bishnupur, West Bengal'),
+('BioCell / Regrow Biosciences Pvt. Ltd.', 'Maharashtra'),
+('Cryo StemCell', 'Bengaluru, Karnataka'),
+('Cryovault Biotech Pvt. Ltd.', 'Bengaluru, Karnataka'),
+('Novacord / Totipotent RX Cell Therapy Pvt. Ltd.', 'Gurugram, Haryana'),
+('ReeLabs Pvt. Ltd.', 'Mumbai'),
+('Reliance Life Sciences Pvt. Ltd.', 'Navi Mumbai, Maharashtra'),
+('StemPlus Cryopreservation Pvt. Ltd.', 'Sangli, Maharashtra'),
+('StemCyte India Therapeutics Pvt. Ltd.', 'Gandhinagar, Gujarat'),
+('Narayana Hrudayalaya Tissue Bank & Stem Cells Research Centre', 'Bengaluru, Karnataka'),
+('Cryo Save (India) Pvt. Ltd.', 'Bengaluru, Karnataka'),
+('International Stem Cell Services Ltd. (ISSL)', 'Bengaluru, Karnataka'),
+('Unistem Bio Sciences Pvt. Ltd.', 'Gurugram, Haryana'),
+('Best Wellcare Management Services Pvt. Ltd. (Indu Stem Cell Bank)', 'Vadodara, Gujarat'),
+('Path Care Labs Pvt. Ltd.', 'Ranga Reddy district, Andhra Pradesh in the government record'),
+('Cryobanks International India Pvt. Ltd.', 'Gurugram, Haryana');

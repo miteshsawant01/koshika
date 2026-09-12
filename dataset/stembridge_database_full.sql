@@ -1,6 +1,6 @@
 -- ====================================================================
 -- STEMBRIDGE AI - Complete Database Dump with Full Dataset
--- Generated on: 2026-09-10 18:37:44
+-- Generated on: 2026-09-12 19:26:07
 -- Compatible with MySQL, MariaDB, SQLite, PostgreSQL
 -- ====================================================================
 
@@ -59,10 +59,9 @@ CREATE TABLE inventory (
 
 CREATE TABLE staff (
   staff_id INT AUTO_INCREMENT PRIMARY KEY,
-  name VARCHAR(150) NOT NULL,
+  name VARCHAR(255) NOT NULL,
   role VARCHAR(100),
-  department VARCHAR(100),
-  contact VARCHAR(50),
+  department VARCHAR(255),
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -499,107 +498,24 @@ INSERT INTO `inventory` (`item_id`, `item_name`, `quantity`, `unit`, `last_updat
 INSERT INTO `inventory` (`item_id`, `item_name`, `quantity`, `unit`, `last_updated`) VALUES (99, 'LN2 Exhaust Ventilation Filter Cartridges', 14, 'cartridges', '2026-09-10 06:15:47.882927');
 INSERT INTO `inventory` (`item_id`, `item_name`, `quantity`, `unit`, `last_updated`) VALUES (100, 'HEPA Air Filters for Class 100 Cleanroom', 10, 'filters', '2026-09-10 06:15:47.882927');
 
--- Data for staff (100 rows)
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (1, 'Komal Pillai', 'Head of Molecular Genetics & HLA', 'Molecular Genetics', '+91 878916 5136', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (2, 'Dr. Preeti Sen', 'Chief Medical Officer', 'Executive Leadership', '+91 995831 9291', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (3, 'Dr. Abhishek Deshmukh', 'Laboratory Safety & Biosafety Officer', 'EHS & Safety', '+91 807981 3438', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (4, 'Dr. Harish Trivedi', 'Chief Medical Officer', 'Executive Leadership', '+91 700469 0578', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (5, 'Gaurav Bhatt', 'Senior Flow Cytometry Analyst', 'Cellular Phenotyping', '+91 908772 5737', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (6, 'Archana Bhardwaj', 'Donor Recruitment & Care Coordinator', 'Donor Services', '+91 806752 2606', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (7, 'Dr. Meera Mukherjee', 'Senior Postdoctoral Research Fellow', 'Cellular Biology Research', '+91 805006 3013', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (8, 'Dr. Karthik Mishra', 'Postdoctoral Fellow - iPSC Modeling', 'Stem Cell Research', '+91 701003 7165', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (9, 'Dr. Aarav Malhotra', 'Lead Cryopreservation Scientist', 'Cryo Preservation Vault', '+91 913290 4434', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (10, 'Mohan Patil', 'Patient Care & BMT Coordinator', 'Patient Advocacy', '+91 977491 4254', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (11, 'Suresh Menon', 'Cryo Inventory & Distribution Lead', 'Biobank Logistics', '+91 806004 4941', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (12, 'Payal Nair', 'Senior Apheresis Specialist Nurse', 'Apheresis & Cell Collection', '+91 983167 4443', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (13, 'Dr. Aarti Mehta', 'Director of Biobanking & Cryogenics', 'Cryo Preservation Vault', '+91 916062 1788', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (14, 'Dr. Harish Mishra', 'BMT Transplant Specialist Physician', 'Bone Marrow Transplant', '+91 806592 8154', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (15, 'Dr. Suresh Kapoor', 'Director of Biobanking & Cryogenics', 'Cryo Preservation Vault', '+91 709564 5915', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (16, 'Dr. Ramesh Gupta', 'Chief Medical Officer', 'Executive Leadership', '+91 912378 9387', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (17, 'Ritu Yadav', 'HLA Typing Laboratory Specialist', 'HLA & Histocompatibility', '+91 800310 4806', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (18, 'Naveen Dubey', 'Quality Assurance & Compliance Manager', 'Quality Assurance', '+91 984776 6704', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (19, 'Manoj Bhatt', 'Cleanroom Operations Supervisor', 'Cleanroom Operations', '+91 949873 7368', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (20, 'Shalini Patil', 'Sterility & Microbial Quality Analyst', 'Microbiology QC', '+91 972747 8390', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (21, 'Pranav Pillai', 'Clinical Research Coordinator', 'Research & Trials', '+91 878303 9750', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (22, 'Dr. Aparna Agarwal', 'Laboratory Safety & Biosafety Officer', 'EHS & Safety', '+91 876040 9853', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (23, 'Sarita Bose', 'Sterility & Microbial Quality Analyst', 'Microbiology QC', '+91 932487 8606', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (24, 'Dr. Dev Shukla', 'Director of Biobanking & Cryogenics', 'Cryo Preservation Vault', '+91 963689 6919', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (25, 'Dr. Arjun Nair', 'Regulatory Affairs Officer', 'Regulatory Compliance', '+91 886678 3171', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (26, 'Pooja Sharma', 'Cryogenic Facility Engineer', 'Biomedical Engineering', '+91 937885 6024', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (27, 'Dr. Malini Das', 'Regulatory Affairs Officer', 'Regulatory Compliance', '+91 909605 6188', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (28, 'Pallavi Bhardwaj', 'Senior Apheresis Specialist Nurse', 'Apheresis & Cell Collection', '+91 912362 4354', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (29, 'Dr. Meera Bhatt', 'BMT Transplant Specialist Physician', 'Bone Marrow Transplant', '+91 962662 2038', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (30, 'Dr. Varun Dubey', 'Senior Medical Laboratory Scientist', 'Clinical Laboratory', '+91 961197 5411', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (31, 'Dr. Aparna Agarwal', 'Regulatory Affairs Officer', 'Regulatory Compliance', '+91 911755 5170', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (32, 'Girish Das', 'Senior Cell Processing Technologist', 'Cleanroom Cell Processing', '+91 978300 2808', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (33, 'Dr. Malini Banerjee', 'Director of Biobanking & Cryogenics', 'Cryo Preservation Vault', '+91 876402 4479', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (34, 'Karthik Patil', 'Cryogenic Facility Engineer', 'Biomedical Engineering', '+91 874818 5876', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (35, 'Suresh Pillai', 'Clinical Data Specialist', 'Health Informatics', '+91 972658 1314', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (36, 'Archana Patel', 'Cryo Inventory & Distribution Lead', 'Biobank Logistics', '+91 973661 8252', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (37, 'Deepa Rao', 'Senior Apheresis Specialist Nurse', 'Apheresis & Cell Collection', '+91 965174 0728', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (38, 'Dr. Divya Bhatia', 'Senior Hematologist & BMT Consultant', 'Bone Marrow Transplant', '+91 993585 2823', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (39, 'Dr. Neha Iyer', 'Postdoctoral Fellow - iPSC Modeling', 'Stem Cell Research', '+91 988015 8674', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (40, 'Arjun Agarwal', 'Donor Recruitment & Care Coordinator', 'Donor Services', '+91 961112 6517', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (41, 'Geeta Verma', 'Clinical Research Coordinator', 'Research & Trials', '+91 807303 1112', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (42, 'Mohan Joshi', 'Clinical Data Specialist', 'Health Informatics', '+91 999698 7522', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (43, 'Dr. Tushar Gowda', 'Senior Hematologist & BMT Consultant', 'Bone Marrow Transplant', '+91 936595 2117', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (44, 'Dr. Pallavi Singh', 'Laboratory Safety & Biosafety Officer', 'EHS & Safety', '+91 878650 2080', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (45, 'Dr. Sunil Rao', 'Postdoctoral Fellow - iPSC Modeling', 'Stem Cell Research', '+91 983066 8799', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (46, 'Dr. Komal Yadav', 'Director of Biobanking & Cryogenics', 'Cryo Preservation Vault', '+91 960486 9433', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (47, 'Tushar Nair', 'Bioinformatics & HLA Matching Lead', 'Computational Biology', '+91 983275 3918', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (48, 'Dr. Preeti Agarwal', 'Senior Postdoctoral Research Fellow', 'Cellular Biology Research', '+91 940341 3171', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (49, 'Isha Yadav', 'Senior Flow Cytometry Analyst', 'Cellular Phenotyping', '+91 940212 9073', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (50, 'Dr. Rahul Nair', 'Director of Biobanking & Cryogenics', 'Cryo Preservation Vault', '+91 979663 0945', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (51, 'Jyoti Banerjee', 'HLA Typing Laboratory Specialist', 'HLA & Histocompatibility', '+91 993559 9119', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (52, 'Aparna Jain', 'Clinical Research Coordinator', 'Research & Trials', '+91 974781 2384', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (53, 'Dr. Radha Pillai', 'Director of Biobanking & Cryogenics', 'Cryo Preservation Vault', '+91 887335 1428', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (54, 'Chetan Dubey', 'Senior Apheresis Specialist Nurse', 'Apheresis & Cell Collection', '+91 932468 9231', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (55, 'Aparna Mehta', 'Cryo Inventory & Distribution Lead', 'Biobank Logistics', '+91 807864 3976', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (56, 'Deepa Banerjee', 'Bioinformatics & HLA Matching Lead', 'Computational Biology', '+91 909554 0219', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (57, 'Nandini Menon', 'Senior Flow Cytometry Analyst', 'Cellular Phenotyping', '+91 973383 6206', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (58, 'Arjun Iyer', 'Apheresis Staff Nurse', 'Apheresis & Cell Collection', '+91 945520 2049', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (59, 'Dr. Vidya Reddy', 'Senior Medical Laboratory Scientist', 'Clinical Laboratory', '+91 902802 0692', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (60, 'Deepak Trivedi', 'Donor Recruitment & Care Coordinator', 'Donor Services', '+91 946371 7207', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (61, 'Sarita Iyer', 'Clinical Data Specialist', 'Health Informatics', '+91 909019 1060', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (62, 'Archana Das', 'Senior Flow Cytometry Analyst', 'Cellular Phenotyping', '+91 981504 7025', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (63, 'Rekha Rao', 'Donor Recruitment & Care Coordinator', 'Donor Services', '+91 872591 3394', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (64, 'Dr. Sneha Singh', 'BMT Transplant Specialist Physician', 'Bone Marrow Transplant', '+91 994338 9206', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (65, 'Pallavi Bhardwaj', 'Cryogenic Facility Engineer', 'Biomedical Engineering', '+91 984538 3484', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (66, 'Pooja Patil', 'Apheresis Staff Nurse', 'Apheresis & Cell Collection', '+91 986609 0494', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (67, 'Komal Agarwal', 'Cryogenic Facility Engineer', 'Biomedical Engineering', '+91 993984 9213', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (68, 'Sneha Reddy', 'Senior Flow Cytometry Analyst', 'Cellular Phenotyping', '+91 969697 7970', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (69, 'Dr. Malini Yadav', 'Director of Biobanking & Cryogenics', 'Cryo Preservation Vault', '+91 701207 2089', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (70, 'Vikram Deshmukh', 'Stem Cell Processing Technician', 'Cleanroom Cell Processing', '+91 948052 9101', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (71, 'Dr. Vivek Shukla', 'Senior Postdoctoral Research Fellow', 'Cellular Biology Research', '+91 990504 1999', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (72, 'Rekha Bhatia', 'Cleanroom Operations Supervisor', 'Cleanroom Operations', '+91 970938 3956', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (73, 'Dr. Ravi Malhotra', 'Senior Medical Laboratory Scientist', 'Clinical Laboratory', '+91 968992 6162', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (74, 'Rajesh Reddy', 'Donor Recruitment & Care Coordinator', 'Donor Services', '+91 919243 8655', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (75, 'Dr. Nandini Malhotra', 'Senior Hematologist & BMT Consultant', 'Bone Marrow Transplant', '+91 974399 2589', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (76, 'Rajesh Deshmukh', 'Clinical Data Specialist', 'Health Informatics', '+91 875293 1360', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (77, 'Suraj Chatterjee', 'Clinical Data Specialist', 'Health Informatics', '+91 945129 6493', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (78, 'Dr. Abhishek Gowda', 'Senior Hematologist & BMT Consultant', 'Bone Marrow Transplant', '+91 917648 7411', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (79, 'Dr. Rajesh Kulkarni', 'Director of Biobanking & Cryogenics', 'Cryo Preservation Vault', '+91 933918 4447', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (80, 'Suraj Sharma', 'Patient Care & BMT Coordinator', 'Patient Advocacy', '+91 989972 3981', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (81, 'Karthik Bhatt', 'Clinical Research Coordinator', 'Research & Trials', '+91 998434 6549', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (82, 'Girish Sen', 'Sterility & Microbial Quality Analyst', 'Microbiology QC', '+91 900693 0417', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (83, 'Akash Bhatia', 'Donor Recruitment & Care Coordinator', 'Donor Services', '+91 939032 5099', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (84, 'Dr. Arjun Bose', 'Lead Cryopreservation Scientist', 'Cryo Preservation Vault', '+91 906881 1662', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (85, 'Ravi Banerjee', 'Senior Flow Cytometry Analyst', 'Cellular Phenotyping', '+91 903248 6454', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (86, 'Shalini Malhotra', 'Head of Molecular Genetics & HLA', 'Molecular Genetics', '+91 961321 8624', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (87, 'Karthik Nair', 'Senior Apheresis Specialist Nurse', 'Apheresis & Cell Collection', '+91 963335 9557', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (88, 'Nikhil Iyer', 'Cleanroom Operations Supervisor', 'Cleanroom Operations', '+91 991471 9499', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (89, 'Swati Mukherjee', 'Clinical Data Specialist', 'Health Informatics', '+91 988519 7428', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (90, 'Suraj Bhatia', 'Clinical Data Specialist', 'Health Informatics', '+91 961855 4672', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (91, 'Arjun Shukla', 'Sterility & Microbial Quality Analyst', 'Microbiology QC', '+91 986872 2776', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (92, 'Deepa Sharma', 'Sterility & Microbial Quality Analyst', 'Microbiology QC', '+91 881968 2461', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (93, 'Rajesh Dubey', 'Clinical Data Specialist', 'Health Informatics', '+91 884377 5845', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (94, 'Priya Joshi', 'Donor Recruitment & Care Coordinator', 'Donor Services', '+91 961428 3805', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (95, 'Arjun Chopra', 'Senior Apheresis Specialist Nurse', 'Apheresis & Cell Collection', '+91 884810 0420', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (96, 'Namrata Chatterjee', 'Cryo Inventory & Distribution Lead', 'Biobank Logistics', '+91 939966 1077', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (97, 'Deepa Chopra', 'Cryo Inventory & Distribution Lead', 'Biobank Logistics', '+91 917202 2872', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (98, 'Dr. Aarti Bhatt', 'Lead Cryopreservation Scientist', 'Cryo Preservation Vault', '+91 931671 1002', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (99, 'Komal Sen', 'Cryogenic Facility Engineer', 'Biomedical Engineering', '+91 942110 5844', '2026-09-10 06:15:47.894926');
-INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `contact`, `created_at`) VALUES (100, 'Dr. Ananya Saxena', 'Chief Medical Officer', 'Executive Leadership', '+91 914397 9336', '2026-09-10 06:15:47.894926');
+-- Data for staff (17 rows)
+INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `created_at`) VALUES (1, 'Dr. Sharat Damodar', 'Doctor', 'Adult Haemato-Oncology & BMT; cellular therapy; CAR-T', '2026-09-12 13:52:39');
+INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `created_at`) VALUES (2, 'Dr. Shilpa Prabhu', 'Doctor', 'Adult Haemato-Oncology & BMT; cellular therapy; CAR-T', '2026-09-12 13:52:39');
+INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `created_at`) VALUES (3, 'Dr. Sunil Bhat', 'Doctor', 'Paediatric Haemato-Oncology & BMT; paediatric stem-cell transplantation; CAR-T', '2026-09-12 13:52:39');
+INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `created_at`) VALUES (4, 'Dr. Pooja P. Mallya', 'Doctor', 'Paediatric Haemato-Oncology & BMT; paediatric BMT and cellular therapy', '2026-09-12 13:52:39');
+INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `created_at`) VALUES (5, 'Dr. Shobha B', 'Doctor', 'Paediatric Haemato-Oncology & BMT; paediatric BMT/cellular therapy', '2026-09-12 13:52:39');
+INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `created_at`) VALUES (6, 'Dr. Suparno Chakrabarti', 'Doctor', 'Senior Consultant & HOD, Haemato-Oncology & Bone Marrow Transplant', '2026-09-12 13:52:39');
+INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `created_at`) VALUES (7, 'Dr. Sarita Rani Jaiswal', 'Doctor', 'Program Director, Haploidentical BMT; BMT & Haematology', '2026-09-12 13:52:39');
+INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `created_at`) VALUES (8, 'Dr. Megha Saroha', 'Doctor', 'Paediatric Haemato-Oncology & Bone Marrow Transplant', '2026-09-12 13:52:39');
+INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `created_at`) VALUES (9, 'Dr. Ashish Dixit', 'Doctor', 'Clinical Haematology; Blood & Marrow Transplant', '2026-09-12 13:52:39');
+INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `created_at`) VALUES (10, 'Dr. Dharma Choudhary', 'Doctor', 'Haematology and BMT', '2026-09-12 13:52:39');
+INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `created_at`) VALUES (11, 'Dr. Lalit Kumar', 'Doctor', 'Haematology/oncology; blood stem-cell/bone-marrow transplantation', '2026-09-12 13:52:39');
+INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `created_at`) VALUES (12, 'Dr. Ashray Kole', 'Doctor', 'Haematology & BMT; haemato-oncology and bone-marrow transplantation', '2026-09-12 13:52:39');
+INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `created_at`) VALUES (13, 'Dr. Shyam Rathi', 'Doctor', 'Haematology and Bone Marrow Transplant', '2026-09-12 13:52:39');
+INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `created_at`) VALUES (14, 'Dr. Prathamesh Kulkarni', 'Doctor', 'Haematology, haemato-oncology & stem-cell transplantation', '2026-09-12 13:52:39');
+INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `created_at`) VALUES (15, 'Dr. Santanu Sen', 'Doctor', 'Paediatric haematology, oncology, BMT & cellular therapy', '2026-09-12 13:52:39');
+INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `created_at`) VALUES (16, 'Dr. Shrinath Kshirsaga', 'Doctor', 'Haematology, haemato-oncology & BMT', '2026-09-12 13:52:39');
+INSERT INTO `staff` (`staff_id`, `name`, `role`, `department`, `created_at`) VALUES (17, 'Dr. Lalit Raut', 'Doctor', 'Haematology & Bone Marrow Transplant', '2026-09-12 13:52:39');
 
 -- Data for research (100 rows)
 INSERT INTO `research` (`research_id`, `project_name`, `lead_scientist`, `start_date`, `status`, `summary`, `created_at`) VALUES (1, 'Allogeneic HSC Engraftment Acceleration via Ex-Vivo Fucosylation', 'Dr. Deepak Sharma', '2025-06-28', 'Ongoing', 'Investigating enzymatic cell surface fucosylation to improve bone marrow homing velocity in cord blood grafts.', '2026-09-10 06:15:47.905438');
@@ -804,3 +720,23 @@ INSERT INTO `audit_logs` (`id`, `table_name`, `operation`, `record_id`, `changed
 INSERT INTO `audit_logs` (`id`, `table_name`, `operation`, `record_id`, `changed_at`, `changed_by`, `old_values`, `new_values`) VALUES (98, 'research', 'CRYO_CHECK', 8, '2026-09-10 06:15:47.917892', 'sysadmin', '{"status": "Pending", "verified": false}', '{"status": "Active", "verified": true, "notes": "Approved by clinical team"}');
 INSERT INTO `audit_logs` (`id`, `table_name`, `operation`, `record_id`, `changed_at`, `changed_by`, `old_values`, `new_values`) VALUES (99, 'staff', 'INSERT', 94, '2026-09-10 06:15:47.917892', 'cryo_eng', NULL, '{"status": "Active", "verified": true, "notes": "Approved by clinical team"}');
 INSERT INTO `audit_logs` (`id`, `table_name`, `operation`, `record_id`, `changed_at`, `changed_by`, `old_values`, `new_values`) VALUES (100, 'staff', 'INSERT', 35, '2026-09-10 06:15:47.917892', 'lab_lead', NULL, '{"status": "Active", "verified": true, "notes": "Approved by clinical team"}');
+
+-- Data for stem_cell_banks (18 rows)
+INSERT INTO `stem_cell_banks` (`id`, `bank_name`, `location`) VALUES (1, 'LifeCell International Pvt. Ltd.', 'Chennai, Tamil Nadu; storage facility also in Gurugram, Haryana');
+INSERT INTO `stem_cell_banks` (`id`, `bank_name`, `location`) VALUES (2, 'CryoViva Biotech India Pvt. Ltd.', 'Gurugram, Haryana');
+INSERT INTO `stem_cell_banks` (`id`, `bank_name`, `location`) VALUES (3, 'Cordlife Sciences India Pvt. Ltd.', 'Kolkata / Bishnupur, West Bengal');
+INSERT INTO `stem_cell_banks` (`id`, `bank_name`, `location`) VALUES (4, 'BioCell / Regrow Biosciences Pvt. Ltd.', 'Maharashtra');
+INSERT INTO `stem_cell_banks` (`id`, `bank_name`, `location`) VALUES (5, 'Cryo StemCell', 'Bengaluru, Karnataka');
+INSERT INTO `stem_cell_banks` (`id`, `bank_name`, `location`) VALUES (6, 'Cryovault Biotech Pvt. Ltd.', 'Bengaluru, Karnataka');
+INSERT INTO `stem_cell_banks` (`id`, `bank_name`, `location`) VALUES (7, 'Novacord / Totipotent RX Cell Therapy Pvt. Ltd.', 'Gurugram, Haryana');
+INSERT INTO `stem_cell_banks` (`id`, `bank_name`, `location`) VALUES (8, 'ReeLabs Pvt. Ltd.', 'Mumbai');
+INSERT INTO `stem_cell_banks` (`id`, `bank_name`, `location`) VALUES (9, 'Reliance Life Sciences Pvt. Ltd.', 'Navi Mumbai, Maharashtra');
+INSERT INTO `stem_cell_banks` (`id`, `bank_name`, `location`) VALUES (10, 'StemPlus Cryopreservation Pvt. Ltd.', 'Sangli, Maharashtra');
+INSERT INTO `stem_cell_banks` (`id`, `bank_name`, `location`) VALUES (11, 'StemCyte India Therapeutics Pvt. Ltd.', 'Gandhinagar, Gujarat');
+INSERT INTO `stem_cell_banks` (`id`, `bank_name`, `location`) VALUES (12, 'Narayana Hrudayalaya Tissue Bank & Stem Cells Research Centre', 'Bengaluru, Karnataka');
+INSERT INTO `stem_cell_banks` (`id`, `bank_name`, `location`) VALUES (13, 'Cryo Save (India) Pvt. Ltd.', 'Bengaluru, Karnataka');
+INSERT INTO `stem_cell_banks` (`id`, `bank_name`, `location`) VALUES (14, 'International Stem Cell Services Ltd. (ISSL)', 'Bengaluru, Karnataka');
+INSERT INTO `stem_cell_banks` (`id`, `bank_name`, `location`) VALUES (15, 'Unistem Bio Sciences Pvt. Ltd.', 'Gurugram, Haryana');
+INSERT INTO `stem_cell_banks` (`id`, `bank_name`, `location`) VALUES (16, 'Best Wellcare Management Services Pvt. Ltd. (Indu Stem Cell Bank)', 'Vadodara, Gujarat');
+INSERT INTO `stem_cell_banks` (`id`, `bank_name`, `location`) VALUES (17, 'Path Care Labs Pvt. Ltd.', 'Ranga Reddy district, Andhra Pradesh in the government record');
+INSERT INTO `stem_cell_banks` (`id`, `bank_name`, `location`) VALUES (18, 'Cryobanks International India Pvt. Ltd.', 'Gurugram, Haryana');

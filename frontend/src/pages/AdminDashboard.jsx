@@ -255,7 +255,7 @@ const AdminDashboard = () => {
               <span className="small text-muted fw-semibold">Care Team</span>
               <span className="badge bg-secondary-subtle text-secondary"><i className="bi bi-person-badge"></i></span>
             </div>
-            <div className="fs-4 fw-bold text-dark">{totals.staff ?? 42}</div>
+            <div className="fs-4 fw-bold text-dark">{totals.staff ?? 17}</div>
             <small className="text-muted" style={{ fontSize: '0.72rem' }}>Staff &amp; Specialists</small>
           </div>
         </div>

@@ -1,6 +1,6 @@
 {
-  "project_name": "Koshika",
-  "export_date": "2026-09-10 18:37:44",
+  "project_name": "STEMBRIDGE AI - Intelligent Stem Cell Banking & Matching Platform",
+  "export_date": "2026-09-12 19:26:07",
   "version": "1.0.0",
   "description": "Comprehensive clinical biobank repository, inventory, donor-patient registry, research trials, and ML training dataset.",
   "summary": {
@@ -9,7 +9,7 @@
     "total_donors": 100,
     "total_storage_units": 100,
     "total_inventory_items": 100,
-    "total_staff_members": 100,
+    "total_staff_members": 17,
     "total_research_projects": 100,
     "total_audit_logs": 100
   },
@@ -3544,803 +3544,122 @@
     "staff": [
       {
         "staff_id": 1,
-        "name": "Komal Pillai",
-        "role": "Head of Molecular Genetics & HLA",
-        "department": "Molecular Genetics",
-        "contact": "+91 878916 5136",
-        "created_at": "2026-09-10 06:15:47.894926"
+        "name": "Dr. Sharat Damodar",
+        "role": "Doctor",
+        "department": "Adult Haemato-Oncology & BMT; cellular therapy; CAR-T",
+        "created_at": "2026-09-12 13:52:39"
       },
       {
         "staff_id": 2,
-        "name": "Dr. Preeti Sen",
-        "role": "Chief Medical Officer",
-        "department": "Executive Leadership",
-        "contact": "+91 995831 9291",
-        "created_at": "2026-09-10 06:15:47.894926"
+        "name": "Dr. Shilpa Prabhu",
+        "role": "Doctor",
+        "department": "Adult Haemato-Oncology & BMT; cellular therapy; CAR-T",
+        "created_at": "2026-09-12 13:52:39"
       },
       {
         "staff_id": 3,
-        "name": "Dr. Abhishek Deshmukh",
-        "role": "Laboratory Safety & Biosafety Officer",
-        "department": "EHS & Safety",
-        "contact": "+91 807981 3438",
-        "created_at": "2026-09-10 06:15:47.894926"
+        "name": "Dr. Sunil Bhat",
+        "role": "Doctor",
+        "department": "Paediatric Haemato-Oncology & BMT; paediatric stem-cell transplantation; CAR-T",
+        "created_at": "2026-09-12 13:52:39"
       },
       {
         "staff_id": 4,
-        "name": "Dr. Harish Trivedi",
-        "role": "Chief Medical Officer",
-        "department": "Executive Leadership",
-        "contact": "+91 700469 0578",
-        "created_at": "2026-09-10 06:15:47.894926"
+        "name": "Dr. Pooja P. Mallya",
+        "role": "Doctor",
+        "department": "Paediatric Haemato-Oncology & BMT; paediatric BMT and cellular therapy",
+        "created_at": "2026-09-12 13:52:39"
       },
       {
         "staff_id": 5,
-        "name": "Gaurav Bhatt",
-        "role": "Senior Flow Cytometry Analyst",
-        "department": "Cellular Phenotyping",
-        "contact": "+91 908772 5737",
-        "created_at": "2026-09-10 06:15:47.894926"
+        "name": "Dr. Shobha B",
+        "role": "Doctor",
+        "department": "Paediatric Haemato-Oncology & BMT; paediatric BMT/cellular therapy",
+        "created_at": "2026-09-12 13:52:39"
       },
       {
         "staff_id": 6,
-        "name": "Archana Bhardwaj",
-        "role": "Donor Recruitment & Care Coordinator",
-        "department": "Donor Services",
-        "contact": "+91 806752 2606",
-        "created_at": "2026-09-10 06:15:47.894926"
+        "name": "Dr. Suparno Chakrabarti",
+        "role": "Doctor",
+        "department": "Senior Consultant & HOD, Haemato-Oncology & Bone Marrow Transplant",
+        "created_at": "2026-09-12 13:52:39"
       },
       {
         "staff_id": 7,
-        "name": "Dr. Meera Mukherjee",
-        "role": "Senior Postdoctoral Research Fellow",
-        "department": "Cellular Biology Research",
-        "contact": "+91 805006 3013",
-        "created_at": "2026-09-10 06:15:47.894926"
+        "name": "Dr. Sarita Rani Jaiswal",
+        "role": "Doctor",
+        "department": "Program Director, Haploidentical BMT; BMT & Haematology",
+        "created_at": "2026-09-12 13:52:39"
       },
       {
         "staff_id": 8,
-        "name": "Dr. Karthik Mishra",
-        "role": "Postdoctoral Fellow - iPSC Modeling",
-        "department": "Stem Cell Research",
-        "contact": "+91 701003 7165",
-        "created_at": "2026-09-10 06:15:47.894926"
+        "name": "Dr. Megha Saroha",
+        "role": "Doctor",
+        "department": "Paediatric Haemato-Oncology & Bone Marrow Transplant",
+        "created_at": "2026-09-12 13:52:39"
       },
       {
         "staff_id": 9,
-        "name": "Dr. Aarav Malhotra",
-        "role": "Lead Cryopreservation Scientist",
-        "department": "Cryo Preservation Vault",
-        "contact": "+91 913290 4434",
-        "created_at": "2026-09-10 06:15:47.894926"
+        "name": "Dr. Ashish Dixit",
+        "role": "Doctor",
+        "department": "Clinical Haematology; Blood & Marrow Transplant",
+        "created_at": "2026-09-12 13:52:39"
       },
       {
         "staff_id": 10,
-        "name": "Mohan Patil",
-        "role": "Patient Care & BMT Coordinator",
-        "department": "Patient Advocacy",
-        "contact": "+91 977491 4254",
-        "created_at": "2026-09-10 06:15:47.894926"
+        "name": "Dr. Dharma Choudhary",
+        "role": "Doctor",
+        "department": "Haematology and BMT",
+        "created_at": "2026-09-12 13:52:39"
       },
       {
         "staff_id": 11,
-        "name": "Suresh Menon",
-        "role": "Cryo Inventory & Distribution Lead",
-        "department": "Biobank Logistics",
-        "contact": "+91 806004 4941",
-        "created_at": "2026-09-10 06:15:47.894926"
+        "name": "Dr. Lalit Kumar",
+        "role": "Doctor",
+        "department": "Haematology/oncology; blood stem-cell/bone-marrow transplantation",
+        "created_at": "2026-09-12 13:52:39"
       },
       {
         "staff_id": 12,
-        "name": "Payal Nair",
-        "role": "Senior Apheresis Specialist Nurse",
-        "department": "Apheresis & Cell Collection",
-        "contact": "+91 983167 4443",
-        "created_at": "2026-09-10 06:15:47.894926"
+        "name": "Dr. Ashray Kole",
+        "role": "Doctor",
+        "department": "Haematology & BMT; haemato-oncology and bone-marrow transplantation",
+        "created_at": "2026-09-12 13:52:39"
       },
       {
         "staff_id": 13,
-        "name": "Dr. Aarti Mehta",
-        "role": "Director of Biobanking & Cryogenics",
-        "department": "Cryo Preservation Vault",
-        "contact": "+91 916062 1788",
-        "created_at": "2026-09-10 06:15:47.894926"
+        "name": "Dr. Shyam Rathi",
+        "role": "Doctor",
+        "department": "Haematology and Bone Marrow Transplant",
+        "created_at": "2026-09-12 13:52:39"
       },
       {
         "staff_id": 14,
-        "name": "Dr. Harish Mishra",
-        "role": "BMT Transplant Specialist Physician",
-        "department": "Bone Marrow Transplant",
-        "contact": "+91 806592 8154",
-        "created_at": "2026-09-10 06:15:47.894926"
+        "name": "Dr. Prathamesh Kulkarni",
+        "role": "Doctor",
+        "department": "Haematology, haemato-oncology & stem-cell transplantation",
+        "created_at": "2026-09-12 13:52:39"
       },
       {
         "staff_id": 15,
-        "name": "Dr. Suresh Kapoor",
-        "role": "Director of Biobanking & Cryogenics",
-        "department": "Cryo Preservation Vault",
-        "contact": "+91 709564 5915",
-        "created_at": "2026-09-10 06:15:47.894926"
+        "name": "Dr. Santanu Sen",
+        "role": "Doctor",
+        "department": "Paediatric haematology, oncology, BMT & cellular therapy",
+        "created_at": "2026-09-12 13:52:39"
       },
       {
         "staff_id": 16,
-        "name": "Dr. Ramesh Gupta",
-        "role": "Chief Medical Officer",
-        "department": "Executive Leadership",
-        "contact": "+91 912378 9387",
-        "created_at": "2026-09-10 06:15:47.894926"
+        "name": "Dr. Shrinath Kshirsaga",
+        "role": "Doctor",
+        "department": "Haematology, haemato-oncology & BMT",
+        "created_at": "2026-09-12 13:52:39"
       },
       {
         "staff_id": 17,
-        "name": "Ritu Yadav",
-        "role": "HLA Typing Laboratory Specialist",
-        "department": "HLA & Histocompatibility",
-        "contact": "+91 800310 4806",
-        "created_at": "2026-09-10 06:15:47.894926"
-      },
-      {
-        "staff_id": 18,
-        "name": "Naveen Dubey",
-        "role": "Quality Assurance & Compliance Manager",
-        "department": "Quality Assurance",
-        "contact": "+91 984776 6704",
-        "created_at": "2026-09-10 06:15:47.894926"
-      },
-      {
-        "staff_id": 19,
-        "name": "Manoj Bhatt",
-        "role": "Cleanroom Operations Supervisor",
-        "department": "Cleanroom Operations",
-        "contact": "+91 949873 7368",
-        "created_at": "2026-09-10 06:15:47.894926"
-      },
-      {
-        "staff_id": 20,
-        "name": "Shalini Patil",
-        "role": "Sterility & Microbial Quality Analyst",
-        "department": "Microbiology QC",
-        "contact": "+91 972747 8390",
-        "created_at": "2026-09-10 06:15:47.894926"
-      },
-      {
-        "staff_id": 21,
-        "name": "Pranav Pillai",
-        "role": "Clinical Research Coordinator",
-        "department": "Research & Trials",
-        "contact": "+91 878303 9750",
-        "created_at": "2026-09-10 06:15:47.894926"
-      },
-      {
-        "staff_id": 22,
-        "name": "Dr. Aparna Agarwal",
-        "role": "Laboratory Safety & Biosafety Officer",
-        "department": "EHS & Safety",
-        "contact": "+91 876040 9853",
-        "created_at": "2026-09-10 06:15:47.894926"
-      },
-      {
-        "staff_id": 23,
-        "name": "Sarita Bose",
-        "role": "Sterility & Microbial Quality Analyst",
-        "department": "Microbiology QC",
-        "contact": "+91 932487 8606",
-        "created_at": "2026-09-10 06:15:47.894926"
-      },
-      {
-        "staff_id": 24,
-        "name": "Dr. Dev Shukla",
-        "role": "Director of Biobanking & Cryogenics",
-        "department": "Cryo Preservation Vault",
-        "contact": "+91 963689 6919",
-        "created_at": "2026-09-10 06:15:47.894926"
-      },
-      {
-        "staff_id": 25,
-        "name": "Dr. Arjun Nair",
-        "role": "Regulatory Affairs Officer",
-        "department": "Regulatory Compliance",
-        "contact": "+91 886678 3171",
-        "created_at": "2026-09-10 06:15:47.894926"
-      },
-      {
-        "staff_id": 26,
-        "name": "Pooja Sharma",
-        "role": "Cryogenic Facility Engineer",
-        "department": "Biomedical Engineering",
-        "contact": "+91 937885 6024",
-        "created_at": "2026-09-10 06:15:47.894926"
-      },
-      {
-        "staff_id": 27,
-        "name": "Dr. Malini Das",
-        "role": "Regulatory Affairs Officer",
-        "department": "Regulatory Compliance",
-        "contact": "+91 909605 6188",
-        "created_at": "2026-09-10 06:15:47.894926"
-      },
-      {
-        "staff_id": 28,
-        "name": "Pallavi Bhardwaj",
-        "role": "Senior Apheresis Specialist Nurse",
-        "department": "Apheresis & Cell Collection",
-        "contact": "+91 912362 4354",
-        "created_at": "2026-09-10 06:15:47.894926"
-      },
-      {
-        "staff_id": 29,
-        "name": "Dr. Meera Bhatt",
-        "role": "BMT Transplant Specialist Physician",
-        "department": "Bone Marrow Transplant",
-        "contact": "+91 962662 2038",
-        "created_at": "2026-09-10 06:15:47.894926"
-      },
-      {
-        "staff_id": 30,
-        "name": "Dr. Varun Dubey",
-        "role": "Senior Medical Laboratory Scientist",
-        "department": "Clinical Laboratory",
-        "contact": "+91 961197 5411",
-        "created_at": "2026-09-10 06:15:47.894926"
-      },
-      {
-        "staff_id": 31,
-        "name": "Dr. Aparna Agarwal",
-        "role": "Regulatory Affairs Officer",
-        "department": "Regulatory Compliance",
-        "contact": "+91 911755 5170",
-        "created_at": "2026-09-10 06:15:47.894926"
-      },
-      {
-        "staff_id": 32,
-        "name": "Girish Das",
-        "role": "Senior Cell Processing Technologist",
-        "department": "Cleanroom Cell Processing",
-        "contact": "+91 978300 2808",
-        "created_at": "2026-09-10 06:15:47.894926"
-      },
-      {
-        "staff_id": 33,
-        "name": "Dr. Malini Banerjee",
-        "role": "Director of Biobanking & Cryogenics",
-        "department": "Cryo Preservation Vault",
-        "contact": "+91 876402 4479",
-        "created_at": "2026-09-10 06:15:47.894926"
-      },
-      {
-        "staff_id": 34,
-        "name": "Karthik Patil",
-        "role": "Cryogenic Facility Engineer",
-        "department": "Biomedical Engineering",
-        "contact": "+91 874818 5876",
-        "created_at": "2026-09-10 06:15:47.894926"
-      },
-      {
-        "staff_id": 35,
-        "name": "Suresh Pillai",
-        "role": "Clinical Data Specialist",
-        "department": "Health Informatics",
-        "contact": "+91 972658 1314",
-        "created_at": "2026-09-10 06:15:47.894926"
-      },
-      {
-        "staff_id": 36,
-        "name": "Archana Patel",
-        "role": "Cryo Inventory & Distribution Lead",
-        "department": "Biobank Logistics",
-        "contact": "+91 973661 8252",
-        "created_at": "2026-09-10 06:15:47.894926"
-      },
-      {
-        "staff_id": 37,
-        "name": "Deepa Rao",
-        "role": "Senior Apheresis Specialist Nurse",
-        "department": "Apheresis & Cell Collection",
-        "contact": "+91 965174 0728",
-        "created_at": "2026-09-10 06:15:47.894926"
-      },
-      {
-        "staff_id": 38,
-        "name": "Dr. Divya Bhatia",
-        "role": "Senior Hematologist & BMT Consultant",
-        "department": "Bone Marrow Transplant",
-        "contact": "+91 993585 2823",
-        "created_at": "2026-09-10 06:15:47.894926"
-      },
-      {
-        "staff_id": 39,
-        "name": "Dr. Neha Iyer",
-        "role": "Postdoctoral Fellow - iPSC Modeling",
-        "department": "Stem Cell Research",
-        "contact": "+91 988015 8674",
-        "created_at": "2026-09-10 06:15:47.894926"
-      },
-      {
-        "staff_id": 40,
-        "name": "Arjun Agarwal",
-        "role": "Donor Recruitment & Care Coordinator",
-        "department": "Donor Services",
-        "contact": "+91 961112 6517",
-        "created_at": "2026-09-10 06:15:47.894926"
-      },
-      {
-        "staff_id": 41,
-        "name": "Geeta Verma",
-        "role": "Clinical Research Coordinator",
-        "department": "Research & Trials",
-        "contact": "+91 807303 1112",
-        "created_at": "2026-09-10 06:15:47.894926"
-      },
-      {
-        "staff_id": 42,
-        "name": "Mohan Joshi",
-        "role": "Clinical Data Specialist",
-        "department": "Health Informatics",
-        "contact": "+91 999698 7522",
-        "created_at": "2026-09-10 06:15:47.894926"
-      },
-      {
-        "staff_id": 43,
-        "name": "Dr. Tushar Gowda",
-        "role": "Senior Hematologist & BMT Consultant",
-        "department": "Bone Marrow Transplant",
-        "contact": "+91 936595 2117",
-        "created_at": "2026-09-10 06:15:47.894926"
-      },
-      {
-        "staff_id": 44,
-        "name": "Dr. Pallavi Singh",
-        "role": "Laboratory Safety & Biosafety Officer",
-        "department": "EHS & Safety",
-        "contact": "+91 878650 2080",
-        "created_at": "2026-09-10 06:15:47.894926"
-      },
-      {
-        "staff_id": 45,
-        "name": "Dr. Sunil Rao",
-        "role": "Postdoctoral Fellow - iPSC Modeling",
-        "department": "Stem Cell Research",
-        "contact": "+91 983066 8799",
-        "created_at": "2026-09-10 06:15:47.894926"
-      },
-      {
-        "staff_id": 46,
-        "name": "Dr. Komal Yadav",
-        "role": "Director of Biobanking & Cryogenics",
-        "department": "Cryo Preservation Vault",
-        "contact": "+91 960486 9433",
-        "created_at": "2026-09-10 06:15:47.894926"
-      },
-      {
-        "staff_id": 47,
-        "name": "Tushar Nair",
-        "role": "Bioinformatics & HLA Matching Lead",
-        "department": "Computational Biology",
-        "contact": "+91 983275 3918",
-        "created_at": "2026-09-10 06:15:47.894926"
-      },
-      {
-        "staff_id": 48,
-        "name": "Dr. Preeti Agarwal",
-        "role": "Senior Postdoctoral Research Fellow",
-        "department": "Cellular Biology Research",
-        "contact": "+91 940341 3171",
-        "created_at": "2026-09-10 06:15:47.894926"
-      },
-      {
-        "staff_id": 49,
-        "name": "Isha Yadav",
-        "role": "Senior Flow Cytometry Analyst",
-        "department": "Cellular Phenotyping",
-        "contact": "+91 940212 9073",
-        "created_at": "2026-09-10 06:15:47.894926"
-      },
-      {
-        "staff_id": 50,
-        "name": "Dr. Rahul Nair",
-        "role": "Director of Biobanking & Cryogenics",
-        "department": "Cryo Preservation Vault",
-        "contact": "+91 979663 0945",
-        "created_at": "2026-09-10 06:15:47.894926"
-      },
-      {
-        "staff_id": 51,
-        "name": "Jyoti Banerjee",
-        "role": "HLA Typing Laboratory Specialist",
-        "department": "HLA & Histocompatibility",
-        "contact": "+91 993559 9119",
-        "created_at": "2026-09-10 06:15:47.894926"
-      },
-      {
-        "staff_id": 52,
-        "name": "Aparna Jain",
-        "role": "Clinical Research Coordinator",
-        "department": "Research & Trials",
-        "contact": "+91 974781 2384",
-        "created_at": "2026-09-10 06:15:47.894926"
-      },
-      {
-        "staff_id": 53,
-        "name": "Dr. Radha Pillai",
-        "role": "Director of Biobanking & Cryogenics",
-        "department": "Cryo Preservation Vault",
-        "contact": "+91 887335 1428",
-        "created_at": "2026-09-10 06:15:47.894926"
-      },
-      {
-        "staff_id": 54,
-        "name": "Chetan Dubey",
-        "role": "Senior Apheresis Specialist Nurse",
-        "department": "Apheresis & Cell Collection",
-        "contact": "+91 932468 9231",
-        "created_at": "2026-09-10 06:15:47.894926"
-      },
-      {
-        "staff_id": 55,
-        "name": "Aparna Mehta",
-        "role": "Cryo Inventory & Distribution Lead",
-        "department": "Biobank Logistics",
-        "contact": "+91 807864 3976",
-        "created_at": "2026-09-10 06:15:47.894926"
-      },
-      {
-        "staff_id": 56,
-        "name": "Deepa Banerjee",
-        "role": "Bioinformatics & HLA Matching Lead",
-        "department": "Computational Biology",
-        "contact": "+91 909554 0219",
-        "created_at": "2026-09-10 06:15:47.894926"
-      },
-      {
-        "staff_id": 57,
-        "name": "Nandini Menon",
-        "role": "Senior Flow Cytometry Analyst",
-        "department": "Cellular Phenotyping",
-        "contact": "+91 973383 6206",
-        "created_at": "2026-09-10 06:15:47.894926"
-      },
-      {
-        "staff_id": 58,
-        "name": "Arjun Iyer",
-        "role": "Apheresis Staff Nurse",
-        "department": "Apheresis & Cell Collection",
-        "contact": "+91 945520 2049",
-        "created_at": "2026-09-10 06:15:47.894926"
-      },
-      {
-        "staff_id": 59,
-        "name": "Dr. Vidya Reddy",
-        "role": "Senior Medical Laboratory Scientist",
-        "department": "Clinical Laboratory",
-        "contact": "+91 902802 0692",
-        "created_at": "2026-09-10 06:15:47.894926"
-      },
-      {
-        "staff_id": 60,
-        "name": "Deepak Trivedi",
-        "role": "Donor Recruitment & Care Coordinator",
-        "department": "Donor Services",
-        "contact": "+91 946371 7207",
-        "created_at": "2026-09-10 06:15:47.894926"
-      },
-      {
-        "staff_id": 61,
-        "name": "Sarita Iyer",
-        "role": "Clinical Data Specialist",
-        "department": "Health Informatics",
-        "contact": "+91 909019 1060",
-        "created_at": "2026-09-10 06:15:47.894926"
-      },
-      {
-        "staff_id": 62,
-        "name": "Archana Das",
-        "role": "Senior Flow Cytometry Analyst",
-        "department": "Cellular Phenotyping",
-        "contact": "+91 981504 7025",
-        "created_at": "2026-09-10 06:15:47.894926"
-      },
-      {
-        "staff_id": 63,
-        "name": "Rekha Rao",
-        "role": "Donor Recruitment & Care Coordinator",
-        "department": "Donor Services",
-        "contact": "+91 872591 3394",
-        "created_at": "2026-09-10 06:15:47.894926"
-      },
-      {
-        "staff_id": 64,
-        "name": "Dr. Sneha Singh",
-        "role": "BMT Transplant Specialist Physician",
-        "department": "Bone Marrow Transplant",
-        "contact": "+91 994338 9206",
-        "created_at": "2026-09-10 06:15:47.894926"
-      },
-      {
-        "staff_id": 65,
-        "name": "Pallavi Bhardwaj",
-        "role": "Cryogenic Facility Engineer",
-        "department": "Biomedical Engineering",
-        "contact": "+91 984538 3484",
-        "created_at": "2026-09-10 06:15:47.894926"
-      },
-      {
-        "staff_id": 66,
-        "name": "Pooja Patil",
-        "role": "Apheresis Staff Nurse",
-        "department": "Apheresis & Cell Collection",
-        "contact": "+91 986609 0494",
-        "created_at": "2026-09-10 06:15:47.894926"
-      },
-      {
-        "staff_id": 67,
-        "name": "Komal Agarwal",
-        "role": "Cryogenic Facility Engineer",
-        "department": "Biomedical Engineering",
-        "contact": "+91 993984 9213",
-        "created_at": "2026-09-10 06:15:47.894926"
-      },
-      {
-        "staff_id": 68,
-        "name": "Sneha Reddy",
-        "role": "Senior Flow Cytometry Analyst",
-        "department": "Cellular Phenotyping",
-        "contact": "+91 969697 7970",
-        "created_at": "2026-09-10 06:15:47.894926"
-      },
-      {
-        "staff_id": 69,
-        "name": "Dr. Malini Yadav",
-        "role": "Director of Biobanking & Cryogenics",
-        "department": "Cryo Preservation Vault",
-        "contact": "+91 701207 2089",
-        "created_at": "2026-09-10 06:15:47.894926"
-      },
-      {
-        "staff_id": 70,
-        "name": "Vikram Deshmukh",
-        "role": "Stem Cell Processing Technician",
-        "department": "Cleanroom Cell Processing",
-        "contact": "+91 948052 9101",
-        "created_at": "2026-09-10 06:15:47.894926"
-      },
-      {
-        "staff_id": 71,
-        "name": "Dr. Vivek Shukla",
-        "role": "Senior Postdoctoral Research Fellow",
-        "department": "Cellular Biology Research",
-        "contact": "+91 990504 1999",
-        "created_at": "2026-09-10 06:15:47.894926"
-      },
-      {
-        "staff_id": 72,
-        "name": "Rekha Bhatia",
-        "role": "Cleanroom Operations Supervisor",
-        "department": "Cleanroom Operations",
-        "contact": "+91 970938 3956",
-        "created_at": "2026-09-10 06:15:47.894926"
-      },
-      {
-        "staff_id": 73,
-        "name": "Dr. Ravi Malhotra",
-        "role": "Senior Medical Laboratory Scientist",
-        "department": "Clinical Laboratory",
-        "contact": "+91 968992 6162",
-        "created_at": "2026-09-10 06:15:47.894926"
-      },
-      {
-        "staff_id": 74,
-        "name": "Rajesh Reddy",
-        "role": "Donor Recruitment & Care Coordinator",
-        "department": "Donor Services",
-        "contact": "+91 919243 8655",
-        "created_at": "2026-09-10 06:15:47.894926"
-      },
-      {
-        "staff_id": 75,
-        "name": "Dr. Nandini Malhotra",
-        "role": "Senior Hematologist & BMT Consultant",
-        "department": "Bone Marrow Transplant",
-        "contact": "+91 974399 2589",
-        "created_at": "2026-09-10 06:15:47.894926"
-      },
-      {
-        "staff_id": 76,
-        "name": "Rajesh Deshmukh",
-        "role": "Clinical Data Specialist",
-        "department": "Health Informatics",
-        "contact": "+91 875293 1360",
-        "created_at": "2026-09-10 06:15:47.894926"
-      },
-      {
-        "staff_id": 77,
-        "name": "Suraj Chatterjee",
-        "role": "Clinical Data Specialist",
-        "department": "Health Informatics",
-        "contact": "+91 945129 6493",
-        "created_at": "2026-09-10 06:15:47.894926"
-      },
-      {
-        "staff_id": 78,
-        "name": "Dr. Abhishek Gowda",
-        "role": "Senior Hematologist & BMT Consultant",
-        "department": "Bone Marrow Transplant",
-        "contact": "+91 917648 7411",
-        "created_at": "2026-09-10 06:15:47.894926"
-      },
-      {
-        "staff_id": 79,
-        "name": "Dr. Rajesh Kulkarni",
-        "role": "Director of Biobanking & Cryogenics",
-        "department": "Cryo Preservation Vault",
-        "contact": "+91 933918 4447",
-        "created_at": "2026-09-10 06:15:47.894926"
-      },
-      {
-        "staff_id": 80,
-        "name": "Suraj Sharma",
-        "role": "Patient Care & BMT Coordinator",
-        "department": "Patient Advocacy",
-        "contact": "+91 989972 3981",
-        "created_at": "2026-09-10 06:15:47.894926"
-      },
-      {
-        "staff_id": 81,
-        "name": "Karthik Bhatt",
-        "role": "Clinical Research Coordinator",
-        "department": "Research & Trials",
-        "contact": "+91 998434 6549",
-        "created_at": "2026-09-10 06:15:47.894926"
-      },
-      {
-        "staff_id": 82,
-        "name": "Girish Sen",
-        "role": "Sterility & Microbial Quality Analyst",
-        "department": "Microbiology QC",
-        "contact": "+91 900693 0417",
-        "created_at": "2026-09-10 06:15:47.894926"
-      },
-      {
-        "staff_id": 83,
-        "name": "Akash Bhatia",
-        "role": "Donor Recruitment & Care Coordinator",
-        "department": "Donor Services",
-        "contact": "+91 939032 5099",
-        "created_at": "2026-09-10 06:15:47.894926"
-      },
-      {
-        "staff_id": 84,
-        "name": "Dr. Arjun Bose",
-        "role": "Lead Cryopreservation Scientist",
-        "department": "Cryo Preservation Vault",
-        "contact": "+91 906881 1662",
-        "created_at": "2026-09-10 06:15:47.894926"
-      },
-      {
-        "staff_id": 85,
-        "name": "Ravi Banerjee",
-        "role": "Senior Flow Cytometry Analyst",
-        "department": "Cellular Phenotyping",
-        "contact": "+91 903248 6454",
-        "created_at": "2026-09-10 06:15:47.894926"
-      },
-      {
-        "staff_id": 86,
-        "name": "Shalini Malhotra",
-        "role": "Head of Molecular Genetics & HLA",
-        "department": "Molecular Genetics",
-        "contact": "+91 961321 8624",
-        "created_at": "2026-09-10 06:15:47.894926"
-      },
-      {
-        "staff_id": 87,
-        "name": "Karthik Nair",
-        "role": "Senior Apheresis Specialist Nurse",
-        "department": "Apheresis & Cell Collection",
-        "contact": "+91 963335 9557",
-        "created_at": "2026-09-10 06:15:47.894926"
-      },
-      {
-        "staff_id": 88,
-        "name": "Nikhil Iyer",
-        "role": "Cleanroom Operations Supervisor",
-        "department": "Cleanroom Operations",
-        "contact": "+91 991471 9499",
-        "created_at": "2026-09-10 06:15:47.894926"
-      },
-      {
-        "staff_id": 89,
-        "name": "Swati Mukherjee",
-        "role": "Clinical Data Specialist",
-        "department": "Health Informatics",
-        "contact": "+91 988519 7428",
-        "created_at": "2026-09-10 06:15:47.894926"
-      },
-      {
-        "staff_id": 90,
-        "name": "Suraj Bhatia",
-        "role": "Clinical Data Specialist",
-        "department": "Health Informatics",
-        "contact": "+91 961855 4672",
-        "created_at": "2026-09-10 06:15:47.894926"
-      },
-      {
-        "staff_id": 91,
-        "name": "Arjun Shukla",
-        "role": "Sterility & Microbial Quality Analyst",
-        "department": "Microbiology QC",
-        "contact": "+91 986872 2776",
-        "created_at": "2026-09-10 06:15:47.894926"
-      },
-      {
-        "staff_id": 92,
-        "name": "Deepa Sharma",
-        "role": "Sterility & Microbial Quality Analyst",
-        "department": "Microbiology QC",
-        "contact": "+91 881968 2461",
-        "created_at": "2026-09-10 06:15:47.894926"
-      },
-      {
-        "staff_id": 93,
-        "name": "Rajesh Dubey",
-        "role": "Clinical Data Specialist",
-        "department": "Health Informatics",
-        "contact": "+91 884377 5845",
-        "created_at": "2026-09-10 06:15:47.894926"
-      },
-      {
-        "staff_id": 94,
-        "name": "Priya Joshi",
-        "role": "Donor Recruitment & Care Coordinator",
-        "department": "Donor Services",
-        "contact": "+91 961428 3805",
-        "created_at": "2026-09-10 06:15:47.894926"
-      },
-      {
-        "staff_id": 95,
-        "name": "Arjun Chopra",
-        "role": "Senior Apheresis Specialist Nurse",
-        "department": "Apheresis & Cell Collection",
-        "contact": "+91 884810 0420",
-        "created_at": "2026-09-10 06:15:47.894926"
-      },
-      {
-        "staff_id": 96,
-        "name": "Namrata Chatterjee",
-        "role": "Cryo Inventory & Distribution Lead",
-        "department": "Biobank Logistics",
-        "contact": "+91 939966 1077",
-        "created_at": "2026-09-10 06:15:47.894926"
-      },
-      {
-        "staff_id": 97,
-        "name": "Deepa Chopra",
-        "role": "Cryo Inventory & Distribution Lead",
-        "department": "Biobank Logistics",
-        "contact": "+91 917202 2872",
-        "created_at": "2026-09-10 06:15:47.894926"
-      },
-      {
-        "staff_id": 98,
-        "name": "Dr. Aarti Bhatt",
-        "role": "Lead Cryopreservation Scientist",
-        "department": "Cryo Preservation Vault",
-        "contact": "+91 931671 1002",
-        "created_at": "2026-09-10 06:15:47.894926"
-      },
-      {
-        "staff_id": 99,
-        "name": "Komal Sen",
-        "role": "Cryogenic Facility Engineer",
-        "department": "Biomedical Engineering",
-        "contact": "+91 942110 5844",
-        "created_at": "2026-09-10 06:15:47.894926"
-      },
-      {
-        "staff_id": 100,
-        "name": "Dr. Ananya Saxena",
-        "role": "Chief Medical Officer",
-        "department": "Executive Leadership",
-        "contact": "+91 914397 9336",
-        "created_at": "2026-09-10 06:15:47.894926"
+        "name": "Dr. Lalit Raut",
+        "role": "Doctor",
+        "department": "Haematology & Bone Marrow Transplant",
+        "created_at": "2026-09-12 13:52:39"
       }
     ],
     "research": [
@@ -6245,6 +5564,98 @@
         "changed_by": "lab_lead",
         "old_values": null,
         "new_values": "{\"status\": \"Active\", \"verified\": true, \"notes\": \"Approved by clinical team\"}"
+      }
+    ],
+    "stem_cell_banks": [
+      {
+        "id": 1,
+        "bank_name": "LifeCell International Pvt. Ltd.",
+        "location": "Chennai, Tamil Nadu; storage facility also in Gurugram, Haryana"
+      },
+      {
+        "id": 2,
+        "bank_name": "CryoViva Biotech India Pvt. Ltd.",
+        "location": "Gurugram, Haryana"
+      },
+      {
+        "id": 3,
+        "bank_name": "Cordlife Sciences India Pvt. Ltd.",
+        "location": "Kolkata / Bishnupur, West Bengal"
+      },
+      {
+        "id": 4,
+        "bank_name": "BioCell / Regrow Biosciences Pvt. Ltd.",
+        "location": "Maharashtra"
+      },
+      {
+        "id": 5,
+        "bank_name": "Cryo StemCell",
+        "location": "Bengaluru, Karnataka"
+      },
+      {
+        "id": 6,
+        "bank_name": "Cryovault Biotech Pvt. Ltd.",
+        "location": "Bengaluru, Karnataka"
+      },
+      {
+        "id": 7,
+        "bank_name": "Novacord / Totipotent RX Cell Therapy Pvt. Ltd.",
+        "location": "Gurugram, Haryana"
+      },
+      {
+        "id": 8,
+        "bank_name": "ReeLabs Pvt. Ltd.",
+        "location": "Mumbai"
+      },
+      {
+        "id": 9,
+        "bank_name": "Reliance Life Sciences Pvt. Ltd.",
+        "location": "Navi Mumbai, Maharashtra"
+      },
+      {
+        "id": 10,
+        "bank_name": "StemPlus Cryopreservation Pvt. Ltd.",
+        "location": "Sangli, Maharashtra"
+      },
+      {
+        "id": 11,
+        "bank_name": "StemCyte India Therapeutics Pvt. Ltd.",
+        "location": "Gandhinagar, Gujarat"
+      },
+      {
+        "id": 12,
+        "bank_name": "Narayana Hrudayalaya Tissue Bank & Stem Cells Research Centre",
+        "location": "Bengaluru, Karnataka"
+      },
+      {
+        "id": 13,
+        "bank_name": "Cryo Save (India) Pvt. Ltd.",
+        "location": "Bengaluru, Karnataka"
+      },
+      {
+        "id": 14,
+        "bank_name": "International Stem Cell Services Ltd. (ISSL)",
+        "location": "Bengaluru, Karnataka"
+      },
+      {
+        "id": 15,
+        "bank_name": "Unistem Bio Sciences Pvt. Ltd.",
+        "location": "Gurugram, Haryana"
+      },
+      {
+        "id": 16,
+        "bank_name": "Best Wellcare Management Services Pvt. Ltd. (Indu Stem Cell Bank)",
+        "location": "Vadodara, Gujarat"
+      },
+      {
+        "id": 17,
+        "bank_name": "Path Care Labs Pvt. Ltd.",
+        "location": "Ranga Reddy district, Andhra Pradesh in the government record"
+      },
+      {
+        "id": 18,
+        "bank_name": "Cryobanks International India Pvt. Ltd.",
+        "location": "Gurugram, Haryana"
       }
     ]
   },

@@ -53,11 +53,10 @@ CREATE TABLE IF NOT EXISTS storage (
 -- -------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS staff (
     staff_id SERIAL PRIMARY KEY,
-    name VARCHAR(150) NOT NULL,
+    name VARCHAR(255) NOT NULL,
     role VARCHAR(100),
-    department VARCHAR(100),
-    contact VARCHAR(50),
-    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+    department VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- -------------------------------------------------------------
@@ -96,6 +95,15 @@ CREATE TABLE IF NOT EXISTS audit_logs (
     changed_by VARCHAR(128),
     old_values JSONB,
     new_values JSONB
+);
+
+-- -------------------------------------------------------------
+-- 8. Table: stem_cell_banks
+-- -------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS stem_cell_banks (
+    id SERIAL PRIMARY KEY,
+    bank_name VARCHAR(255) NOT NULL,
+    location VARCHAR(255) NOT NULL
 );
 
 -- -------------------------------------------------------------
@@ -180,13 +188,14 @@ ALTER TABLE staff ENABLE ROW LEVEL SECURITY;
 ALTER TABLE research ENABLE ROW LEVEL SECURITY;
 ALTER TABLE inventory ENABLE ROW LEVEL SECURITY;
 ALTER TABLE audit_logs ENABLE ROW LEVEL SECURITY;
+ALTER TABLE stem_cell_banks ENABLE ROW LEVEL SECURITY;
 
 -- Allow full access for backend service role and authenticated app requests
 DO $$
 DECLARE
     tbl text;
 BEGIN
-    FOR tbl IN SELECT unnest(ARRAY['patients', 'donors', 'storage', 'staff', 'research', 'inventory', 'audit_logs'])
+    FOR tbl IN SELECT unnest(ARRAY['patients', 'donors', 'storage', 'staff', 'research', 'inventory', 'audit_logs', 'stem_cell_banks'])
     LOOP
         EXECUTE format('DROP POLICY IF EXISTS "Allow full access for %I" ON %I;', tbl, tbl);
         EXECUTE format('CREATE POLICY "Allow full access for %I" ON %I FOR ALL USING (true) WITH CHECK (true);', tbl, tbl);
@@ -518,108 +527,28 @@ ON CONFLICT (storage_id) DO NOTHING;
 SELECT setval('storage_storage_id_seq', (SELECT MAX(storage_id) FROM storage));
 
 -- Staff
-INSERT INTO staff (staff_id, name, role, department, contact, created_at) VALUES
-(1, 'Komal Pillai', 'Head of Molecular Genetics & HLA', 'Molecular Genetics', '+91 878916 5136', '2026-09-10 06:15:47.894926'),
-(2, 'Dr. Preeti Sen', 'Chief Medical Officer', 'Executive Leadership', '+91 995831 9291', '2026-09-10 06:15:47.894926'),
-(3, 'Dr. Abhishek Deshmukh', 'Laboratory Safety & Biosafety Officer', 'EHS & Safety', '+91 807981 3438', '2026-09-10 06:15:47.894926'),
-(4, 'Dr. Harish Trivedi', 'Chief Medical Officer', 'Executive Leadership', '+91 700469 0578', '2026-09-10 06:15:47.894926'),
-(5, 'Gaurav Bhatt', 'Senior Flow Cytometry Analyst', 'Cellular Phenotyping', '+91 908772 5737', '2026-09-10 06:15:47.894926'),
-(6, 'Archana Bhardwaj', 'Donor Recruitment & Care Coordinator', 'Donor Services', '+91 806752 2606', '2026-09-10 06:15:47.894926'),
-(7, 'Dr. Meera Mukherjee', 'Senior Postdoctoral Research Fellow', 'Cellular Biology Research', '+91 805006 3013', '2026-09-10 06:15:47.894926'),
-(8, 'Dr. Karthik Mishra', 'Postdoctoral Fellow - iPSC Modeling', 'Stem Cell Research', '+91 701003 7165', '2026-09-10 06:15:47.894926'),
-(9, 'Dr. Aarav Malhotra', 'Lead Cryopreservation Scientist', 'Cryo Preservation Vault', '+91 913290 4434', '2026-09-10 06:15:47.894926'),
-(10, 'Mohan Patil', 'Patient Care & BMT Coordinator', 'Patient Advocacy', '+91 977491 4254', '2026-09-10 06:15:47.894926'),
-(11, 'Suresh Menon', 'Cryo Inventory & Distribution Lead', 'Biobank Logistics', '+91 806004 4941', '2026-09-10 06:15:47.894926'),
-(12, 'Payal Nair', 'Senior Apheresis Specialist Nurse', 'Apheresis & Cell Collection', '+91 983167 4443', '2026-09-10 06:15:47.894926'),
-(13, 'Dr. Aarti Mehta', 'Director of Biobanking & Cryogenics', 'Cryo Preservation Vault', '+91 916062 1788', '2026-09-10 06:15:47.894926'),
-(14, 'Dr. Harish Mishra', 'BMT Transplant Specialist Physician', 'Bone Marrow Transplant', '+91 806592 8154', '2026-09-10 06:15:47.894926'),
-(15, 'Dr. Suresh Kapoor', 'Director of Biobanking & Cryogenics', 'Cryo Preservation Vault', '+91 709564 5915', '2026-09-10 06:15:47.894926'),
-(16, 'Dr. Ramesh Gupta', 'Chief Medical Officer', 'Executive Leadership', '+91 912378 9387', '2026-09-10 06:15:47.894926'),
-(17, 'Ritu Yadav', 'HLA Typing Laboratory Specialist', 'HLA & Histocompatibility', '+91 800310 4806', '2026-09-10 06:15:47.894926'),
-(18, 'Naveen Dubey', 'Quality Assurance & Compliance Manager', 'Quality Assurance', '+91 984776 6704', '2026-09-10 06:15:47.894926'),
-(19, 'Manoj Bhatt', 'Cleanroom Operations Supervisor', 'Cleanroom Operations', '+91 949873 7368', '2026-09-10 06:15:47.894926'),
-(20, 'Shalini Patil', 'Sterility & Microbial Quality Analyst', 'Microbiology QC', '+91 972747 8390', '2026-09-10 06:15:47.894926'),
-(21, 'Pranav Pillai', 'Clinical Research Coordinator', 'Research & Trials', '+91 878303 9750', '2026-09-10 06:15:47.894926'),
-(22, 'Dr. Aparna Agarwal', 'Laboratory Safety & Biosafety Officer', 'EHS & Safety', '+91 876040 9853', '2026-09-10 06:15:47.894926'),
-(23, 'Sarita Bose', 'Sterility & Microbial Quality Analyst', 'Microbiology QC', '+91 932487 8606', '2026-09-10 06:15:47.894926'),
-(24, 'Dr. Dev Shukla', 'Director of Biobanking & Cryogenics', 'Cryo Preservation Vault', '+91 963689 6919', '2026-09-10 06:15:47.894926'),
-(25, 'Dr. Arjun Nair', 'Regulatory Affairs Officer', 'Regulatory Compliance', '+91 886678 3171', '2026-09-10 06:15:47.894926'),
-(26, 'Pooja Sharma', 'Cryogenic Facility Engineer', 'Biomedical Engineering', '+91 937885 6024', '2026-09-10 06:15:47.894926'),
-(27, 'Dr. Malini Das', 'Regulatory Affairs Officer', 'Regulatory Compliance', '+91 909605 6188', '2026-09-10 06:15:47.894926'),
-(28, 'Pallavi Bhardwaj', 'Senior Apheresis Specialist Nurse', 'Apheresis & Cell Collection', '+91 912362 4354', '2026-09-10 06:15:47.894926'),
-(29, 'Dr. Meera Bhatt', 'BMT Transplant Specialist Physician', 'Bone Marrow Transplant', '+91 962662 2038', '2026-09-10 06:15:47.894926'),
-(30, 'Dr. Varun Dubey', 'Senior Medical Laboratory Scientist', 'Clinical Laboratory', '+91 961197 5411', '2026-09-10 06:15:47.894926'),
-(31, 'Dr. Aparna Agarwal', 'Regulatory Affairs Officer', 'Regulatory Compliance', '+91 911755 5170', '2026-09-10 06:15:47.894926'),
-(32, 'Girish Das', 'Senior Cell Processing Technologist', 'Cleanroom Cell Processing', '+91 978300 2808', '2026-09-10 06:15:47.894926'),
-(33, 'Dr. Malini Banerjee', 'Director of Biobanking & Cryogenics', 'Cryo Preservation Vault', '+91 876402 4479', '2026-09-10 06:15:47.894926'),
-(34, 'Karthik Patil', 'Cryogenic Facility Engineer', 'Biomedical Engineering', '+91 874818 5876', '2026-09-10 06:15:47.894926'),
-(35, 'Suresh Pillai', 'Clinical Data Specialist', 'Health Informatics', '+91 972658 1314', '2026-09-10 06:15:47.894926'),
-(36, 'Archana Patel', 'Cryo Inventory & Distribution Lead', 'Biobank Logistics', '+91 973661 8252', '2026-09-10 06:15:47.894926'),
-(37, 'Deepa Rao', 'Senior Apheresis Specialist Nurse', 'Apheresis & Cell Collection', '+91 965174 0728', '2026-09-10 06:15:47.894926'),
-(38, 'Dr. Divya Bhatia', 'Senior Hematologist & BMT Consultant', 'Bone Marrow Transplant', '+91 993585 2823', '2026-09-10 06:15:47.894926'),
-(39, 'Dr. Neha Iyer', 'Postdoctoral Fellow - iPSC Modeling', 'Stem Cell Research', '+91 988015 8674', '2026-09-10 06:15:47.894926'),
-(40, 'Arjun Agarwal', 'Donor Recruitment & Care Coordinator', 'Donor Services', '+91 961112 6517', '2026-09-10 06:15:47.894926'),
-(41, 'Geeta Verma', 'Clinical Research Coordinator', 'Research & Trials', '+91 807303 1112', '2026-09-10 06:15:47.894926'),
-(42, 'Mohan Joshi', 'Clinical Data Specialist', 'Health Informatics', '+91 999698 7522', '2026-09-10 06:15:47.894926'),
-(43, 'Dr. Tushar Gowda', 'Senior Hematologist & BMT Consultant', 'Bone Marrow Transplant', '+91 936595 2117', '2026-09-10 06:15:47.894926'),
-(44, 'Dr. Pallavi Singh', 'Laboratory Safety & Biosafety Officer', 'EHS & Safety', '+91 878650 2080', '2026-09-10 06:15:47.894926'),
-(45, 'Dr. Sunil Rao', 'Postdoctoral Fellow - iPSC Modeling', 'Stem Cell Research', '+91 983066 8799', '2026-09-10 06:15:47.894926'),
-(46, 'Dr. Komal Yadav', 'Director of Biobanking & Cryogenics', 'Cryo Preservation Vault', '+91 960486 9433', '2026-09-10 06:15:47.894926'),
-(47, 'Tushar Nair', 'Bioinformatics & HLA Matching Lead', 'Computational Biology', '+91 983275 3918', '2026-09-10 06:15:47.894926'),
-(48, 'Dr. Preeti Agarwal', 'Senior Postdoctoral Research Fellow', 'Cellular Biology Research', '+91 940341 3171', '2026-09-10 06:15:47.894926'),
-(49, 'Isha Yadav', 'Senior Flow Cytometry Analyst', 'Cellular Phenotyping', '+91 940212 9073', '2026-09-10 06:15:47.894926'),
-(50, 'Dr. Rahul Nair', 'Director of Biobanking & Cryogenics', 'Cryo Preservation Vault', '+91 979663 0945', '2026-09-10 06:15:47.894926'),
-(51, 'Jyoti Banerjee', 'HLA Typing Laboratory Specialist', 'HLA & Histocompatibility', '+91 993559 9119', '2026-09-10 06:15:47.894926'),
-(52, 'Aparna Jain', 'Clinical Research Coordinator', 'Research & Trials', '+91 974781 2384', '2026-09-10 06:15:47.894926'),
-(53, 'Dr. Radha Pillai', 'Director of Biobanking & Cryogenics', 'Cryo Preservation Vault', '+91 887335 1428', '2026-09-10 06:15:47.894926'),
-(54, 'Chetan Dubey', 'Senior Apheresis Specialist Nurse', 'Apheresis & Cell Collection', '+91 932468 9231', '2026-09-10 06:15:47.894926'),
-(55, 'Aparna Mehta', 'Cryo Inventory & Distribution Lead', 'Biobank Logistics', '+91 807864 3976', '2026-09-10 06:15:47.894926'),
-(56, 'Deepa Banerjee', 'Bioinformatics & HLA Matching Lead', 'Computational Biology', '+91 909554 0219', '2026-09-10 06:15:47.894926'),
-(57, 'Nandini Menon', 'Senior Flow Cytometry Analyst', 'Cellular Phenotyping', '+91 973383 6206', '2026-09-10 06:15:47.894926'),
-(58, 'Arjun Iyer', 'Apheresis Staff Nurse', 'Apheresis & Cell Collection', '+91 945520 2049', '2026-09-10 06:15:47.894926'),
-(59, 'Dr. Vidya Reddy', 'Senior Medical Laboratory Scientist', 'Clinical Laboratory', '+91 902802 0692', '2026-09-10 06:15:47.894926'),
-(60, 'Deepak Trivedi', 'Donor Recruitment & Care Coordinator', 'Donor Services', '+91 946371 7207', '2026-09-10 06:15:47.894926'),
-(61, 'Sarita Iyer', 'Clinical Data Specialist', 'Health Informatics', '+91 909019 1060', '2026-09-10 06:15:47.894926'),
-(62, 'Archana Das', 'Senior Flow Cytometry Analyst', 'Cellular Phenotyping', '+91 981504 7025', '2026-09-10 06:15:47.894926'),
-(63, 'Rekha Rao', 'Donor Recruitment & Care Coordinator', 'Donor Services', '+91 872591 3394', '2026-09-10 06:15:47.894926'),
-(64, 'Dr. Sneha Singh', 'BMT Transplant Specialist Physician', 'Bone Marrow Transplant', '+91 994338 9206', '2026-09-10 06:15:47.894926'),
-(65, 'Pallavi Bhardwaj', 'Cryogenic Facility Engineer', 'Biomedical Engineering', '+91 984538 3484', '2026-09-10 06:15:47.894926'),
-(66, 'Pooja Patil', 'Apheresis Staff Nurse', 'Apheresis & Cell Collection', '+91 986609 0494', '2026-09-10 06:15:47.894926'),
-(67, 'Komal Agarwal', 'Cryogenic Facility Engineer', 'Biomedical Engineering', '+91 993984 9213', '2026-09-10 06:15:47.894926'),
-(68, 'Sneha Reddy', 'Senior Flow Cytometry Analyst', 'Cellular Phenotyping', '+91 969697 7970', '2026-09-10 06:15:47.894926'),
-(69, 'Dr. Malini Yadav', 'Director of Biobanking & Cryogenics', 'Cryo Preservation Vault', '+91 701207 2089', '2026-09-10 06:15:47.894926'),
-(70, 'Vikram Deshmukh', 'Stem Cell Processing Technician', 'Cleanroom Cell Processing', '+91 948052 9101', '2026-09-10 06:15:47.894926'),
-(71, 'Dr. Vivek Shukla', 'Senior Postdoctoral Research Fellow', 'Cellular Biology Research', '+91 990504 1999', '2026-09-10 06:15:47.894926'),
-(72, 'Rekha Bhatia', 'Cleanroom Operations Supervisor', 'Cleanroom Operations', '+91 970938 3956', '2026-09-10 06:15:47.894926'),
-(73, 'Dr. Ravi Malhotra', 'Senior Medical Laboratory Scientist', 'Clinical Laboratory', '+91 968992 6162', '2026-09-10 06:15:47.894926'),
-(74, 'Rajesh Reddy', 'Donor Recruitment & Care Coordinator', 'Donor Services', '+91 919243 8655', '2026-09-10 06:15:47.894926'),
-(75, 'Dr. Nandini Malhotra', 'Senior Hematologist & BMT Consultant', 'Bone Marrow Transplant', '+91 974399 2589', '2026-09-10 06:15:47.894926'),
-(76, 'Rajesh Deshmukh', 'Clinical Data Specialist', 'Health Informatics', '+91 875293 1360', '2026-09-10 06:15:47.894926'),
-(77, 'Suraj Chatterjee', 'Clinical Data Specialist', 'Health Informatics', '+91 945129 6493', '2026-09-10 06:15:47.894926'),
-(78, 'Dr. Abhishek Gowda', 'Senior Hematologist & BMT Consultant', 'Bone Marrow Transplant', '+91 917648 7411', '2026-09-10 06:15:47.894926'),
-(79, 'Dr. Rajesh Kulkarni', 'Director of Biobanking & Cryogenics', 'Cryo Preservation Vault', '+91 933918 4447', '2026-09-10 06:15:47.894926'),
-(80, 'Suraj Sharma', 'Patient Care & BMT Coordinator', 'Patient Advocacy', '+91 989972 3981', '2026-09-10 06:15:47.894926'),
-(81, 'Karthik Bhatt', 'Clinical Research Coordinator', 'Research & Trials', '+91 998434 6549', '2026-09-10 06:15:47.894926'),
-(82, 'Girish Sen', 'Sterility & Microbial Quality Analyst', 'Microbiology QC', '+91 900693 0417', '2026-09-10 06:15:47.894926'),
-(83, 'Akash Bhatia', 'Donor Recruitment & Care Coordinator', 'Donor Services', '+91 939032 5099', '2026-09-10 06:15:47.894926'),
-(84, 'Dr. Arjun Bose', 'Lead Cryopreservation Scientist', 'Cryo Preservation Vault', '+91 906881 1662', '2026-09-10 06:15:47.894926'),
-(85, 'Ravi Banerjee', 'Senior Flow Cytometry Analyst', 'Cellular Phenotyping', '+91 903248 6454', '2026-09-10 06:15:47.894926'),
-(86, 'Shalini Malhotra', 'Head of Molecular Genetics & HLA', 'Molecular Genetics', '+91 961321 8624', '2026-09-10 06:15:47.894926'),
-(87, 'Karthik Nair', 'Senior Apheresis Specialist Nurse', 'Apheresis & Cell Collection', '+91 963335 9557', '2026-09-10 06:15:47.894926'),
-(88, 'Nikhil Iyer', 'Cleanroom Operations Supervisor', 'Cleanroom Operations', '+91 991471 9499', '2026-09-10 06:15:47.894926'),
-(89, 'Swati Mukherjee', 'Clinical Data Specialist', 'Health Informatics', '+91 988519 7428', '2026-09-10 06:15:47.894926'),
-(90, 'Suraj Bhatia', 'Clinical Data Specialist', 'Health Informatics', '+91 961855 4672', '2026-09-10 06:15:47.894926'),
-(91, 'Arjun Shukla', 'Sterility & Microbial Quality Analyst', 'Microbiology QC', '+91 986872 2776', '2026-09-10 06:15:47.894926'),
-(92, 'Deepa Sharma', 'Sterility & Microbial Quality Analyst', 'Microbiology QC', '+91 881968 2461', '2026-09-10 06:15:47.894926'),
-(93, 'Rajesh Dubey', 'Clinical Data Specialist', 'Health Informatics', '+91 884377 5845', '2026-09-10 06:15:47.894926'),
-(94, 'Priya Joshi', 'Donor Recruitment & Care Coordinator', 'Donor Services', '+91 961428 3805', '2026-09-10 06:15:47.894926'),
-(95, 'Arjun Chopra', 'Senior Apheresis Specialist Nurse', 'Apheresis & Cell Collection', '+91 884810 0420', '2026-09-10 06:15:47.894926'),
-(96, 'Namrata Chatterjee', 'Cryo Inventory & Distribution Lead', 'Biobank Logistics', '+91 939966 1077', '2026-09-10 06:15:47.894926'),
-(97, 'Deepa Chopra', 'Cryo Inventory & Distribution Lead', 'Biobank Logistics', '+91 917202 2872', '2026-09-10 06:15:47.894926'),
-(98, 'Dr. Aarti Bhatt', 'Lead Cryopreservation Scientist', 'Cryo Preservation Vault', '+91 931671 1002', '2026-09-10 06:15:47.894926'),
-(99, 'Komal Sen', 'Cryogenic Facility Engineer', 'Biomedical Engineering', '+91 942110 5844', '2026-09-10 06:15:47.894926'),
-(100, 'Dr. Ananya Saxena', 'Chief Medical Officer', 'Executive Leadership', '+91 914397 9336', '2026-09-10 06:15:47.894926')
-ON CONFLICT (staff_id) DO NOTHING;
+INSERT INTO staff (staff_id, name, role, department, created_at) VALUES
+(1, 'Dr. Sharat Damodar', 'Doctor', 'Adult Haemato-Oncology & BMT; cellular therapy; CAR-T', '2026-09-12 10:00:00'),
+(2, 'Dr. Shilpa Prabhu', 'Doctor', 'Adult Haemato-Oncology & BMT; cellular therapy; CAR-T', '2026-09-12 10:00:00'),
+(3, 'Dr. Sunil Bhat', 'Doctor', 'Paediatric Haemato-Oncology & BMT; paediatric stem-cell transplantation; CAR-T', '2026-09-12 10:00:00'),
+(4, 'Dr. Pooja P. Mallya', 'Doctor', 'Paediatric Haemato-Oncology & BMT; paediatric BMT and cellular therapy', '2026-09-12 10:00:00'),
+(5, 'Dr. Shobha B', 'Doctor', 'Paediatric Haemato-Oncology & BMT; paediatric BMT/cellular therapy', '2026-09-12 10:00:00'),
+(6, 'Dr. Suparno Chakrabarti', 'Doctor', 'Senior Consultant & HOD, Haemato-Oncology & Bone Marrow Transplant', '2026-09-12 10:00:00'),
+(7, 'Dr. Sarita Rani Jaiswal', 'Doctor', 'Program Director, Haploidentical BMT; BMT & Haematology', '2026-09-12 10:00:00'),
+(8, 'Dr. Megha Saroha', 'Doctor', 'Paediatric Haemato-Oncology & Bone Marrow Transplant', '2026-09-12 10:00:00'),
+(9, 'Dr. Ashish Dixit', 'Doctor', 'Clinical Haematology; Blood & Marrow Transplant', '2026-09-12 10:00:00'),
+(10, 'Dr. Dharma Choudhary', 'Doctor', 'Haematology and BMT', '2026-09-12 10:00:00'),
+(11, 'Dr. Lalit Kumar', 'Doctor', 'Haematology/oncology; blood stem-cell/bone-marrow transplantation', '2026-09-12 10:00:00'),
+(12, 'Dr. Ashray Kole', 'Doctor', 'Haematology & BMT; haemato-oncology and bone-marrow transplantation', '2026-09-12 10:00:00'),
+(13, 'Dr. Shyam Rathi', 'Doctor', 'Haematology and Bone Marrow Transplant', '2026-09-12 10:00:00'),
+(14, 'Dr. Prathamesh Kulkarni', 'Doctor', 'Haematology, haemato-oncology & stem-cell transplantation', '2026-09-12 10:00:00'),
+(15, 'Dr. Santanu Sen', 'Doctor', 'Paediatric haematology, oncology, BMT & cellular therapy', '2026-09-12 10:00:00'),
+(16, 'Dr. Shrinath Kshirsaga', 'Doctor', 'Haematology, haemato-oncology & BMT', '2026-09-12 10:00:00'),
+(17, 'Dr. Lalit Raut', 'Doctor', 'Haematology & Bone Marrow Transplant', '2026-09-12 10:00:00')
+ON CONFLICT (staff_id) DO UPDATE SET
+    name = EXCLUDED.name,
+    role = EXCLUDED.role,
+    department = EXCLUDED.department;
 
 SELECT setval('staff_staff_id_seq', (SELECT MAX(staff_id) FROM staff));
 
@@ -834,3 +763,29 @@ INSERT INTO inventory (item_id, item_name, quantity, unit, last_updated) VALUES
 ON CONFLICT (item_id) DO NOTHING;
 
 SELECT setval('inventory_item_id_seq', (SELECT MAX(item_id) FROM inventory));
+
+-- Stem Cell Banks
+INSERT INTO stem_cell_banks (id, bank_name, location) VALUES
+(1, 'LifeCell International Pvt. Ltd.', 'Chennai, Tamil Nadu; storage facility also in Gurugram, Haryana'),
+(2, 'CryoViva Biotech India Pvt. Ltd.', 'Gurugram, Haryana'),
+(3, 'Cordlife Sciences India Pvt. Ltd.', 'Kolkata / Bishnupur, West Bengal'),
+(4, 'BioCell / Regrow Biosciences Pvt. Ltd.', 'Maharashtra'),
+(5, 'Cryo StemCell', 'Bengaluru, Karnataka'),
+(6, 'Cryovault Biotech Pvt. Ltd.', 'Bengaluru, Karnataka'),
+(7, 'Novacord / Totipotent RX Cell Therapy Pvt. Ltd.', 'Gurugram, Haryana'),
+(8, 'ReeLabs Pvt. Ltd.', 'Mumbai'),
+(9, 'Reliance Life Sciences Pvt. Ltd.', 'Navi Mumbai, Maharashtra'),
+(10, 'StemPlus Cryopreservation Pvt. Ltd.', 'Sangli, Maharashtra'),
+(11, 'StemCyte India Therapeutics Pvt. Ltd.', 'Gandhinagar, Gujarat'),
+(12, 'Narayana Hrudayalaya Tissue Bank & Stem Cells Research Centre', 'Bengaluru, Karnataka'),
+(13, 'Cryo Save (India) Pvt. Ltd.', 'Bengaluru, Karnataka'),
+(14, 'International Stem Cell Services Ltd. (ISSL)', 'Bengaluru, Karnataka'),
+(15, 'Unistem Bio Sciences Pvt. Ltd.', 'Gurugram, Haryana'),
+(16, 'Best Wellcare Management Services Pvt. Ltd. (Indu Stem Cell Bank)', 'Vadodara, Gujarat'),
+(17, 'Path Care Labs Pvt. Ltd.', 'Ranga Reddy district, Andhra Pradesh in the government record'),
+(18, 'Cryobanks International India Pvt. Ltd.', 'Gurugram, Haryana')
+ON CONFLICT (id) DO UPDATE SET
+    bank_name = EXCLUDED.bank_name,
+    location = EXCLUDED.location;
+
+SELECT setval('stem_cell_banks_id_seq', (SELECT MAX(id) FROM stem_cell_banks));

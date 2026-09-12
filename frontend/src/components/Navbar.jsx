@@ -321,7 +321,7 @@ const Navbar = ({ onToggleMobileSidebar }) => {
                 </div>
                 <div className="d-none d-sm-block text-start">
                   <div className="fw-bold text-dark lh-1" style={{ fontSize: '0.78rem' }}>
-                    {role === ROLES.PATIENT ? patientProfile.name : role === ROLES.DOCTOR ? 'Dr. Aris Thorne' : 'Biobank Admin'}
+                    {role === ROLES.PATIENT ? patientProfile.name : role === ROLES.DOCTOR ? 'Dr. Sharat Damodar' : 'Biobank Admin'}
                   </div>
                   <small className="text-muted" style={{ fontSize: '0.68rem' }}>
                     {role === ROLES.PATIENT ? 'Patient' : role === ROLES.DOCTOR ? 'Clinician' : 'Administrator'}
