@@ -48,8 +48,16 @@ def parse_medical_report(text):
         'DRIVING LICENCE', 'PAN CARD', 'AADHAAR', 'PURCHASE ORDER', 'HOTEL BOOKING'
     ]
 
+    specific_medical_markers = [
+        'LEUKEMIA', 'LYMPHOMA', 'ANEMIA', 'TRANSPLANT', 'STEM CELL',
+        'HLA', 'ALLELE', 'LOCI', 'CD34', 'APHERESIS', 'FLOW CYTOMETRY',
+        'VIABILITY', 'BONE MARROW', 'ASPIRATE', 'BIOPSY', 'BLAST',
+        'CELLULARITY', 'CYTOGENETICS', 'KARYOTYPE', 'FISH', 'CMV',
+        'SEROLOGY', 'CBC', 'HEMOGRAM', 'PLATELET', 'NEUTROPHIL', 'HEMOGLOBIN'
+    ]
     matched_markers = [m for m in medical_markers if m in upper]
-    has_explicit_non_medical = any(nm in upper for nm in non_medical_markers) and len(matched_markers) < 3
+    has_specific_medical = any(sm in upper for sm in specific_medical_markers)
+    has_explicit_non_medical = any(nm in upper for nm in non_medical_markers) and not has_specific_medical
     is_tesseract_error = 'TESSERACT ENGINE NOT FOUND' in upper
 
     # Gatekeeper check: is this a genuine medical report?

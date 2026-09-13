@@ -29,9 +29,16 @@ class OCRAnalyzeView(APIView):
                     destination.write(chunk)
             file_path_str = str(file_path)
 
-            # Check if plain text file or image
+            # Check if PDF or plain text file or image
             file_ext = uploaded_file.name.lower().split('.')[-1]
-            if file_ext in ['txt', 'csv', 'log', 'json']:
+            if file_ext == 'pdf':
+                try:
+                    import pypdf
+                    reader = pypdf.PdfReader(str(file_path))
+                    extracted_text = '\n'.join([page.extract_text() for page in reader.pages if page.extract_text()])
+                except Exception:
+                    extracted_text = ''
+            elif file_ext in ['txt', 'csv', 'log', 'json']:
                 try:
                     with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
                         extracted_text = f.read()
