@@ -2398,4 +2398,34 @@ h1, h2, h3, h4, h5, h6,
   }
 }
 
+/* ==========================================================================
+   PRINT STYLES FOR CLINICAL CONSULTATION SUMMARY
+   ========================================================================== */
+@media print {
+  /* Hide non-printable UI elements */
+  body * {
+    visibility: hidden;
+  }
+
+  #printableClinicalSummary, #printableClinicalSummary * {
+    visibility: visible;
+  }
+
+  #printableClinicalSummary {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    margin: 0;
+    padding: 20px !important;
+    background: #ffffff !important;
+    color: #000000 !important;
+    box-shadow: none !important;
+  }
+
+  .d-print-none, .modal-header, .modal-footer, .btn, .koshika-sidebar, nav {
+    display: none !important;
+  }
+}
+
 

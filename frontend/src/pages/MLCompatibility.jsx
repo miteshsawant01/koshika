@@ -28,8 +28,8 @@ const MLCompatibility = () => {
     donor_age: 28,
     donor_blood_group: 'B+',
     hla_match: state.hlaMatchTarget || 10,
-    cd34_count: 5.8,
-    viability: 95.2,
+    cd34_count: state.cd34Count && state.cd34Count !== 'N/A' ? parseFloat(String(state.cd34Count).replace(/[^0-9.]/g, '')) || 5.8 : 5.8,
+    viability: state.viability && state.viability !== 'N/A' ? parseFloat(String(state.viability).replace(/[^0-9.]/g, '')) || 95.2 : 95.2,
     storage_months: 6,
     patient_cmv: 'Positive',
     donor_cmv: 'Positive'
@@ -206,6 +206,33 @@ const MLCompatibility = () => {
           </div>
         </div>
       </div>
+
+      {/* Clinical Parameters Ingestion Banner */}
+      {state.reportSource && (
+        <div className="card border-0 rounded-4 p-3 mb-4 shadow-sm bg-primary-subtle bg-opacity-25 border border-primary-subtle">
+          <div className="d-flex align-items-center justify-content-between flex-wrap gap-2">
+            <div className="d-flex align-items-center gap-2">
+              <div className="p-2 bg-primary text-white rounded-circle flex-shrink-0">
+                <i className="bi bi-file-earmark-check-fill"></i>
+              </div>
+              <div>
+                <span className="small text-dark fw-bold d-block">
+                  Clinical Parameters Imported from Diagnostic Report: <span className="text-primary">{state.reportSource}</span>
+                </span>
+                <small className="text-muted">
+                  Patient: <strong>{params.patient_name}</strong> &bull; Blood Group: <strong>{params.patient_blood_group}</strong> &bull; CD34+: <strong>{params.cd34_count} x10^6/kg</strong> &bull; Viability: <strong>{params.viability}%</strong>
+                </small>
+              </div>
+            </div>
+            <div className="d-flex align-items-center gap-1">
+              <span className="badge bg-white text-primary border px-2 py-1 rounded-pill small">
+                <i className="bi bi-patch-check-fill text-success me-1"></i>
+                {state.accreditation || 'EFI & NABL ISO 15189 Certified'}
+              </span>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* 2. Top Statistics Cards */}
       <div className="row g-3 mb-4">

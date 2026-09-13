@@ -95,14 +95,39 @@ class OCRAnalyzeView(APIView):
         else:
             extracted_text = raw_text_input
 
-        # Parse medical entities
-        parsed = parse_medical_report(extracted_text)
-        is_valid = parsed.get('is_valid', True)
-        report_type = parsed.get('report_type', 'GENERAL')
-        status_label = 'Analyzed' if is_valid else 'Wrong Document'
         file_name = uploaded_file.name if uploaded_file else 'manual_input.txt'
 
-        # PERSIST UPLOADED DOCUMENT TO BACKEND SQLITE
+        # Parse medical entities with filename awareness
+        parsed = parse_medical_report(extracted_text, file_name=file_name)
+        is_valid = parsed.get('is_valid', True)
+        report_type = parsed.get('report_type', 'GENERAL')
+
+        # IF WRONG / INVALID DOCUMENT: DISCARD IMMEDIATELY WITHOUT SAVING TO DATABASE
+        if not is_valid:
+            if file_path_str and os.path.exists(file_path_str):
+                try:
+                    os.remove(file_path_str)
+                except Exception as e:
+                    print(f"Error deleting discarded file {file_path_str}: {e}")
+
+            return Response({
+                'success': False,
+                'discarded': True,
+                'is_valid': False,
+                'status': 'Discarded',
+                'report_type': 'INVALID_DOCUMENT',
+                'name': file_name,
+                'file_name': file_name,
+                'message': f'Document "{file_name}" does not contain recognized clinical laboratory or diagnostic markers. It was not saved to your database.',
+                'rejection_title': parsed.get('rejection_title', '⚠️ Non-Clinical Document Detected'),
+                'rejection_message': parsed.get('rejection_message', 'The uploaded file does not contain recognizable clinical diagnostic markers. Please upload a clinical diagnostic document (PDF, PNG, JPG).'),
+                'extracted_text': extracted_text[:500],
+                'parsed_data': parsed
+            }, status=status.HTTP_200_OK)
+
+        status_label = 'Analyzed'
+
+        # PERSIST ONLY VALID MEDICAL DOCUMENTS TO BACKEND SQLITE
         try:
             report_obj = MedicalReport.objects.create(
                 file_name=file_name,
@@ -111,7 +136,7 @@ class OCRAnalyzeView(APIView):
                 status=status_label,
                 extracted_text=extracted_text,
                 parsed_data=parsed,
-                is_valid=is_valid
+                is_valid=True
             )
             report_id = report_obj.id
             created_at_str = report_obj.created_at.strftime('%b %d, %Y, %I:%M %p')
@@ -119,7 +144,7 @@ class OCRAnalyzeView(APIView):
             report_id = 1
             created_at_str = 'Just now'
 
-        # SYNC DIRECTLY TO SUPABASE medical_reports TABLE
+        # SYNC ONLY VALID REPORTS DIRECTLY TO SUPABASE medical_reports TABLE
         try:
             supa_id = sync_report_to_supabase({
                 'file_name': file_name,
@@ -133,7 +158,7 @@ class OCRAnalyzeView(APIView):
                 'viability': str(parsed.get('viability', 'N/A')),
                 'extracted_text': extracted_text,
                 'parsed_data': parsed,
-                'is_valid': is_valid
+                'is_valid': True
             })
             if supa_id:
                 report_id = supa_id
@@ -142,21 +167,23 @@ class OCRAnalyzeView(APIView):
 
         return Response({
             'success': True,
+            'discarded': False,
             'id': report_id,
             'name': file_name,
             'file_name': file_name,
             'report_type': report_type,
             'status': status_label,
+            'accreditation': parsed.get('accreditation', 'NABL / CAP Certified Clinical Laboratory'),
             'date': created_at_str,
             'extracted_text': extracted_text,
             'parsed_data': parsed,
-            'is_valid': is_valid
+            'is_valid': True
         })
 
 
 class OCRReportsListView(APIView):
     def get(self, request):
-        reports = MedicalReport.objects.all().order_by('-id')
+        reports = MedicalReport.objects.filter(is_valid=True).order_by('-id')
         data = []
         for r in reports:
             data.append({

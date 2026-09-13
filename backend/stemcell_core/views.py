@@ -1,4 +1,7 @@
-from rest_framework import viewsets, filters
+import json
+
+from django.core.serializers.json import DjangoJSONEncoder
+from rest_framework import viewsets
 from rest_framework.pagination import PageNumberPagination
 from django.db.models import Q
 from .models import Patient, Donor, Storage, Staff, Research, Inventory, AuditLog, StemCellBank
@@ -14,7 +17,48 @@ class FlexiblePagination(PageNumberPagination):
     max_page_size = 2000
 
 
-class PatientViewSet(viewsets.ModelViewSet):
+class AuditedModelViewSet(viewsets.ModelViewSet):
+    """Record every operational mutation for traceability and review."""
+    audit_model = AuditLog
+
+    def _snapshot(self, instance):
+        values = {field.name: field.value_from_object(instance) for field in instance._meta.fields}
+        return json.loads(json.dumps(values, cls=DjangoJSONEncoder))
+
+    def _audit(self, operation, instance, old_values=None):
+        self.audit_model.objects.create(
+            table_name=instance._meta.db_table,
+            operation=operation,
+            record_id=instance.pk,
+            changed_by=(self.request.user.get_username() if self.request.user.is_authenticated else 'system'),
+            old_values=old_values,
+            new_values=self._snapshot(instance)
+        )
+
+    def perform_create(self, serializer):
+        instance = serializer.save()
+        self._audit('CREATE', instance)
+
+    def perform_update(self, serializer):
+        previous = self.get_object()
+        old_values = self._snapshot(previous)
+        instance = serializer.save()
+        self._audit('UPDATE', instance, old_values)
+
+    def perform_destroy(self, instance):
+        old_values = self._snapshot(instance)
+        record_id = instance.pk
+        instance.delete()
+        self.audit_model.objects.create(
+            table_name=instance._meta.db_table,
+            operation='DELETE',
+            record_id=record_id,
+            changed_by=(self.request.user.get_username() if self.request.user.is_authenticated else 'system'),
+            old_values=old_values,
+        )
+
+
+class PatientViewSet(AuditedModelViewSet):
     queryset = Patient.objects.all()
     serializer_class = PatientSerializer
     pagination_class = FlexiblePagination
@@ -35,7 +79,7 @@ class PatientViewSet(viewsets.ModelViewSet):
         return qs
 
 
-class DonorViewSet(viewsets.ModelViewSet):
+class DonorViewSet(AuditedModelViewSet):
     queryset = Donor.objects.select_related('patient').all()
     serializer_class = DonorSerializer
     pagination_class = FlexiblePagination
@@ -56,7 +100,7 @@ class DonorViewSet(viewsets.ModelViewSet):
         return qs
 
 
-class StorageViewSet(viewsets.ModelViewSet):
+class StorageViewSet(AuditedModelViewSet):
     queryset = Storage.objects.select_related('donor').all()
     serializer_class = StorageSerializer
     pagination_class = FlexiblePagination
@@ -75,7 +119,7 @@ class StorageViewSet(viewsets.ModelViewSet):
         return qs
 
 
-class StaffViewSet(viewsets.ModelViewSet):
+class StaffViewSet(AuditedModelViewSet):
     queryset = Staff.objects.all()
     serializer_class = StaffSerializer
     pagination_class = FlexiblePagination
@@ -96,7 +140,7 @@ class StaffViewSet(viewsets.ModelViewSet):
         return qs
 
 
-class ResearchViewSet(viewsets.ModelViewSet):
+class ResearchViewSet(AuditedModelViewSet):
     queryset = Research.objects.all()
     serializer_class = ResearchSerializer
 
@@ -115,7 +159,7 @@ class ResearchViewSet(viewsets.ModelViewSet):
         return qs
 
 
-class InventoryViewSet(viewsets.ModelViewSet):
+class InventoryViewSet(AuditedModelViewSet):
     queryset = Inventory.objects.all()
     serializer_class = InventorySerializer
 
@@ -132,7 +176,7 @@ class AuditLogViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = AuditLogSerializer
 
 
-class StemCellBankViewSet(viewsets.ModelViewSet):
+class StemCellBankViewSet(AuditedModelViewSet):
     queryset = StemCellBank.objects.all()
     serializer_class = StemCellBankSerializer
     pagination_class = FlexiblePagination

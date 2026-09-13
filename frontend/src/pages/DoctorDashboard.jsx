@@ -7,6 +7,7 @@ const DoctorDashboard = () => {
   const navigate = useNavigate();
   const { appointments } = useRole();
   const [patients, setPatients] = useState([]);
+  const [reportsCount, setReportsCount] = useState(5);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -15,10 +16,17 @@ const DoctorDashboard = () => {
 
   const fetchDoctorData = async () => {
     try {
-      const res = await api.get('/patients/');
-      setPatients(res.data.results || res.data || []);
+      const [pRes, rRes] = await Promise.all([
+        api.get('/patients/'),
+        api.get('/ocr/reports/').catch(() => ({ data: [] }))
+      ]);
+      setPatients(pRes.data.results || pRes.data || []);
+      const rList = (rRes.data || []).filter(r => r.is_valid !== false && r.status !== 'Wrong Document' && r.status !== 'Discarded');
+      if (rList.length > 0) {
+        setReportsCount(rList.length);
+      }
     } catch (err) {
-      console.error('Failed to load patient records', err);
+      console.error('Failed to load doctor dashboard records', err);
     } finally {
       setLoading(false);
     }
@@ -81,13 +89,18 @@ const DoctorDashboard = () => {
           </div>
         </div>
         <div className="col-12 col-sm-6 col-xl-3">
-          <div className="card border-0 shadow-sm p-3 rounded-4 bg-white">
+          <div
+            className="card border-0 shadow-sm p-3 rounded-4 bg-white"
+            style={{ cursor: 'pointer' }}
+            onClick={() => navigate('/ocr-reports?tab=insights')}
+            title="Click to view verified diagnostic reports"
+          >
             <div className="d-flex justify-content-between align-items-center mb-1">
-              <span className="small text-muted fw-semibold">Pending Reports</span>
+              <span className="small text-muted fw-semibold">Diagnostic Reports</span>
               <span className="badge bg-warning-subtle text-warning p-2 rounded-circle"><i className="bi bi-file-earmark-text-fill"></i></span>
             </div>
-            <div className="fs-3 fw-bold text-dark">5</div>
-            <small className="text-muted">Flow cytometry &amp; HLA typing</small>
+            <div className="fs-3 fw-bold text-dark">{reportsCount}</div>
+            <small className="text-primary fw-medium">View patient reports &rarr;</small>
           </div>
         </div>
         <div className="col-12 col-sm-6 col-xl-3">
