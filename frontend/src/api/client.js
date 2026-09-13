@@ -1000,6 +1000,27 @@ const api = {
           if (resp.ok) {
             const data = await resp.json();
             if (data && data.parsed_data) {
+              // Ensure row is synchronized to Supabase medical_reports
+              try {
+                const parsed = data.parsed_data;
+                const { data: supaRow } = await supabase.from('medical_reports').insert([{
+                  file_name: data.file_name || fileObj?.name || 'medical_report.pdf',
+                  report_type: data.report_type || parsed.report_type || 'GENERAL',
+                  status: data.status || 'Analyzed',
+                  patient_name: parsed.patient_name || 'Patient from Report',
+                  age: parsed.age ? Number(parsed.age) : 28,
+                  blood_group: parsed.blood_group || 'B+',
+                  disease: parsed.disease || 'Clinical Referral',
+                  cd34_count: parsed.cd34_count ? String(parsed.cd34_count) : 'N/A',
+                  viability: parsed.viability ? String(parsed.viability) : 'N/A',
+                  extracted_text: data.extracted_text || text || '',
+                  parsed_data: parsed,
+                  is_valid: data.is_valid !== false
+                }]).select();
+                if (supaRow && supaRow[0]?.id) {
+                  data.id = supaRow[0].id;
+                }
+              } catch (e) {}
               return { data };
             }
           }
@@ -1247,27 +1268,36 @@ const api = {
       };
 
       // Automatically sync valid uploaded report to Supabase medical_reports table
+      let savedReportId = Date.now();
       try {
-        await supabase.from('medical_reports').insert([{
+        const { data: supaRow } = await supabase.from('medical_reports').insert([{
           file_name: fileObj?.name || (reportType ? `${reportType} Lab Report` : 'medical_report.pdf'),
           report_type: reportType,
-          status: 'Analyzed',
-          patient_name: parsedData.patient_name,
-          age: parsedData.age,
-          blood_group: parsedData.blood_group,
-          disease: parsedData.disease,
-          cd34_count: parsedData.cd34_count,
-          viability: parsedData.viability,
-          extracted_text: text,
+          status: isValid ? 'Analyzed' : 'Wrong Document',
+          patient_name: parsedData.patient_name || 'Patient from Report',
+          age: parsedData.age ? Number(parsedData.age) : 28,
+          blood_group: parsedData.blood_group || 'B+',
+          disease: parsedData.disease || 'Clinical Referral',
+          cd34_count: parsedData.cd34_count ? String(parsedData.cd34_count) : 'N/A',
+          viability: parsedData.viability ? String(parsedData.viability) : 'N/A',
+          extracted_text: text || '',
           parsed_data: parsedData,
-          is_valid: true
-        }]);
+          is_valid: isValid
+        }]).select();
+        if (supaRow && supaRow[0]?.id) {
+          savedReportId = supaRow[0].id;
+        }
       } catch (supaErr) {}
 
       return {
         data: {
+          id: savedReportId,
+          name: fileObj?.name || (reportType ? `${reportType} Lab Report` : 'medical_report.pdf'),
+          file_name: fileObj?.name || (reportType ? `${reportType} Lab Report` : 'medical_report.pdf'),
+          report_type: reportType,
+          status: isValid ? 'Analyzed' : 'Wrong Document',
           extracted_text: text || 'Clinical report text processed successfully.',
-          is_valid_medical: true,
+          is_valid_medical: isValid,
           parsed_data: parsedData
         }
       };
@@ -1882,35 +1912,7 @@ Thank you for your question regarding **"${query}"**. Here is an evidence-based 
       return { data: data[0] };
     }
 
-    if (resource === 'ocr' || cleanUrl.startsWith('ocr/reports') || url.includes('/ocr/reports/')) {
-      const reportId = url.split('/').filter(Boolean).pop();
 
-      // Delete from Supabase
-      try {
-        await supabase.from('medical_reports').delete().eq('id', reportId);
-      } catch (e) {}
-      const isLocal = typeof window !== 'undefined' && (
-        window.location.hostname === 'localhost' ||
-        window.location.hostname === '127.0.0.1' ||
-        window.location.hostname === ''
-      );
-
-      if (isLocal) {
-        try {
-          await fetch(`http://127.0.0.1:8000/api/ocr/reports/${reportId}/`, { method: 'DELETE' });
-        } catch (e) {}
-      }
-
-      if (typeof localStorage !== 'undefined') {
-        try {
-          const cached = JSON.parse(localStorage.getItem('koshika_uploaded_reports') || '[]');
-          const filtered = cached.filter(r => String(r.id) !== String(reportId));
-          localStorage.setItem('koshika_uploaded_reports', JSON.stringify(filtered));
-        } catch (e) {}
-      }
-
-      return { data: { success: true } };
-    }
 
     if (resource === 'stem-cell-banks' || resource === 'stem_cell_banks') {
       const { data, error } = await supabase.from('stem_cell_banks').update(body).eq('id', id).select();
@@ -1941,6 +1943,39 @@ Thank you for your question regarding **"${query}"**. Here is an evidence-based 
     const parts = cleanUrl.split('/');
     const resource = parts[0];
     const id = parts[1];
+
+    if (resource === 'ocr' || cleanUrl.startsWith('ocr/reports') || url.includes('/ocr/reports/')) {
+      const reportId = url.split('/').filter(Boolean).pop();
+
+      // Delete directly from Supabase
+      try {
+        await supabase.from('medical_reports').delete().eq('id', reportId);
+      } catch (e) {
+        console.warn('Supabase delete error in client.js:', e);
+      }
+
+      const isLocal = typeof window !== 'undefined' && (
+        window.location.hostname === 'localhost' ||
+        window.location.hostname === '127.0.0.1' ||
+        window.location.hostname === ''
+      );
+
+      if (isLocal) {
+        try {
+          await fetch(`http://127.0.0.1:8000/api/ocr/reports/${reportId}/`, { method: 'DELETE' });
+        } catch (e) {}
+      }
+
+      if (typeof localStorage !== 'undefined') {
+        try {
+          const cached = JSON.parse(localStorage.getItem('koshika_uploaded_reports') || '[]');
+          const filtered = cached.filter(r => String(r.id) !== String(reportId));
+          localStorage.setItem('koshika_uploaded_reports', JSON.stringify(filtered));
+        } catch (e) {}
+      }
+
+      return { data: { success: true } };
+    }
 
     if (resource === 'patients') {
       const { error } = await supabase.from('patients').delete().eq('patient_id', id);

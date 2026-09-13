@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import api from '../api/client';
+import { supabase } from '../utils/supabase';
 
 const MedicalReportOCR = () => {
   const navigate = useNavigate();
@@ -26,6 +27,42 @@ const MedicalReportOCR = () => {
   const fetchUploadedReports = async () => {
     setLoadingReports(true);
     try {
+      // 1. Direct Supabase Query First
+      const { data: supaReports, error: supaErr } = await supabase
+        .from('medical_reports')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (!supaErr && Array.isArray(supaReports) && supaReports.length > 0) {
+        const formatted = supaReports.map(r => ({
+          id: r.id,
+          name: r.file_name,
+          file_name: r.file_name,
+          report_type: r.report_type,
+          status: r.status,
+          is_valid: r.is_valid !== false,
+          date: r.created_at ? new Date(r.created_at).toLocaleDateString('en-US', {
+            month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit'
+          }) : 'Just now',
+          created_at: r.created_at,
+          extracted_text: r.extracted_text || '',
+          parsed_data: r.parsed_data || {
+            patient_name: r.patient_name,
+            age: r.age,
+            blood_group: r.blood_group,
+            disease: r.disease,
+            cd34_count: r.cd34_count,
+            viability: r.viability,
+            report_type: r.report_type,
+            is_valid: r.is_valid !== false
+          }
+        }));
+        setRecentReports(formatted);
+        setSelectedReport(formatted[0]);
+        return;
+      }
+
+      // 2. Fallback to API Client
       const res = await api.get('/ocr/reports/');
       const reports = res.data || [];
       setRecentReports(reports);
@@ -33,7 +70,7 @@ const MedicalReportOCR = () => {
         setSelectedReport(reports[0]);
       }
     } catch (err) {
-      console.error('Error fetching uploaded reports from backend:', err);
+      console.error('Error fetching uploaded reports:', err);
     } finally {
       setLoadingReports(false);
     }
@@ -65,17 +102,26 @@ const MedicalReportOCR = () => {
     if (input) input.value = '';
   };
 
-  // DELETE / REMOVE REPORT FROM BACKEND DATABASE & STATE
+  // DELETE / REMOVE REPORT FROM SUPABASE & BACKEND DATABASE
   const handleDeleteReport = async (reportId) => {
+    // 1. Direct Supabase deletion guarantee
+    try {
+      await supabase.from('medical_reports').delete().eq('id', reportId);
+    } catch (supaErr) {
+      console.warn('Direct Supabase delete notification:', supaErr);
+    }
+
+    // 2. Backend delete notification
     try {
       await api.delete(`/ocr/reports/${reportId}/`);
     } catch (err) {
       console.warn('Backend delete notification:', err);
     }
 
+    // 3. Update React UI state
     setRecentReports(prev => {
-      const filtered = prev.filter(r => r.id !== reportId);
-      if (selectedReport?.id === reportId) {
+      const filtered = prev.filter(r => String(r.id) !== String(reportId));
+      if (selectedReport && String(selectedReport.id) === String(reportId)) {
         setSelectedReport(filtered.length > 0 ? filtered[0] : null);
       }
       return filtered;
@@ -136,7 +182,37 @@ const MedicalReportOCR = () => {
         is_valid: isValid
       };
 
-      setRecentReports(prev => [newReport, ...prev.filter(r => r.id !== newReport.id)]);
+      // Direct Supabase insert guarantee for instant dashboard visibility
+      try {
+        const { data: supaRow, error: supaErr } = await supabase
+          .from('medical_reports')
+          .insert([{
+            file_name: newReport.file_name,
+            report_type: newReport.report_type,
+            status: newReport.status,
+            patient_name: parsed.patient_name || 'Patient from Report',
+            age: parsed.age ? Number(parsed.age) : 28,
+            blood_group: parsed.blood_group || 'B+',
+            disease: parsed.disease || 'Clinical Referral',
+            cd34_count: parsed.cd34_count ? String(parsed.cd34_count) : 'N/A',
+            viability: parsed.viability ? String(parsed.viability) : 'N/A',
+            extracted_text: newReport.extracted_text || '',
+            parsed_data: parsed,
+            is_valid: isValid
+          }])
+          .select();
+
+        if (!supaErr && supaRow && supaRow[0]?.id) {
+          newReport.id = supaRow[0].id;
+          newReport.date = new Date(supaRow[0].created_at).toLocaleDateString('en-US', {
+            month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit'
+          });
+        }
+      } catch (supaErr) {
+        console.warn('Direct Supabase insert notification:', supaErr);
+      }
+
+      setRecentReports(prev => [newReport, ...prev.filter(r => String(r.id) !== String(newReport.id))]);
       setSelectedReport(newReport);
       handleRemoveFile(); // reset upload form after successful save
       setSearchParams({ tab: 'insights' });

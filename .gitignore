@@ -33,3 +33,5 @@ yarn-debug.log*
 *.sln
 *.sw?
 .DS_Store
+media/
+backend/media/
