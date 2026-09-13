@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useRole } from '../context/RoleContext';
 import api from '../api/client';
 
 export const CERTIFIED_SPECIALISTS = [
@@ -245,6 +246,7 @@ export const CERTIFIED_SPECIALISTS = [
 
 const FindDoctors = () => {
   const navigate = useNavigate();
+  const { addAppointment } = useRole();
   const [search, setSearch] = useState('');
   const [selectedDept, setSelectedDept] = useState('ALL');
   const [doctors, setDoctors] = useState(CERTIFIED_SPECIALISTS);
@@ -321,7 +323,19 @@ const FindDoctors = () => {
 
   const handleConfirmBooking = (e) => {
     e.preventDefault();
-    alert(`Consultation booked successfully with ${bookingDoc.name} for ${bookingDate} (${bookingMode})!`);
+    if (bookingDoc) {
+      addAppointment({
+        doctorName: bookingDoc.name,
+        specialty: bookingDoc.specialty || bookingDoc.department || 'Haemato-Oncology & BMT',
+        hospital: bookingDoc.hospital || 'Narayana Health City',
+        date: bookingDate || 'Upcoming Monday, 10:00 AM',
+        mode: bookingMode || 'In-Person Consultation',
+        room: (bookingMode && (bookingMode.includes('Video') || bookingMode.includes('Tele')))
+          ? 'Virtual Room #82 (Encrypted WebRTC)'
+          : 'Hospital OPD Suite 4B',
+        notes: `Direct consultation requested from Doctors & Specialists directory. Contact: ${bookingDoc.contact || 'N/A'}`
+      });
+    }
     setBookingDoc(null);
     navigate('/appointments');
   };

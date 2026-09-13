@@ -67,6 +67,13 @@ const Storage = () => {
     }
   };
 
+  // In-App Toast System
+  const [toast, setToast] = useState(null);
+  const showToast = (message, type = 'success') => {
+    setToast({ message, type });
+    setTimeout(() => setToast(null), 3500);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const payload = {
@@ -79,9 +86,10 @@ const Storage = () => {
     try {
       await api.post('/storage/', payload);
       setShowModal(false);
+      showToast(`Logged cryo-vial storage record in ${formData.storage_location}`, 'success');
       fetchStorage();
     } catch (err) {
-      alert('Error adding storage record: ' + (err.response?.data?.message || err.message));
+      showToast('Error adding storage record: ' + (err.response?.data?.message || err.message), 'danger');
     }
   };
 
@@ -89,9 +97,10 @@ const Storage = () => {
     if (!window.confirm(`Delete storage entry #${id}?`)) return;
     try {
       await api.delete(`/storage/${id}/`);
+      showToast('Storage record deleted successfully.', 'info');
       fetchStorage();
     } catch (err) {
-      alert('Error deleting storage entry: ' + err.message);
+      showToast('Error deleting storage entry: ' + err.message, 'danger');
     }
   };
 
@@ -99,6 +108,40 @@ const Storage = () => {
 
   return (
     <div className="koshika-animate-fadein">
+      {/* Toast Notification */}
+      {toast && (
+        <div
+          className={`position-fixed bottom-0 end-0 m-4 p-3 rounded-4 shadow-lg text-white d-flex align-items-center gap-3 animate__animated animate__fadeInUp ${
+            toast.type === 'danger'
+              ? 'bg-danger'
+              : toast.type === 'warning'
+              ? 'bg-warning text-dark'
+              : toast.type === 'info'
+              ? 'bg-info text-dark'
+              : 'bg-success'
+          }`}
+          style={{ maxWidth: '420px', zIndex: 9999 }}
+        >
+          <i
+            className={`bi fs-4 ${
+              toast.type === 'danger'
+                ? 'bi-exclamation-octagon-fill'
+                : toast.type === 'warning'
+                ? 'bi-exclamation-triangle-fill'
+                : toast.type === 'info'
+                ? 'bi-info-circle-fill'
+                : 'bi-check-circle-fill'
+            }`}
+          ></i>
+          <div className="small flex-grow-1">{toast.message}</div>
+          <button
+            type="button"
+            className="btn-close btn-close-white ms-auto"
+            onClick={() => setToast(null)}
+          ></button>
+        </div>
+      )}
+
       {/* Modern Page Header */}
       <div className="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center mb-4 gap-3">
         <div>

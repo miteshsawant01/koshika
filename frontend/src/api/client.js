@@ -1626,8 +1626,8 @@ const api = {
     }
 
     // 9. AI Assistant Chat
-    if (cleanUrl === 'ai/chat') {
-      const query = (body.message || '').trim();
+    if (cleanUrl === 'ai/chat' || cleanUrl === 'chat') {
+      const query = (body.message || body.query || '').trim();
       const storedKey = typeof window !== 'undefined' ? localStorage.getItem('gemini_api_key') : null;
       const defaultKey = (() => {
         try {

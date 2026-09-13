@@ -52,49 +52,73 @@ export const RoleProvider = ({ children }) => {
     }
   ]);
 
-  const [appointments, setAppointments] = useState([
-    {
-      id: 101,
-      doctorName: 'Dr. Sharat Damodar, MD',
-      specialty: 'Adult Haemato-Oncology & BMT; Cellular Therapy; CAR-T',
-      hospital: 'Narayana Health & Mazumdar Shaw Cancer Centre, Bengaluru',
-      date: 'Tomorrow, 10:30 AM',
-      mode: 'In-Person Consultation',
-      status: 'Confirmed',
-      room: 'OPD Suite 4B',
-      notes: 'Initial evaluation for allogeneic stem cell compatibility and conditioning regimen.'
-    },
-    {
-      id: 102,
-      doctorName: 'Dr. Sunil Bhat, MD',
-      specialty: 'Paediatric Haemato-Oncology & BMT; Stem-Cell Transplantation',
-      hospital: 'Narayana Health & Mazumdar Shaw Cancer Centre, Bengaluru',
-      date: 'Next Tuesday, 2:00 PM',
-      mode: 'Tele-Consultation (Video)',
-      status: 'Confirmed',
-      room: 'Virtual Room #82',
-      notes: 'Review of secondary HLA alleles and preliminary donor panel.'
-    }
-  ]);
+  const [appointments, setAppointments] = useState(() => {
+    try {
+      const saved = localStorage.getItem('koshika_appointments');
+      if (saved) return JSON.parse(saved);
+    } catch (e) {}
+    return [
+      {
+        id: 101,
+        doctorName: 'Dr. Sharat Damodar, MD',
+        specialty: 'Adult Haemato-Oncology & BMT; Cellular Therapy; CAR-T',
+        hospital: 'Narayana Health & Mazumdar Shaw Cancer Centre, Bengaluru',
+        date: 'Tomorrow, 10:30 AM',
+        mode: 'In-Person Consultation',
+        status: 'Confirmed',
+        room: 'OPD Suite 4B',
+        notes: 'Initial evaluation for allogeneic stem cell compatibility and conditioning regimen.'
+      },
+      {
+        id: 102,
+        doctorName: 'Dr. Sunil Bhat, MD',
+        specialty: 'Paediatric Haemato-Oncology & BMT; Stem-Cell Transplantation',
+        hospital: 'Narayana Health & Mazumdar Shaw Cancer Centre, Bengaluru',
+        date: 'Next Tuesday, 2:00 PM',
+        mode: 'Tele-Consultation (Video)',
+        status: 'Confirmed',
+        room: 'Virtual Room #82',
+        notes: 'Review of secondary HLA alleles and preliminary donor panel.'
+      }
+    ];
+  });
 
-  const [patientProfile, setPatientProfile] = useState({
-    name: 'Mitesh Sawant',
-    patientId: 'PT-9042',
-    age: 32,
-    bloodGroup: 'B+',
-    condition: 'Acute Myeloid Leukemia (AML)',
-    remissionStatus: 'First Complete Remission (CR1)',
-    hlaStatus: 'HLA-A, B, C, DRB1 Typed',
-    primaryDoctor: 'Dr. Sharat Damodar, MD',
-    hospital: 'Narayana Health & Mazumdar Shaw Cancer Centre',
-    emergencyContact: '+91 98200 12345',
-    reportsCount: 3,
-    assessmentStatus: 'ML Assessment Completed'
+  const [patientProfile, setPatientProfile] = useState(() => {
+    try {
+      const saved = localStorage.getItem('koshika_patient_profile');
+      if (saved) return JSON.parse(saved);
+    } catch (e) {}
+    return {
+      name: 'Mitesh Sawant',
+      patientId: 'PT-9042',
+      age: 32,
+      bloodGroup: 'B+',
+      condition: 'Acute Myeloid Leukemia (AML)',
+      remissionStatus: 'First Complete Remission (CR1)',
+      hlaStatus: 'HLA-A, B, C, DRB1 Typed',
+      primaryDoctor: 'Dr. Sharat Damodar, MD',
+      hospital: 'Narayana Health & Mazumdar Shaw Cancer Centre',
+      emergencyContact: '+91 98200 12345',
+      reportsCount: 3,
+      assessmentStatus: 'ML Assessment Completed'
+    };
   });
 
   useEffect(() => {
     localStorage.setItem('koshika_user_role', role);
   }, [role]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('koshika_appointments', JSON.stringify(appointments));
+    } catch (e) {}
+  }, [appointments]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('koshika_patient_profile', JSON.stringify(patientProfile));
+    } catch (e) {}
+  }, [patientProfile]);
 
   const unreadCount = notifications.filter(n => !n.read).length;
 
@@ -113,6 +137,22 @@ export const RoleProvider = ({ children }) => {
     ]);
   };
 
+  const rescheduleAppointment = (id, newDate, newNotes) => {
+    setAppointments(prev => prev.map(a =>
+      a.id === id ? { ...a, date: newDate, notes: newNotes !== undefined ? newNotes : a.notes, status: 'Rescheduled' } : a
+    ));
+  };
+
+  const cancelAppointment = (id) => {
+    setAppointments(prev => prev.map(a =>
+      a.id === id ? { ...a, status: 'Cancelled' } : a
+    ));
+  };
+
+  const deleteAppointment = (id) => {
+    setAppointments(prev => prev.filter(a => a.id !== id));
+  };
+
   const openChatWithQuery = (query = '') => {
     window.dispatchEvent(new CustomEvent('open-koshika-ai', { detail: { query } }));
   };
@@ -128,6 +168,9 @@ export const RoleProvider = ({ children }) => {
         markAllNotificationsAsRead,
         appointments,
         addAppointment,
+        rescheduleAppointment,
+        cancelAppointment,
+        deleteAppointment,
         patientProfile,
         setPatientProfile,
         openChatWithQuery

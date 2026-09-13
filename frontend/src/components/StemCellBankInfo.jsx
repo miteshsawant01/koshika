@@ -31,6 +31,13 @@ const StemCellBankInfo = () => {
   const [showModal, setShowModal] = useState(false);
   const [formData, setFormData] = useState({ bank_name: '', location: '' });
 
+  // In-App Toast
+  const [toast, setToast] = useState(null);
+  const showToast = (message, type = 'success') => {
+    setToast({ message, type });
+    setTimeout(() => setToast(null), 3500);
+  };
+
   useEffect(() => {
     fetchBanks();
   }, []);
@@ -59,10 +66,11 @@ const StemCellBankInfo = () => {
         location: formData.location.trim()
       });
       setShowModal(false);
+      showToast(`Added "${formData.bank_name.trim()}" to directory`, 'success');
       setFormData({ bank_name: '', location: '' });
       fetchBanks();
     } catch (err) {
-      alert('Error adding bank: ' + (err.response?.data?.message || err.message));
+      showToast('Error adding bank: ' + (err.response?.data?.message || err.message), 'danger');
     }
   };
 
@@ -70,9 +78,10 @@ const StemCellBankInfo = () => {
     if (!window.confirm(`Remove stem cell bank entry #${id}?`)) return;
     try {
       await api.delete(`/stem-cell-banks/${id}/`);
+      showToast('Biobank record removed.', 'info');
       fetchBanks();
     } catch (err) {
-      alert('Error deleting bank: ' + err.message);
+      showToast('Error deleting bank: ' + err.message, 'danger');
     }
   };
 
@@ -149,6 +158,40 @@ const StemCellBankInfo = () => {
 
   return (
     <div className="stem-cell-bank-container mb-4">
+      {/* Toast Notification */}
+      {toast && (
+        <div
+          className={`position-fixed bottom-0 end-0 m-4 p-3 rounded-4 shadow-lg text-white d-flex align-items-center gap-3 animate__animated animate__fadeInUp ${
+            toast.type === 'danger'
+              ? 'bg-danger'
+              : toast.type === 'warning'
+              ? 'bg-warning text-dark'
+              : toast.type === 'info'
+              ? 'bg-info text-dark'
+              : 'bg-success'
+          }`}
+          style={{ maxWidth: '420px', zIndex: 9999 }}
+        >
+          <i
+            className={`bi fs-4 ${
+              toast.type === 'danger'
+                ? 'bi-exclamation-octagon-fill'
+                : toast.type === 'warning'
+                ? 'bi-exclamation-triangle-fill'
+                : toast.type === 'info'
+                ? 'bi-info-circle-fill'
+                : 'bi-check-circle-fill'
+            }`}
+          ></i>
+          <div className="small flex-grow-1">{toast.message}</div>
+          <button
+            type="button"
+            className="btn-close btn-close-white ms-auto"
+            onClick={() => setToast(null)}
+          ></button>
+        </div>
+      )}
+
       {/* Biobank Header Card */}
       <div className="card border-0 shadow-sm p-4 mb-4" style={{ background: 'linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #0284c7 100%)', color: 'white' }}>
         <div className="row align-items-center">

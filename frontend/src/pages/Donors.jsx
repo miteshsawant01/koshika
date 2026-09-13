@@ -78,6 +78,13 @@ const Donors = () => {
     setShowModal(true);
   };
 
+  // In-App Toast System
+  const [toast, setToast] = useState(null);
+  const showToast = (message, type = 'success') => {
+    setToast({ message, type });
+    setTimeout(() => setToast(null), 3500);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const payload = {
@@ -93,13 +100,15 @@ const Donors = () => {
     try {
       if (editingDonor) {
         await api.put(`/donors/${editingDonor.donor_id}/`, payload);
+        showToast(`Donor "${formData.name}" profile updated successfully`, 'success');
       } else {
         await api.post('/donors/', payload);
+        showToast(`Donor "${formData.name}" registered successfully`, 'success');
       }
       setShowModal(false);
       fetchDonors();
     } catch (err) {
-      alert('Error saving donor: ' + (err.response?.data?.message || err.message));
+      showToast('Error saving donor: ' + (err.response?.data?.message || err.message), 'danger');
     }
   };
 
@@ -107,9 +116,10 @@ const Donors = () => {
     if (!window.confirm(`Are you sure you want to delete donor #${id}?`)) return;
     try {
       await api.delete(`/donors/${id}/`);
+      showToast('Donor record deleted successfully.', 'info');
       fetchDonors();
     } catch (err) {
-      alert('Error deleting donor: ' + err.message);
+      showToast('Error deleting donor: ' + err.message, 'danger');
     }
   };
 
@@ -131,6 +141,40 @@ const Donors = () => {
 
   return (
     <div className="koshika-animate-fadein">
+      {/* Toast Notification */}
+      {toast && (
+        <div
+          className={`position-fixed bottom-0 end-0 m-4 p-3 rounded-4 shadow-lg text-white d-flex align-items-center gap-3 animate__animated animate__fadeInUp ${
+            toast.type === 'danger'
+              ? 'bg-danger'
+              : toast.type === 'warning'
+              ? 'bg-warning text-dark'
+              : toast.type === 'info'
+              ? 'bg-info text-dark'
+              : 'bg-success'
+          }`}
+          style={{ maxWidth: '420px', zIndex: 9999 }}
+        >
+          <i
+            className={`bi fs-4 ${
+              toast.type === 'danger'
+                ? 'bi-exclamation-octagon-fill'
+                : toast.type === 'warning'
+                ? 'bi-exclamation-triangle-fill'
+                : toast.type === 'info'
+                ? 'bi-info-circle-fill'
+                : 'bi-check-circle-fill'
+            }`}
+          ></i>
+          <div className="small flex-grow-1">{toast.message}</div>
+          <button
+            type="button"
+            className="btn-close btn-close-white ms-auto"
+            onClick={() => setToast(null)}
+          ></button>
+        </div>
+      )}
+
       {/* Modern Page Header */}
       <div className="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center mb-4 gap-3">
         <div>

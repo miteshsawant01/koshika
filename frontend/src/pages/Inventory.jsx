@@ -8,6 +8,13 @@ const Inventory = () => {
   const [showModal, setShowModal] = useState(false);
   const [formData, setFormData] = useState({ item_name: '', quantity: 100, unit: 'pcs' });
 
+  // In-App Toast
+  const [toast, setToast] = useState(null);
+  const showToast = (message, type = 'success') => {
+    setToast({ message, type });
+    setTimeout(() => setToast(null), 3500);
+  };
+
   useEffect(() => {
     fetchInventory();
   }, [search]);
@@ -27,9 +34,10 @@ const Inventory = () => {
     const newQty = Math.max(0, item.quantity + delta);
     try {
       await api.patch(`/inventory/${item.item_id}/`, { quantity: newQty });
+      showToast(`Updated "${item.item_name}" stock to ${newQty} ${item.unit}`, 'success');
       fetchInventory();
     } catch (err) {
-      alert('Error updating stock: ' + err.message);
+      showToast('Error updating stock: ' + err.message, 'danger');
     }
   };
 
@@ -39,9 +47,10 @@ const Inventory = () => {
       await api.post('/inventory/', formData);
       setShowModal(false);
       setFormData({ item_name: '', quantity: 100, unit: 'pcs' });
+      showToast(`Added "${formData.item_name}" to lab inventory`, 'success');
       fetchInventory();
     } catch (err) {
-      alert('Error adding inventory: ' + err.message);
+      showToast('Error adding inventory: ' + err.message, 'danger');
     }
   };
 
@@ -49,9 +58,10 @@ const Inventory = () => {
     if (!window.confirm(`Delete item #${id}?`)) return;
     try {
       await api.delete(`/inventory/${id}/`);
+      showToast('Item deleted successfully.', 'info');
       fetchInventory();
     } catch (err) {
-      alert('Error deleting item: ' + err.message);
+      showToast('Error deleting item: ' + err.message, 'danger');
     }
   };
 
@@ -59,6 +69,40 @@ const Inventory = () => {
 
   return (
     <div className="koshika-animate-fadein">
+      {/* Toast Notification */}
+      {toast && (
+        <div
+          className={`position-fixed bottom-0 end-0 m-4 p-3 rounded-4 shadow-lg text-white d-flex align-items-center gap-3 animate__animated animate__fadeInUp ${
+            toast.type === 'danger'
+              ? 'bg-danger'
+              : toast.type === 'warning'
+              ? 'bg-warning text-dark'
+              : toast.type === 'info'
+              ? 'bg-info text-dark'
+              : 'bg-success'
+          }`}
+          style={{ maxWidth: '420px', zIndex: 9999 }}
+        >
+          <i
+            className={`bi fs-4 ${
+              toast.type === 'danger'
+                ? 'bi-exclamation-octagon-fill'
+                : toast.type === 'warning'
+                ? 'bi-exclamation-triangle-fill'
+                : toast.type === 'info'
+                ? 'bi-info-circle-fill'
+                : 'bi-check-circle-fill'
+            }`}
+          ></i>
+          <div className="small flex-grow-1">{toast.message}</div>
+          <button
+            type="button"
+            className="btn-close btn-close-white ms-auto"
+            onClick={() => setToast(null)}
+          ></button>
+        </div>
+      )}
+
       {/* Modern Page Header */}
       <div className="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center mb-4 gap-3">
         <div>
