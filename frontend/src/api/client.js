@@ -502,8 +502,42 @@ const api = {
       return { data: { count: banks.length, results: banks } };
     }
 
-    // 10. OCR Reports List (Persisted to Backend Database)
+    // 10. OCR Reports List (Persisted to Supabase & Backend Database)
     if (cleanUrl === 'ocr/reports' || cleanUrl === 'ocr/samples') {
+      // Check Supabase first
+      try {
+        const { data: supaData, error: supaErr } = await supabase
+          .from('medical_reports')
+          .select('*')
+          .order('created_at', { ascending: false });
+
+        if (!supaErr && Array.isArray(supaData) && supaData.length > 0) {
+          return {
+            data: supaData.map(r => ({
+              id: r.id,
+              name: r.file_name,
+              file_name: r.file_name,
+              report_type: r.report_type,
+              status: r.status,
+              is_valid: r.is_valid !== false,
+              date: r.created_at ? new Date(r.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'Just now',
+              created_at: r.created_at,
+              extracted_text: r.extracted_text || '',
+              parsed_data: r.parsed_data || {
+                patient_name: r.patient_name,
+                age: r.age,
+                blood_group: r.blood_group,
+                disease: r.disease,
+                cd34_count: r.cd34_count,
+                viability: r.viability,
+                report_type: r.report_type,
+                is_valid: r.is_valid !== false
+              }
+            }))
+          };
+        }
+      } catch (err) {}
+
       const isLocal = typeof window !== 'undefined' && (
         window.location.hostname === 'localhost' ||
         window.location.hostname === '127.0.0.1' ||
@@ -1188,33 +1222,53 @@ const api = {
         ];
       }
 
+      const parsedData = {
+        patient_name: nameMatch ? nameMatch[1].trim() : (body.patient_name || 'Patient from Report'),
+        age: ageMatch ? Number(ageMatch[1]) : (body.age || 28),
+        blood_group: bgMatch ? bgMatch[1].trim() : (body.blood_group || 'B+'),
+        disease: diseaseMatch ? diseaseMatch[1].trim() : (body.disease || 'Clinical Referral'),
+        report_type: reportType,
+        cd34_count: cd34Match ? `${cd34Match[1]} x10^6 cells/kg` : 'N/A',
+        viability: viabilityMatch ? `${viabilityMatch[1]}%` : 'N/A',
+        blast_percentage: blastMatch ? `${blastMatch[1]}%` : 'N/A',
+        cellularity: cellularityMatch ? cellularityMatch[1].trim() : 'N/A',
+        hla_calls: reportType === 'HLA' ? hlaCalls : null,
+        hla_summary: reportType === 'HLA' ? '10/10 High-Resolution Allele Panel (A, B, C, DRB1, DQB1)' : 'Not an HLA typing panel',
+        is_valid: true,
+        insights: {
+          report_type: reportType,
+          plain_english_summary: plainEnglishSummary,
+          clinical_interpretation: clinicalInterpretation,
+          recommended_action: recommendedAction,
+          questions_for_doctor: questionsForDoctor,
+          next_steps: nextSteps,
+          key_metrics: keyMetrics
+        }
+      };
+
+      // Automatically sync valid uploaded report to Supabase medical_reports table
+      try {
+        await supabase.from('medical_reports').insert([{
+          file_name: fileObj?.name || (reportType ? `${reportType} Lab Report` : 'medical_report.pdf'),
+          report_type: reportType,
+          status: 'Analyzed',
+          patient_name: parsedData.patient_name,
+          age: parsedData.age,
+          blood_group: parsedData.blood_group,
+          disease: parsedData.disease,
+          cd34_count: parsedData.cd34_count,
+          viability: parsedData.viability,
+          extracted_text: text,
+          parsed_data: parsedData,
+          is_valid: true
+        }]);
+      } catch (supaErr) {}
+
       return {
         data: {
           extracted_text: text || 'Clinical report text processed successfully.',
           is_valid_medical: true,
-          parsed_data: {
-            patient_name: nameMatch ? nameMatch[1].trim() : (body.patient_name || 'Patient from Report'),
-            age: ageMatch ? Number(ageMatch[1]) : (body.age || 28),
-            blood_group: bgMatch ? bgMatch[1].trim() : (body.blood_group || 'B+'),
-            disease: diseaseMatch ? diseaseMatch[1].trim() : (body.disease || 'Clinical Referral'),
-            report_type: reportType,
-            cd34_count: cd34Match ? `${cd34Match[1]} x10^6 cells/kg` : 'N/A',
-            viability: viabilityMatch ? `${viabilityMatch[1]}%` : 'N/A',
-            blast_percentage: blastMatch ? `${blastMatch[1]}%` : 'N/A',
-            cellularity: cellularityMatch ? cellularityMatch[1].trim() : 'N/A',
-            hla_calls: reportType === 'HLA' ? hlaCalls : null,
-            hla_summary: reportType === 'HLA' ? '10/10 High-Resolution Allele Panel (A, B, C, DRB1, DQB1)' : 'Not an HLA typing panel',
-            is_valid: true,
-            insights: {
-              report_type: reportType,
-              plain_english_summary: plainEnglishSummary,
-              clinical_interpretation: clinicalInterpretation,
-              recommended_action: recommendedAction,
-              questions_for_doctor: questionsForDoctor,
-              next_steps: nextSteps,
-              key_metrics: keyMetrics
-            }
-          }
+          parsed_data: parsedData
         }
       };
     }
@@ -1830,6 +1884,11 @@ Thank you for your question regarding **"${query}"**. Here is an evidence-based 
 
     if (resource === 'ocr' || cleanUrl.startsWith('ocr/reports') || url.includes('/ocr/reports/')) {
       const reportId = url.split('/').filter(Boolean).pop();
+
+      // Delete from Supabase
+      try {
+        await supabase.from('medical_reports').delete().eq('id', reportId);
+      } catch (e) {}
       const isLocal = typeof window !== 'undefined' && (
         window.location.hostname === 'localhost' ||
         window.location.hostname === '127.0.0.1' ||
