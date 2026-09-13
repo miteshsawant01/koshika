@@ -182,34 +182,36 @@ const MedicalReportOCR = () => {
         is_valid: isValid
       };
 
-      // Direct Supabase insert guarantee for instant dashboard visibility
-      try {
-        const { data: supaRow, error: supaErr } = await supabase
-          .from('medical_reports')
-          .insert([{
-            file_name: newReport.file_name,
-            report_type: newReport.report_type,
-            status: newReport.status,
-            patient_name: parsed.patient_name || 'Patient from Report',
-            age: parsed.age ? Number(parsed.age) : 28,
-            blood_group: parsed.blood_group || 'B+',
-            disease: parsed.disease || 'Clinical Referral',
-            cd34_count: parsed.cd34_count ? String(parsed.cd34_count) : 'N/A',
-            viability: parsed.viability ? String(parsed.viability) : 'N/A',
-            extracted_text: newReport.extracted_text || '',
-            parsed_data: parsed,
-            is_valid: isValid
-          }])
-          .select();
+      // Direct Supabase insert guarantee if not already persisted by API client or backend
+      if (!res.data?.is_saved_to_supabase) {
+        try {
+          const { data: supaRow, error: supaErr } = await supabase
+            .from('medical_reports')
+            .insert([{
+              file_name: newReport.file_name,
+              report_type: newReport.report_type,
+              status: newReport.status,
+              patient_name: parsed.patient_name || 'Patient from Report',
+              age: parsed.age ? Number(parsed.age) : 28,
+              blood_group: parsed.blood_group || 'B+',
+              disease: parsed.disease || 'Clinical Referral',
+              cd34_count: parsed.cd34_count ? String(parsed.cd34_count) : 'N/A',
+              viability: parsed.viability ? String(parsed.viability) : 'N/A',
+              extracted_text: newReport.extracted_text || '',
+              parsed_data: parsed,
+              is_valid: isValid
+            }])
+            .select();
 
-        if (!supaErr && supaRow && supaRow[0]?.id) {
-          newReport.id = supaRow[0].id;
-          newReport.date = new Date(supaRow[0].created_at).toLocaleDateString('en-US', {
-            month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit'
-          });
+          if (!supaErr && supaRow && supaRow[0]?.id) {
+            newReport.id = supaRow[0].id;
+            newReport.date = new Date(supaRow[0].created_at).toLocaleDateString('en-US', {
+              month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit'
+            });
+          }
+        } catch (supaErr) {
+          console.warn('Direct Supabase insert notification:', supaErr);
         }
-      } catch (supaErr) {
-        console.warn('Direct Supabase insert notification:', supaErr);
       }
 
       setRecentReports(prev => [newReport, ...prev.filter(r => String(r.id) !== String(newReport.id))]);
