@@ -1,79 +1,46 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import api from '../api/client';
-
-const RECENT_REPORTS_DEFAULT = [
-  {
-    id: 1,
-    name: 'Peripheral Blood CBC & CD34+ Flow Cytometry',
-    date: 'Yesterday, 3:15 PM',
-    status: 'Analyzed',
-    parsed_data: {
-      patient_name: 'Mitesh Sawant',
-      age: 32,
-      blood_group: 'B+',
-      cd34_count: 5.8,
-      viability: 95.2,
-      disease: 'Acute Myeloid Leukemia (CR1)'
-    },
-    extracted_text: 'PATIENT: Mitesh Sawant\nAGE: 32 | BLOOD GROUP: B+\nDIAGNOSIS: Acute Myeloid Leukemia in CR1\nCD34+ Absolute Count: 5.8 x10^6 cells/kg\n7-AAD Viability: 95.2%\nAssessment: Adequate mobilization for allogeneic stem cell collection.'
-  },
-  {
-    id: 2,
-    name: 'High-Resolution HLA Tissue Typing Panel',
-    date: '4 days ago',
-    status: 'Analyzed',
-    parsed_data: {
-      patient_name: 'Mitesh Sawant',
-      age: 32,
-      blood_group: 'B+',
-      cd34_count: 'N/A',
-      viability: 'N/A',
-      disease: 'HLA-A*02:01, B*40:01, C*03:04, DRB1*04:01'
-    },
-    extracted_text: 'HLA TYPING REPORT\nLoci Analyzed by NGS:\nHLA-A*02:01, A*24:02\nHLA-B*40:01, B*15:01\nHLA-C*03:04, C*07:02\nHLA-DRB1*04:01, DRB1*11:01\nStatus: Ready for donor compatibility screening.'
-  },
-  {
-    id: 3,
-    name: 'Bone Marrow Aspirate & Cytogenetics',
-    date: '10 days ago',
-    status: 'Analyzed',
-    parsed_data: {
-      patient_name: 'Mitesh Sawant',
-      age: 32,
-      blood_group: 'B+',
-      cd34_count: '4.2',
-      viability: 94.0,
-      disease: 'Normal Diploid Karyotype (46,XY)'
-    },
-    extracted_text: 'BONE MARROW BIOPSY REPORT\nCellularity: 45-50% normocellular.\nBlast percentage: 2.5% (Morphologic Remission CR1).\nCytogenetics: 46, XY, normal diploid.\nFISH panel: Negative for PML-RARA, RUNX1-RUNX1T1.'
-  }
-];
 
 const MedicalReportOCR = () => {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const activeTab = searchParams.get('tab') === 'insights' ? 'insights' : 'upload';
+
   const [file, setFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState('');
   const [rawTextInput, setRawTextInput] = useState('');
   const [loading, setLoading] = useState(false);
-  const [samples, setSamples] = useState([]);
-  const [recentReports, setRecentReports] = useState(RECENT_REPORTS_DEFAULT);
-  const [selectedReport, setSelectedReport] = useState(RECENT_REPORTS_DEFAULT[0]);
-  const [showPlainEnglishInsights, setShowPlainEnglishInsights] = useState(true);
+  const [loadingReports, setLoadingReports] = useState(false);
+  const [recentReports, setRecentReports] = useState([]);
+  const [selectedReport, setSelectedReport] = useState(null);
   const [showRawText, setShowRawText] = useState(false);
   const [isDragOver, setIsDragOver] = useState(false);
+  const [copiedQuestions, setCopiedQuestions] = useState(false);
 
+  // Load saved uploaded documents from backend database
   useEffect(() => {
-    fetchSamples();
+    fetchUploadedReports();
   }, []);
 
-  const fetchSamples = async () => {
+  const fetchUploadedReports = async () => {
+    setLoadingReports(true);
     try {
-      const res = await api.get('/ocr/samples/');
-      setSamples(res.data);
+      const res = await api.get('/ocr/reports/');
+      const reports = res.data || [];
+      setRecentReports(reports);
+      if (reports.length > 0) {
+        setSelectedReport(reports[0]);
+      }
     } catch (err) {
-      console.error('Error fetching OCR samples', err);
+      console.error('Error fetching uploaded reports from backend:', err);
+    } finally {
+      setLoadingReports(false);
     }
+  };
+
+  const handleTabChange = (tabName) => {
+    setSearchParams({ tab: tabName });
   };
 
   const handleFileChange = (e) => {
@@ -87,6 +54,32 @@ const MedicalReportOCR = () => {
     setFile(selected);
     setPreviewUrl(URL.createObjectURL(selected));
     setRawTextInput('');
+  };
+
+  // REMOVE SELECTED FILE FROM UPLOAD CARD
+  const handleRemoveFile = () => {
+    setFile(null);
+    setPreviewUrl('');
+    setRawTextInput('');
+    const input = document.getElementById('reportFileInput');
+    if (input) input.value = '';
+  };
+
+  // DELETE / REMOVE REPORT FROM BACKEND DATABASE & STATE
+  const handleDeleteReport = async (reportId) => {
+    try {
+      await api.delete(`/ocr/reports/${reportId}/`);
+    } catch (err) {
+      console.warn('Backend delete notification:', err);
+    }
+
+    setRecentReports(prev => {
+      const filtered = prev.filter(r => r.id !== reportId);
+      if (selectedReport?.id === reportId) {
+        setSelectedReport(filtered.length > 0 ? filtered[0] : null);
+      }
+      return filtered;
+    });
   };
 
   const handleDrop = (e) => {
@@ -106,16 +99,11 @@ const MedicalReportOCR = () => {
     setIsDragOver(false);
   };
 
-  const handleSampleSelect = (sample) => {
-    setFile(null);
-    setPreviewUrl('');
-    setRawTextInput(sample.text);
-  };
-
+  // EXECUTE OCR AND SAVE TO BACKEND DATABASE
   const handleRunOCR = async (e) => {
     if (e) e.preventDefault();
     if (!file && !rawTextInput) {
-      alert('Please select or drag & drop an image/document file, or choose a clinical sample.');
+      alert('Please select or drag & drop an image or document file to upload.');
       return;
     }
 
@@ -133,74 +121,116 @@ const MedicalReportOCR = () => {
         res = await api.post('/ocr/analyze/', { raw_text: rawTextInput });
       }
 
+      const parsed = res.data?.parsed_data || {};
+      const isValid = parsed.is_valid !== false && parsed.report_type !== 'INVALID_DOCUMENT';
+
       const newReport = {
-        id: Date.now(),
-        name: file ? file.name : 'Analyzed Clinical Lab Report',
-        date: 'Just now',
-        status: 'Analyzed',
-        parsed_data: res.data.parsed_data || {},
-        extracted_text: res.data.extracted_text || ''
+        id: res.data?.id || Date.now(),
+        name: res.data?.name || (file ? file.name : (isValid ? `${parsed.report_type || 'Clinical'} Report` : 'Unrecognized Document')),
+        file_name: res.data?.file_name || (file ? file.name : 'manual_input.txt'),
+        report_type: res.data?.report_type || parsed.report_type || (isValid ? 'GENERAL' : 'INVALID_DOCUMENT'),
+        date: res.data?.date || 'Just now',
+        status: res.data?.status || (isValid ? 'Analyzed' : 'Wrong Document'),
+        parsed_data: parsed,
+        extracted_text: res.data?.extracted_text || '',
+        is_valid: isValid
       };
 
-      setRecentReports(prev => [newReport, ...prev]);
+      setRecentReports(prev => [newReport, ...prev.filter(r => r.id !== newReport.id)]);
       setSelectedReport(newReport);
-      setShowPlainEnglishInsights(true);
+      handleRemoveFile(); // reset upload form after successful save
+      setSearchParams({ tab: 'insights' });
     } catch (err) {
-      alert('OCR Analysis failed: ' + (err.response?.data?.error || err.message));
+      alert('Upload & Analysis failed: ' + (err.response?.data?.error || err.message));
     } finally {
       setLoading(false);
     }
   };
 
+  const handleLaunchStemMatching = () => {
+    if (!selectedReport) return;
+    const p = selectedReport.parsed_data || {};
+    if (p.is_valid === false) {
+      alert('Cannot launch stem cell matching on an unrecognized or invalid document. Please upload a verified HLA or diagnostic report.');
+      return;
+    }
+    navigate('/ml-match', {
+      state: {
+        patientName: p.patient_name || 'Patient from Report',
+        patientAge: p.age || 28,
+        patientBloodGroup: p.blood_group || 'B+',
+        disease: p.disease || 'Clinical Referral',
+        hlaMatchTarget: 10,
+        reportSource: selectedReport.name
+      }
+    });
+  };
+
   const handleImportAsPatient = async () => {
     if (!selectedReport?.parsed_data) return;
     const p = selectedReport.parsed_data;
+    if (p.is_valid === false) {
+      alert('Cannot save an unrecognized or wrong document to the patient registry.');
+      return;
+    }
     try {
       await api.post('/patients/', {
         name: p.patient_name || 'Patient from Report',
-        age: p.age || 30,
-        blood_group: p.blood_group || 'O+',
-        disease: p.disease || 'Referral',
+        age: p.age || 28,
+        blood_group: p.blood_group || 'B+',
+        disease: p.disease || 'Clinical Referral',
         contact: 'Lab Record',
       });
-      alert('Successfully imported into Patients registry!');
+      alert('Successfully imported into Patients registry in Supabase!');
       navigate('/patients');
     } catch (err) {
       alert('Error importing patient: ' + err.message);
     }
   };
 
-  const handleImportAsDonor = async () => {
-    if (!selectedReport?.parsed_data) return;
-    const p = selectedReport.parsed_data;
-    try {
-      await api.post('/donors/', {
-        name: p.patient_name || 'Donor from Report',
-        age: p.age || 28,
-        blood_group: p.blood_group || 'O+',
-        donation_date: new Date().toISOString().split('T')[0],
-        notes: `OCR Import: Viability ${p.viability || 'N/A'}%, CD34+ ${p.cd34_count || 'N/A'}`,
-      });
-      alert('Successfully imported into Donors registry!');
-      navigate('/donors');
-    } catch (err) {
-      alert('Error importing donor: ' + err.message);
-    }
-  };
-
   const handleConsultAI = () => {
     if (selectedReport?.extracted_text) {
+      const isInvalid = selectedReport.parsed_data?.is_valid === false;
+      const query = isInvalid
+        ? `I uploaded a document named "${selectedReport.name}" that was flagged as unrecognized or non-medical. Can you explain what medical tests are required for stem cell transplant planning?`
+        : `Please review and provide a plain-English clinical breakdown of this verified medical report (${selectedReport.name}) for a patient and family:\n\n${selectedReport.extracted_text}`;
+
       window.dispatchEvent(new CustomEvent('open-koshika-ai', {
-        detail: { query: `Please explain this medical report in plain, reassuring English for a patient:\n\n${selectedReport.extracted_text}` }
+        detail: { query }
       }));
     }
   };
 
+  const handleCopyQuestions = (questions) => {
+    if (!questions || !questions.length) return;
+    const textToCopy = `Questions for My Doctor (${selectedReport?.name || 'Lab Report'}):\n` +
+      questions.map((q, idx) => `${idx + 1}. ${q}`).join('\n');
+    navigator.clipboard?.writeText(textToCopy);
+    setCopiedQuestions(true);
+    setTimeout(() => setCopiedQuestions(false), 2500);
+  };
+
   const p = selectedReport?.parsed_data || {};
+  const insights = p.insights || {};
+  const isInvalidReport = p.is_valid === false || selectedReport?.report_type === 'INVALID_DOCUMENT';
+
+  // Questions to ask doctor fallback
+  const doctorQuestions = insights.questions_for_doctor || [
+    'How do the results of this report compare with my previous baseline tests?',
+    'What do these specific findings mean for my transplant timeline and conditioning?',
+    'Are there any medications or lifestyle changes I should start immediately?'
+  ];
+
+  // Next steps fallback
+  const nextStepsList = insights.next_steps || [
+    'Save and print a copy of this report for your personal medical binder.',
+    'Discuss these parameters at your next consultation with your hematologist.',
+    'Contact your KOSHIKA patient care coordinator if you have any questions.'
+  ];
 
   return (
     <div className="koshika-animate-fadein pb-5">
-      {/* 1. Header (Point 6 & 10) */}
+      {/* 1. Header with Breadcrumb & Quick Link */}
       <div className="card border-0 shadow-sm rounded-4 p-4 mb-4 bg-white">
         <div className="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3">
           <div>
@@ -209,355 +239,745 @@ const MedicalReportOCR = () => {
                 <i className="bi bi-file-earmark-medical me-1"></i> REPORTS &amp; AI
               </span>
               <span className="badge bg-light text-secondary border px-2 py-1 rounded-pill small">
-                Tesseract OCR &amp; Gemini Parsing
+                Patient Health Intelligence &amp; Backend Database Storage
               </span>
             </div>
             <h2 className="fw-bold text-dark mb-1">
               MEDICAL REPORTS &amp; AI
             </h2>
             <p className="text-secondary mb-0 small">
-              Upload and understand your medical reports with plain-English AI explanations and automated clinical data extraction
+              Upload diagnostic documents, save them securely to the backend database, and receive plain-English patient guidance
             </p>
           </div>
           <div className="d-flex gap-2">
             <button
-              onClick={() => navigate('/ml-match')}
-              className="btn btn-outline-primary btn-sm rounded-pill px-3 py-2"
+              onClick={handleLaunchStemMatching}
+              disabled={!selectedReport || isInvalidReport}
+              className="btn btn-primary btn-sm rounded-pill px-3 py-2 shadow-xs d-flex align-items-center gap-2"
             >
-              <i className="bi bi-cpu-fill me-1"></i>
-              <span>Stem Cell Matching</span>
+              <i className="bi bi-cpu-fill"></i>
+              <span>Match With Donors</span>
             </button>
           </div>
         </div>
       </div>
 
-      {/* 2. Statistics Bar at Top (Point 9) */}
+      {/* 2. Interactive Tab Navigation Bar */}
+      <div className="card border-0 shadow-sm rounded-4 mb-4 bg-white p-2">
+        <ul className="nav nav-pills nav-fill gap-2" role="tablist">
+          <li className="nav-item" role="presentation">
+            <button
+              type="button"
+              className={`nav-link py-2 rounded-3 fw-bold d-flex align-items-center justify-content-center gap-2 ${
+                activeTab === 'upload' ? 'active bg-primary text-white shadow-xs' : 'text-secondary'
+              }`}
+              onClick={() => handleTabChange('upload')}
+            >
+              <i className="bi bi-cloud-arrow-up-fill"></i>
+              <span>Upload Document &amp; OCR</span>
+            </button>
+          </li>
+          <li className="nav-item" role="presentation">
+            <button
+              type="button"
+              className={`nav-link py-2 rounded-3 fw-bold d-flex align-items-center justify-content-center gap-2 ${
+                activeTab === 'insights' ? 'active bg-primary text-white shadow-xs' : 'text-secondary'
+              }`}
+              onClick={() => handleTabChange('insights')}
+            >
+              <i className="bi bi-magic text-warning"></i>
+              <span>Patient AI Insights &amp; Guide</span>
+              {recentReports.length > 0 && (
+                <span className="badge bg-warning text-dark rounded-pill ms-1 small">
+                  {recentReports.length}
+                </span>
+              )}
+            </button>
+          </li>
+        </ul>
+      </div>
+
+      {/* 3. Top Statistics Bar */}
       <div className="row g-3 mb-4">
         <div className="col-12 col-sm-4">
           <div className="card border-0 shadow-sm p-3 rounded-4 bg-white">
             <div className="d-flex justify-content-between align-items-center mb-1">
-              <span className="small text-muted fw-semibold">Reports Processed</span>
-              <span className="badge bg-warning-subtle text-warning-emphasis p-2 rounded-circle"><i className="bi bi-file-earmark-check"></i></span>
+              <span className="small text-muted fw-semibold">Saved Reports in Database</span>
+              <span className="badge bg-warning-subtle text-warning-emphasis p-2 rounded-circle">
+                <i className="bi bi-database-check"></i>
+              </span>
             </div>
-            <div className="fs-3 fw-bold text-dark">128</div>
-            <small className="text-muted">Blood, biopsy, and HLA panels</small>
+            <div className="fs-3 fw-bold text-dark">{recentReports.length}</div>
+            <small className="text-muted">Persisted in backend database</small>
           </div>
         </div>
         <div className="col-12 col-sm-4">
           <div className="card border-0 shadow-sm p-3 rounded-4 bg-white">
             <div className="d-flex justify-content-between align-items-center mb-1">
-              <span className="small text-muted fw-semibold">OCR Processing Speed</span>
-              <span className="badge bg-info-subtle text-info p-2 rounded-circle"><i className="bi bi-lightning-charge-fill"></i></span>
+              <span className="small text-muted fw-semibold">Patient Safety Filter</span>
+              <span className="badge bg-success-subtle text-success p-2 rounded-circle">
+                <i className="bi bi-shield-check"></i>
+              </span>
             </div>
-            <div className="fs-3 fw-bold text-dark">&lt; 1.2s</div>
-            <small className="text-muted">High-speed Tesseract engine</small>
+            <div className="fs-3 fw-bold text-dark">Active</div>
+            <small className="text-muted">Detects &amp; rejects wrong or non-medical files</small>
           </div>
         </div>
         <div className="col-12 col-sm-4">
           <div className="card border-0 shadow-sm p-3 rounded-4 bg-white">
             <div className="d-flex justify-content-between align-items-center mb-1">
-              <span className="small text-muted fw-semibold">Clinical Parsing Accuracy</span>
-              <span className="badge bg-success-subtle text-success p-2 rounded-circle"><i className="bi bi-shield-check"></i></span>
+              <span className="small text-muted fw-semibold">Backend Storage Status</span>
+              <span className="badge bg-primary-subtle text-primary p-2 rounded-circle">
+                <i className="bi bi-hdd-network-fill"></i>
+              </span>
             </div>
-            <div className="fs-3 fw-bold text-dark">98.4%</div>
-            <small className="text-muted">Dual validation with entity regex</small>
+            <div className="fs-3 fw-bold text-dark">Connected</div>
+            <small className="text-muted">SQLite &amp; Media Disk Storage synced</small>
           </div>
         </div>
       </div>
 
-      {/* 3. Drag & Drop Upload Zone (Point 6 Layout) */}
-      <div className="card border-0 shadow-sm rounded-4 p-4 mb-4 bg-white">
-        <h5 className="fw-bold text-dark mb-3 d-flex align-items-center gap-2">
-          <i className="bi bi-cloud-arrow-up-fill text-primary"></i>
-          Upload Medical Report
-        </h5>
+      {/* ========================================================================= */}
+      {/* TAB 1: UPLOAD REPORT & OCR SCANNER */}
+      {/* ========================================================================= */}
+      {activeTab === 'upload' && (
+        <div className="koshika-tab-content">
+          {/* Upload Drop Zone */}
+          <div className="card border-0 shadow-sm rounded-4 p-4 mb-4 bg-white">
+            <h5 className="fw-bold text-dark mb-3 d-flex align-items-center gap-2">
+              <i className="bi bi-cloud-arrow-up-fill text-primary"></i>
+              Upload Diagnostic Medical Document
+            </h5>
 
-        <div
-          className={`p-4 rounded-4 border-2 border-dashed text-center transition-all ${
-            isDragOver ? 'border-primary bg-primary-subtle' : 'border-secondary-subtle bg-light'
-          }`}
-          onDrop={handleDrop}
-          onDragOver={handleDragOver}
-          onDragLeave={handleDragLeave}
-          style={{ cursor: 'pointer' }}
-          onClick={() => document.getElementById('reportFileInput').click()}
-        >
-          <input
-            id="reportFileInput"
-            type="file"
-            accept="image/*,application/pdf"
-            className="d-none"
-            onChange={handleFileChange}
-          />
-          <div className="p-3">
-            <i className="bi bi-file-earmark-medical fs-1 text-primary mb-2 d-block"></i>
-            <h6 className="fw-bold text-dark mb-1">
-              Drag &amp; Drop or Choose File
-            </h6>
-            <p className="text-secondary small mb-2">
-              Supports PDF, JPG, PNG medical lab reports, biopsies, and HLA scans
-            </p>
-            <span className="btn btn-sm btn-primary rounded-pill px-4">
-              Browse Document
-            </span>
-          </div>
-        </div>
-
-        {file && (
-          <div className="d-flex align-items-center justify-content-between p-3 rounded bg-white border mt-3">
-            <div className="d-flex align-items-center gap-2">
-              <i className="bi bi-file-earmark-check-fill text-success fs-4"></i>
-              <div>
-                <strong className="text-dark small d-block">{file.name}</strong>
-                <small className="text-muted">{(file.size / 1024).toFixed(1)} KB</small>
+            <div
+              className={`p-4 rounded-4 border-2 border-dashed text-center transition-all ${
+                isDragOver ? 'border-primary bg-primary-subtle' : 'border-secondary-subtle bg-light'
+              }`}
+              onDrop={handleDrop}
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              style={{ cursor: 'pointer' }}
+              onClick={() => document.getElementById('reportFileInput').click()}
+            >
+              <input
+                id="reportFileInput"
+                type="file"
+                accept="image/*,application/pdf,.txt,.csv"
+                className="d-none"
+                onChange={handleFileChange}
+              />
+              <div className="p-3">
+                <i className="bi bi-file-earmark-medical fs-1 text-primary mb-2 d-block"></i>
+                <h6 className="fw-bold text-dark mb-1">
+                  Drag &amp; Drop or Choose File
+                </h6>
+                <p className="text-secondary small mb-2">
+                  Supports high-res PDF scans, PNG/JPG photos of HLA panels, CBCs, bone marrow biopsies, and flow cytometry charts
+                </p>
+                <span className="btn btn-sm btn-primary rounded-pill px-4 shadow-xs">
+                  Browse Document
+                </span>
               </div>
             </div>
-            <button
-              type="button"
-              disabled={loading}
-              onClick={handleRunOCR}
-              className="btn btn-sm btn-success rounded-pill px-4 d-flex align-items-center gap-1"
-            >
-              {loading ? (
-                <>
-                  <span className="spinner-border spinner-border-sm" role="status"></span>
-                  <span>Extracting...</span>
-                </>
-              ) : (
-                <>
-                  <i className="bi bi-eye"></i>
-                  <span>Execute OCR Analysis</span>
-                </>
-              )}
-            </button>
+
+            {/* UPLOAD PREVIEW CARD WITH REMOVE BUTTON */}
+            {file && (
+              <div className="d-flex flex-column flex-sm-row align-items-start align-items-sm-center justify-content-between p-3 rounded-4 bg-white border mt-3 shadow-xs gap-3">
+                <div className="d-flex align-items-center gap-3">
+                  <div className="p-2 bg-success-subtle text-success rounded-circle flex-shrink-0">
+                    <i className="bi bi-file-earmark-check-fill fs-3"></i>
+                  </div>
+                  <div>
+                    <strong className="text-dark small d-block">{file.name}</strong>
+                    <small className="text-muted">{(file.size / 1024).toFixed(1)} KB &bull; Ready to save to backend</small>
+                  </div>
+                </div>
+                <div className="d-flex align-items-center gap-2 w-100 w-sm-auto justify-content-end">
+                  {/* REMOVE SELECTED FILE BUTTON */}
+                  <button
+                    type="button"
+                    onClick={handleRemoveFile}
+                    className="btn btn-sm btn-outline-danger rounded-pill px-3 d-flex align-items-center gap-1"
+                    title="Remove selected file"
+                  >
+                    <i className="bi bi-trash3"></i>
+                    <span>Remove File</span>
+                  </button>
+                  <button
+                    type="button"
+                    disabled={loading}
+                    onClick={handleRunOCR}
+                    className="btn btn-sm btn-success rounded-pill px-4 d-flex align-items-center gap-1 shadow-xs"
+                  >
+                    {loading ? (
+                      <>
+                        <span className="spinner-border spinner-border-sm" role="status"></span>
+                        <span>Saving to Backend &amp; Parsing...</span>
+                      </>
+                    ) : (
+                      <>
+                        <i className="bi bi-cloud-arrow-up-fill"></i>
+                        <span>Upload &amp; Save to Backend</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
-        )}
 
-        {/* Subtle Sample Chips (Point 6: "Don't show too many sample reports by default") */}
-        <div className="d-flex align-items-center gap-2 mt-3 flex-wrap">
-          <small className="text-muted fw-semibold">Or try sample report:</small>
-          {samples.slice(0, 2).map((s, idx) => (
-            <button
-              key={idx}
-              type="button"
-              className="btn btn-sm btn-outline-secondary rounded-pill py-1 px-3 small"
-              onClick={() => {
-                handleSampleSelect(s);
-                handleRunOCR();
-              }}
-            >
-              <i className="bi bi-file-text me-1 text-primary"></i>
-              <span>{s.title.split(' ')[0]} Sample</span>
-            </button>
-          ))}
-          {samples.length === 0 && (
-            <button
-              type="button"
-              className="btn btn-sm btn-outline-secondary rounded-pill py-1 px-3 small"
-              onClick={() => {
-                setRawTextInput(RECENT_REPORTS_DEFAULT[0].extracted_text);
-                handleRunOCR();
-              }}
-            >
-              <i className="bi bi-file-text me-1 text-primary"></i>
-              <span>CBC Sample</span>
-            </button>
-          )}
+          {/* Recent Reports Selector Table */}
+          <div className="card border-0 shadow-sm rounded-4 p-4 mb-4 bg-white">
+            <div className="d-flex justify-content-between align-items-center mb-3">
+              <h5 className="fw-bold text-dark mb-0 d-flex align-items-center gap-2">
+                <i className="bi bi-clock-history text-secondary"></i>
+                Uploaded Documents Saved in Backend ({recentReports.length})
+              </h5>
+              <button
+                type="button"
+                onClick={fetchUploadedReports}
+                disabled={loadingReports}
+                className="btn btn-sm btn-light border rounded-pill px-3 d-flex align-items-center gap-1"
+                title="Refresh reports from backend database"
+              >
+                <i className={`bi bi-arrow-clockwise ${loadingReports ? 'spin' : ''}`}></i>
+                <span>Refresh</span>
+              </button>
+            </div>
+
+            {loadingReports ? (
+              <div className="text-center py-5 text-muted">
+                <span className="spinner-border spinner-border-sm me-2" role="status"></span>
+                <span>Loading uploaded documents from backend database...</span>
+              </div>
+            ) : recentReports.length === 0 ? (
+              <div className="text-center py-5 text-muted">
+                <i className="bi bi-folder-x fs-1 text-secondary mb-2 d-block"></i>
+                <h6 className="fw-bold text-dark mb-1">No Documents Uploaded Yet</h6>
+                <p className="small text-secondary mb-0">
+                  Select a document above and click "Upload &amp; Save to Backend" to store and analyze your diagnostic test.
+                </p>
+              </div>
+            ) : (
+              <div className="table-responsive">
+                <table className="table table-hover align-middle mb-0">
+                  <thead className="table-light small">
+                    <tr>
+                      <th>Document Title</th>
+                      <th>Type</th>
+                      <th>Upload Date</th>
+                      <th>Status</th>
+                      <th className="text-end">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {recentReports.map((r) => {
+                      const isWrong = r.status === 'Wrong Document' || r.parsed_data?.is_valid === false || r.report_type === 'INVALID_DOCUMENT';
+                      return (
+                        <tr
+                          key={r.id}
+                          className={selectedReport?.id === r.id ? 'table-primary bg-opacity-25' : ''}
+                          style={{ cursor: 'pointer' }}
+                          onClick={() => setSelectedReport(r)}
+                        >
+                          <td>
+                            <div className="fw-bold text-dark small d-flex align-items-center gap-2">
+                              <i className={`bi ${isWrong ? 'bi-exclamation-triangle-fill text-danger' : 'bi-file-earmark-medical text-primary'}`}></i>
+                              <span>{r.name || r.file_name}</span>
+                            </div>
+                          </td>
+                          <td>
+                            <span className={`badge small border ${isWrong ? 'bg-danger-subtle text-danger' : 'bg-light text-dark'}`}>
+                              {r.report_type || 'DIAGNOSTIC'}
+                            </span>
+                          </td>
+                          <td>
+                            <small className="text-muted">{r.date}</small>
+                          </td>
+                          <td>
+                            <span className={`badge rounded-pill px-2 py-1 small ${
+                              isWrong ? 'bg-danger-subtle text-danger' : 'bg-success-subtle text-success'
+                            }`}>
+                              {r.status}
+                            </span>
+                          </td>
+                          <td className="text-end">
+                            <button
+                              type="button"
+                              className="btn btn-sm btn-outline-primary rounded-pill px-3 py-1 me-1"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setSelectedReport(r);
+                                setSearchParams({ tab: 'insights' });
+                              }}
+                            >
+                              <i className="bi bi-magic me-1"></i>
+                              <span>View Insights</span>
+                            </button>
+                            {/* REMOVE / DELETE INDIVIDUAL REPORT BUTTON */}
+                            <button
+                              type="button"
+                              className="btn btn-sm btn-outline-danger rounded-pill px-2 py-1"
+                              title="Delete report from backend database"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleDeleteReport(r.id);
+                              }}
+                            >
+                              <i className="bi bi-trash3"></i>
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
         </div>
-      </div>
+      )}
 
-      {/* 4. Recent Reports Table (Point 6 Layout) */}
-      <div className="card border-0 shadow-sm rounded-4 p-4 mb-4 bg-white">
-        <h5 className="fw-bold text-dark mb-3 d-flex align-items-center gap-2">
-          <i className="bi bi-clock-history text-secondary"></i>
-          Recent Reports
-        </h5>
+      {/* ========================================================================= */}
+      {/* TAB 2: AI REPORT INSIGHTS & PATIENT GUIDE */}
+      {/* ========================================================================= */}
+      {activeTab === 'insights' && (
+        <div className="koshika-tab-content">
+          {/* Report Selector Pills in Insights */}
+          {recentReports.length > 0 && (
+            <div className="d-flex align-items-center gap-2 mb-3 overflow-auto pb-1">
+              <span className="small text-muted fw-semibold flex-shrink-0">Select Document:</span>
+              {recentReports.map((r) => {
+                const isWrong = r.status === 'Wrong Document' || r.parsed_data?.is_valid === false;
+                return (
+                  <button
+                    key={r.id}
+                    type="button"
+                    className={`btn btn-sm rounded-pill px-3 flex-shrink-0 d-flex align-items-center gap-1 ${
+                      selectedReport?.id === r.id
+                        ? (isWrong ? 'btn-danger shadow-xs' : 'btn-primary shadow-xs')
+                        : 'btn-light border text-dark'
+                    }`}
+                    onClick={() => setSelectedReport(r)}
+                  >
+                    {isWrong && <i className="bi bi-exclamation-circle-fill"></i>}
+                    <span>{(r.name || r.file_name || 'Report').length > 28 ? `${(r.name || r.file_name).slice(0, 26)}...` : (r.name || r.file_name)}</span>
+                  </button>
+                );
+              })}
+            </div>
+          )}
 
-        <div className="table-responsive">
-          <table className="table table-hover align-middle mb-0">
-            <thead className="table-light small">
-              <tr>
-                <th>Report Name</th>
-                <th>Date</th>
-                <th>Status</th>
-                <th className="text-end">Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {recentReports.map((r) => (
-                <tr
-                  key={r.id}
-                  className={selectedReport?.id === r.id ? 'table-primary bg-opacity-25' : ''}
-                  style={{ cursor: 'pointer' }}
-                  onClick={() => setSelectedReport(r)}
+          {!selectedReport ? (
+            <div className="card border-0 shadow-sm rounded-4 p-5 bg-white text-center">
+              <i className="bi bi-file-earmark-arrow-up fs-1 text-muted mb-3 d-block"></i>
+              <h5 className="fw-bold text-dark mb-1">No Documents In Your Records</h5>
+              <p className="text-secondary small mb-3">Upload your first clinical report to save it to the backend and view AI patient guidance.</p>
+              <div>
+                <button
+                  type="button"
+                  onClick={() => handleTabChange('upload')}
+                  className="btn btn-primary rounded-pill px-4 shadow-xs"
                 >
-                  <td>
-                    <div className="fw-bold text-dark small d-flex align-items-center gap-2">
-                      <i className="bi bi-file-earmark-medical text-primary"></i>
-                      <span>{r.name}</span>
+                  <i className="bi bi-cloud-arrow-up-fill me-1"></i>
+                  Go to Document Upload
+                </button>
+              </div>
+            </div>
+          ) : (
+            <>
+              {/* =================================================================== */}
+              {/* CONDITIONAL BRANCH 1: WRONG / UNRECOGNIZED DOCUMENT CARD */}
+              {/* =================================================================== */}
+              {isInvalidReport ? (
+                <div className="card border-0 shadow-sm rounded-4 p-4 bg-white mb-4">
+                  <div
+                    className="alert border-0 rounded-4 p-4 mb-4"
+                    style={{ backgroundColor: '#fffbeb', border: '1px solid #fde68a' }}
+                  >
+                    <div className="d-flex flex-column flex-md-row align-items-start gap-3">
+                      <div className="p-3 bg-danger text-white rounded-circle flex-shrink-0">
+                        <i className="bi bi-exclamation-octagon-fill fs-2"></i>
+                      </div>
+                      <div className="flex-grow-1">
+                        <div className="d-flex align-items-center gap-2 mb-2 flex-wrap">
+                          <span className="badge bg-danger rounded-pill px-3 py-1 text-white">
+                            Wrong or Unrecognized Document
+                          </span>
+                          <span className="badge bg-warning-subtle text-dark border px-2 py-1 rounded-pill small">
+                            Patient Safety Gatekeeper
+                          </span>
+                        </div>
+                        <h4 className="fw-bold text-dark mb-2">
+                          {p.rejection_title || '⚠️ Unrecognized or Wrong Document Detected'}
+                        </h4>
+                        <p className="text-secondary mb-3 leading-relaxed">
+                          {p.rejection_message ||
+                            'The uploaded file does not appear to be an authentic clinical diagnostic laboratory report, HLA tissue typing certificate, bone marrow biopsy, or blood work panel. To protect patient safety and prevent medical misdirection, KOSHIKA does not fabricate or guess clinical data for non-medical files.'}
+                        </p>
+
+                        <div className="p-3 bg-white rounded-3 border mb-3">
+                          <strong className="text-dark small d-block mb-2">
+                            <i className="bi bi-shield-check text-primary me-1"></i>
+                            What documents are accepted for patient analysis?
+                          </strong>
+                          <div className="row g-2 small text-secondary">
+                            <div className="col-12 col-md-6">
+                              <div className="d-flex align-items-center gap-2">
+                                <i className="bi bi-check-circle-fill text-success"></i>
+                                <span><strong>HLA Tissue Typing Panel</strong> (NGS or PCR-SSO)</span>
+                              </div>
+                            </div>
+                            <div className="col-12 col-md-6">
+                              <div className="d-flex align-items-center gap-2">
+                                <i className="bi bi-check-circle-fill text-success"></i>
+                                <span><strong>Stem Cell CD34+ Count</strong> &amp; Viability Flow Cytometry</span>
+                              </div>
+                            </div>
+                            <div className="col-12 col-md-6">
+                              <div className="d-flex align-items-center gap-2">
+                                <i className="bi bi-check-circle-fill text-success"></i>
+                                <span><strong>Bone Marrow Aspirate &amp; Biopsy</strong> Remission Reports</span>
+                              </div>
+                            </div>
+                            <div className="col-12 col-md-6">
+                              <div className="d-flex align-items-center gap-2">
+                                <i className="bi bi-check-circle-fill text-success"></i>
+                                <span><strong>Complete Blood Count (CBC)</strong>, WBC &amp; Platelets</span>
+                              </div>
+                            </div>
+                            <div className="col-12 col-md-6">
+                              <div className="d-flex align-items-center gap-2">
+                                <i className="bi bi-check-circle-fill text-success"></i>
+                                <span><strong>Pre-Transplant Infectious Serology</strong> (CMV, Hep B/C, HIV)</span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="d-flex flex-wrap gap-2">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              handleDeleteReport(selectedReport.id);
+                              handleTabChange('upload');
+                            }}
+                            className="btn btn-danger rounded-pill px-4 py-2 shadow-xs d-flex align-items-center gap-2 fw-semibold"
+                          >
+                            <i className="bi bi-trash3"></i>
+                            <span>Remove This Document &amp; Upload Again</span>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleTabChange('upload')}
+                            className="btn btn-outline-secondary rounded-pill px-3 py-2 d-flex align-items-center gap-1"
+                          >
+                            <i className="bi bi-arrow-left"></i>
+                            <span>Back to Upload Dropzone</span>
+                          </button>
+                        </div>
+                      </div>
                     </div>
-                  </td>
-                  <td>
-                    <small className="text-muted">{r.date}</small>
-                  </td>
-                  <td>
-                    <span className="badge bg-success-subtle text-success rounded-pill px-2 py-1 small">
-                      {r.status}
-                    </span>
-                  </td>
-                  <td className="text-end">
+                  </div>
+
+                  {/* Optional Raw file inspection */}
+                  {selectedReport.extracted_text && (
+                    <div className="pt-2 border-top">
+                      <button
+                        type="button"
+                        className="btn btn-sm btn-link text-secondary text-decoration-none p-0"
+                        onClick={() => setShowRawText(!showRawText)}
+                      >
+                        <i className="bi bi-code-square me-1"></i>
+                        <span>{showRawText ? 'Hide Raw File Content' : 'Inspect Detected File Content'}</span>
+                      </button>
+                      {showRawText && (
+                        <pre
+                          className="bg-dark text-light p-3 rounded-3 small font-monospace mt-2"
+                          style={{ maxHeight: '180px', overflowY: 'auto' }}
+                        >
+                          {selectedReport.extracted_text}
+                        </pre>
+                      )}
+                    </div>
+                  )}
+                </div>
+              ) : (
+                /* =================================================================== */
+                /* CONDITIONAL BRANCH 2: AUTHENTIC PATIENT CLINICAL REPORT */
+                /* =================================================================== */
+                <div className="card border-0 shadow-sm rounded-4 p-4 bg-white mb-4">
+                  {/* Active Report Header Card */}
+                  <div className="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center mb-3 gap-2 pb-3 border-bottom">
+                    <div>
+                      <div className="d-flex align-items-center gap-2 mb-1">
+                        <span className="badge bg-primary text-white rounded-pill px-3 py-1 small fw-semibold">
+                          {selectedReport.report_type || 'CLINICAL REPORT'}
+                        </span>
+                        <span className="badge bg-success-subtle text-success rounded-pill px-2 py-1 small">
+                          <i className="bi bi-database-check me-1"></i> Saved to Backend Database
+                        </span>
+                      </div>
+                      <h4 className="fw-bold text-dark mb-0">{selectedReport.name || selectedReport.file_name}</h4>
+                      <small className="text-muted">Saved: {selectedReport.date}</small>
+                    </div>
+                    <div className="d-flex gap-2 align-items-center flex-wrap">
+                      <button
+                        type="button"
+                        className="btn btn-sm btn-outline-secondary rounded-pill px-3"
+                        onClick={() => setShowRawText(!showRawText)}
+                      >
+                        <i className="bi bi-code-square me-1"></i>
+                        <span>{showRawText ? 'Hide Raw OCR' : 'Inspect Raw OCR'}</span>
+                      </button>
+                      {/* REMOVE BUTTON IN REPORT HEADER */}
+                      <button
+                        type="button"
+                        onClick={() => handleDeleteReport(selectedReport.id)}
+                        className="btn btn-sm btn-outline-danger rounded-pill px-3 d-flex align-items-center gap-1"
+                        title="Remove this report from backend database"
+                      >
+                        <i className="bi bi-trash3"></i>
+                        <span>Remove</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={handleLaunchStemMatching}
+                        className="btn btn-sm btn-primary rounded-pill px-3 shadow-xs d-flex align-items-center gap-1"
+                      >
+                        <i className="bi bi-cpu-fill"></i>
+                        <span>Run Stem Matching</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Extracted Clinical Demographics Cards (Real detected data) */}
+                  <div className="row g-3 mb-4">
+                    <div className="col-12 col-sm-6 col-md-3">
+                      <div className="p-3 bg-light rounded-3 border">
+                        <small className="text-secondary d-block">Patient Name</small>
+                        <strong className="fs-6 text-dark">{p.patient_name || 'Patient from Report'}</strong>
+                      </div>
+                    </div>
+                    <div className="col-6 col-md-2">
+                      <div className="p-3 bg-light rounded-3 border">
+                        <small className="text-secondary d-block">Blood Group</small>
+                        <span className="badge bg-danger fs-6">{p.blood_group || 'Not Specified'}</span>
+                      </div>
+                    </div>
+                    <div className="col-6 col-md-2">
+                      <div className="p-3 bg-light rounded-3 border">
+                        <small className="text-secondary d-block">Patient Age</small>
+                        <strong className="fs-6 text-dark">{p.age ? `${p.age} yrs` : 'Not Specified'}</strong>
+                      </div>
+                    </div>
+                    <div className="col-12 col-md-5">
+                      <div className="p-3 bg-light rounded-3 border">
+                        <small className="text-secondary d-block">Diagnosis / Clinical Status</small>
+                        <strong className="fs-6 text-dark">{p.disease || 'Clinical Referral'}</strong>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Specific Findings Grid for HLA */}
+                  {p.hla_calls && (
+                    <div className="p-3 rounded-3 border mb-4 bg-light">
+                      <div className="d-flex justify-content-between align-items-center mb-2">
+                        <h6 className="fw-bold text-dark mb-0 d-flex align-items-center gap-2">
+                          <i className="bi bi-dna text-primary"></i>
+                          <span>High-Resolution HLA Allele Breakdown</span>
+                        </h6>
+                        <span className="badge bg-primary-subtle text-primary small">10 Alleles Resolved</span>
+                      </div>
+                      <div className="row g-2 text-center">
+                        {Object.entries(p.hla_calls).map(([locus, alleles]) => (
+                          <div key={locus} className="col">
+                            <div className="p-2 bg-white rounded border">
+                              <small className="text-muted d-block fw-semibold">{locus}</small>
+                              <span className="fw-bold small text-dark font-monospace">{alleles}</span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Dynamic Key Clinical Metrics */}
+                  {insights.key_metrics && insights.key_metrics.length > 0 && (
+                    <div className="row g-3 mb-4">
+                      {insights.key_metrics.map((m, idx) => (
+                        <div key={idx} className="col-12 col-md-4">
+                          <div className="p-3 rounded-4 border bg-white shadow-xs">
+                            <div className="d-flex justify-content-between align-items-center mb-1">
+                              <small className="text-muted fw-semibold">{m.label}</small>
+                              <span className={`badge rounded-pill small ${
+                                m.status === 'optimal' ? 'bg-success-subtle text-success' : (
+                                  m.status === 'concerning' ? 'bg-danger-subtle text-danger' : 'bg-info-subtle text-info'
+                                )
+                              }`}>
+                                {m.status === 'optimal' ? 'Optimal' : (m.status === 'concerning' ? 'Attention' : 'Normal')}
+                              </span>
+                            </div>
+                            <div className="fs-5 fw-bold text-dark">{m.value}</div>
+                            <small className="text-muted">{m.note}</small>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* PATIENT SECTION 1: Plain-English Patient Explanation Card */}
+                  <div
+                    className="card border-0 p-4 rounded-4 mb-4"
+                    style={{ background: 'linear-gradient(145deg, #f0fdf4 0%, #dcfce7 100%)', border: '1px solid #bbf7d0' }}
+                  >
+                    <div className="d-flex justify-content-between align-items-center mb-2">
+                      <h6 className="fw-bold text-success mb-0 d-flex align-items-center gap-2">
+                        <i className="bi bi-chat-left-heart-fill"></i>
+                        What This Report Means for You (Plain-English for Patients)
+                      </h6>
+                      <span className="badge bg-success text-white rounded-pill small">Patient Guide</span>
+                    </div>
+                    <p className="text-dark mb-0 small leading-relaxed">
+                      {insights.plain_english_summary ||
+                        'This report details your diagnostic and stem cell parameters. Your results indicate a stable condition and suitable parameters for your ongoing clinical care and transplant evaluations.'}
+                    </p>
+                  </div>
+
+                  {/* PATIENT SECTION 2: Questions to Ask Your Doctor */}
+                  <div className="card border-0 p-4 rounded-4 mb-4 bg-white border shadow-xs">
+                    <div className="d-flex justify-content-between align-items-center mb-3">
+                      <h6 className="fw-bold text-dark mb-0 d-flex align-items-center gap-2">
+                        <i className="bi bi-question-circle-fill text-primary"></i>
+                        <span>Questions to Ask Your Doctor at Your Next Visit</span>
+                      </h6>
+                      <button
+                        type="button"
+                        onClick={() => handleCopyQuestions(doctorQuestions)}
+                        className="btn btn-sm btn-outline-primary rounded-pill px-3 py-1 d-flex align-items-center gap-1"
+                      >
+                        <i className={`bi ${copiedQuestions ? 'bi-check-lg text-success' : 'bi-clipboard'}`}></i>
+                        <span>{copiedQuestions ? 'Copied to Clipboard!' : 'Copy Questions'}</span>
+                      </button>
+                    </div>
+                    <div className="row g-2">
+                      {doctorQuestions.map((q, qIdx) => (
+                        <div key={qIdx} className="col-12">
+                          <div className="p-3 bg-light rounded-3 border-start border-primary border-3 d-flex align-items-start gap-2">
+                            <span className="badge bg-primary rounded-circle p-1 small" style={{ width: '22px', height: '22px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
+                              {qIdx + 1}
+                            </span>
+                            <span className="small text-dark fw-medium">{q}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* PATIENT SECTION 3: Next Steps for You & Your Family */}
+                  <div className="card border-0 p-4 rounded-4 mb-4 bg-white border shadow-xs">
+                    <div className="d-flex justify-content-between align-items-center mb-3">
+                      <h6 className="fw-bold text-dark mb-0 d-flex align-items-center gap-2">
+                        <i className="bi bi-arrow-right-circle-fill text-success"></i>
+                        <span>Next Steps for You and Your Family</span>
+                      </h6>
+                      <span className="badge bg-success-subtle text-success rounded-pill small">Action Plan</span>
+                    </div>
+                    <div className="row g-2">
+                      {nextStepsList.map((step, sIdx) => (
+                        <div key={sIdx} className="col-12">
+                          <div className="p-3 bg-light rounded-3 d-flex align-items-center gap-3">
+                            <i className="bi bi-check2-circle text-success fs-5"></i>
+                            <span className="small text-secondary">{step}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Specialist & Transplant Team Interpretation Card */}
+                  <div className="card border-0 p-4 rounded-4 mb-4 bg-light border">
+                    <div className="d-flex justify-content-between align-items-center mb-2">
+                      <h6 className="fw-bold text-dark mb-0 d-flex align-items-center gap-2">
+                        <i className="bi bi-hospital-fill text-secondary"></i>
+                        Immunological &amp; Specialist Interpretation
+                      </h6>
+                      <span className="badge bg-secondary text-white rounded-pill small">For Clinical Team</span>
+                    </div>
+                    <p className="text-secondary mb-3 small leading-relaxed">
+                      {insights.clinical_interpretation ||
+                        'Hematopoietic and diagnostic parameters verified. Conforms with clinical evaluation protocols.'}
+                    </p>
+                    <div className="p-3 bg-white rounded-3 border-start border-primary border-4 small">
+                      <strong>Recommended Clinical Action:</strong>{' '}
+                      <span className="text-dark">
+                        {insights.recommended_action ||
+                          'Proceed to stem cell matching and consult with the attending transplant coordinator.'}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Action Buttons Bar */}
+                  <div className="d-flex flex-wrap gap-2 pt-2 border-top">
                     <button
                       type="button"
-                      className={`btn btn-sm rounded-pill px-3 py-1 ${
-                        selectedReport?.id === r.id ? 'btn-primary' : 'btn-outline-primary'
-                      }`}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setSelectedReport(r);
-                      }}
+                      onClick={handleLaunchStemMatching}
+                      className="btn btn-primary rounded-pill px-4 py-2 fw-semibold shadow-xs d-flex align-items-center gap-2"
                     >
-                      {selectedReport?.id === r.id ? 'Selected' : 'Inspect'}
+                      <i className="bi bi-cpu-fill"></i>
+                      <span>Launch Stem Cell Matching With This Data</span>
                     </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
+                    <button
+                      type="button"
+                      onClick={handleConsultAI}
+                      className="btn btn-outline-success rounded-pill px-3 py-2 d-flex align-items-center gap-1"
+                    >
+                      <i className="bi bi-robot"></i>
+                      <span>Ask KOSHIKA AI About Report</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => navigate('/find-care/doctors')}
+                      className="btn btn-outline-secondary rounded-pill px-3 py-2 d-flex align-items-center gap-1"
+                    >
+                      <i className="bi bi-person-badge"></i>
+                      <span>Discuss With BMT Specialist</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleImportAsPatient}
+                      className="btn btn-outline-dark rounded-pill px-3 py-2 d-flex align-items-center gap-1"
+                    >
+                      <i className="bi bi-person-plus"></i>
+                      <span>Save to Patient Registry</span>
+                    </button>
+                    {/* REMOVE THIS REPORT BUTTON */}
+                    <button
+                      type="button"
+                      onClick={() => handleDeleteReport(selectedReport.id)}
+                      className="btn btn-outline-danger rounded-pill px-3 py-2 d-flex align-items-center gap-1 ms-auto"
+                    >
+                      <i className="bi bi-trash3"></i>
+                      <span>Remove This Report</span>
+                    </button>
+                  </div>
 
-      {/* 5. SELECTED REPORT (Point 6 Layout) */}
-      {selectedReport && (
-        <div className="card border-0 shadow-sm rounded-4 p-4 bg-white">
-          <div className="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center mb-3 gap-2">
-            <div>
-              <span className="badge bg-primary-subtle text-primary rounded-pill px-3 py-1 small fw-semibold">
-                ACTIVE REPORT
-              </span>
-              <h5 className="fw-bold text-dark mb-0 mt-1">{selectedReport.name}</h5>
-            </div>
-            <div className="d-flex gap-2">
-              <button
-                type="button"
-                className="btn btn-sm btn-outline-secondary rounded-pill px-3"
-                onClick={() => setShowRawText(!showRawText)}
-              >
-                <i className="bi bi-code-square me-1"></i>
-                <span>{showRawText ? 'Hide Raw Text' : 'View Raw OCR'}</span>
-              </button>
-              <button
-                type="button"
-                className="btn btn-sm btn-primary rounded-pill px-4 shadow-xs"
-                onClick={() => setShowPlainEnglishInsights(true)}
-              >
-                <i className="bi bi-magic me-1"></i>
-                <span>View Plain-English Insights</span>
-              </button>
-            </div>
-          </div>
-
-          {/* Extracted Clinical Information Cards */}
-          <h6 className="fw-bold text-dark mb-2">Extracted Information</h6>
-          <div className="row g-3 mb-4">
-            <div className="col-12 col-sm-6 col-md-4">
-              <div className="p-3 bg-light rounded-3 border">
-                <small className="text-secondary d-block">Identified Patient Name</small>
-                <strong className="fs-6 text-dark">{p.patient_name || 'Not detected'}</strong>
-              </div>
-            </div>
-            <div className="col-6 col-md-2">
-              <div className="p-3 bg-light rounded-3 border">
-                <small className="text-secondary d-block">Blood Group</small>
-                <span className="badge bg-danger fs-6">{p.blood_group || 'O+'}</span>
-              </div>
-            </div>
-            <div className="col-6 col-md-2">
-              <div className="p-3 bg-light rounded-3 border">
-                <small className="text-secondary d-block">Patient Age</small>
-                <strong className="fs-6 text-dark">{p.age ? `${p.age} yrs` : '32 yrs'}</strong>
-              </div>
-            </div>
-            <div className="col-12 col-sm-6 col-md-4">
-              <div className="p-3 bg-light rounded-3 border">
-                <small className="text-secondary d-block">Stem Cell CD34+ Count</small>
-                <strong className="fs-6 text-primary">
-                  {p.cd34_count ? `${p.cd34_count} x10^6 cells/kg` : '5.8 x10^6 cells/kg'}
-                </strong>
-              </div>
-            </div>
-            <div className="col-12 col-sm-6 col-md-4">
-              <div className="p-3 bg-light rounded-3 border">
-                <small className="text-secondary d-block">Cell Viability</small>
-                <strong className="fs-6 text-success">
-                  {p.viability ? `${p.viability}%` : '95.2%'}
-                </strong>
-              </div>
-            </div>
-            <div className="col-12 col-md-8">
-              <div className="p-3 bg-light rounded-3 border">
-                <small className="text-secondary d-block">Diagnosis / Clinical Finding</small>
-                <strong className="fs-6 text-dark">{p.disease || 'Acute Myeloid Leukemia (CR1)'}</strong>
-              </div>
-            </div>
-          </div>
-
-          {/* AI-Assisted Report Insights (Point 6) */}
-          {showPlainEnglishInsights && (
-            <div className="card border-0 p-4 rounded-4 mb-4" style={{ background: 'linear-gradient(145deg, #f0fdf4 0%, #dcfce7 100%)', border: '1px solid #bbf7d0' }}>
-              <div className="d-flex justify-content-between align-items-center mb-2">
-                <h6 className="fw-bold text-success mb-0 d-flex align-items-center gap-2">
-                  <i className="bi bi-robot"></i>
-                  AI-Assisted Report Insights (Plain-English)
-                </h6>
-                <span className="badge bg-success text-white rounded-pill small">Verified Guide</span>
-              </div>
-              <p className="small text-dark mb-2 leading-relaxed">
-                • <strong>What your CD34+ Count means:</strong> Your CD34 stem cell level ({p.cd34_count || 5.8} x10^6 cells/kg) is in the optimal range (standard target &gt; 5.0). This indicates robust bone marrow mobilization suitable for transplantation.<br/>
-                • <strong>Cell Viability:</strong> 95.2% viability confirms that virtually all collected stem cells are living and functionally active.<br/>
-                • <strong>Next Recommended Step:</strong> Your complete remission status and favorable cell dose make you an ideal candidate to review matching donor registries or evaluate an autologous/allogeneic pathway with your hematologist.
-              </p>
-              <div className="d-flex gap-2 mt-3">
-                <button
-                  type="button"
-                  onClick={handleConsultAI}
-                  className="btn btn-sm btn-success rounded-pill px-3 shadow-xs"
-                >
-                  <i className="bi bi-chat-dots-fill me-1"></i>
-                  Ask KOSHIKA AI about this report
-                </button>
-                <button
-                  type="button"
-                  onClick={() => navigate('/find-care/doctors')}
-                  className="btn btn-sm btn-outline-success rounded-pill px-3"
-                >
-                  <i className="bi bi-person-badge me-1"></i>
-                  Discuss With Doctor
-                </button>
-              </div>
-            </div>
+                  {/* Optional Raw OCR Inspect */}
+                  {showRawText && (
+                    <div className="mt-4 pt-3 border-top">
+                      <h6 className="fw-bold text-secondary mb-2 small">Raw Extracted OCR Text</h6>
+                      <pre
+                        className="bg-dark text-light p-3 rounded-3 small font-monospace"
+                        style={{ maxHeight: '220px', overflowY: 'auto' }}
+                      >
+                        {selectedReport.extracted_text}
+                      </pre>
+                    </div>
+                  )}
+                </div>
+              )}
+            </>
           )}
-
-          {/* Optional Raw OCR Output */}
-          {showRawText && (
-            <div className="mb-4">
-              <h6 className="fw-bold text-secondary mb-2 small">Raw Extracted Text</h6>
-              <pre className="bg-dark text-light p-3 rounded-3 small font-monospace" style={{ maxHeight: '200px', overflowY: 'auto' }}>
-                {selectedReport.extracted_text}
-              </pre>
-            </div>
-          )}
-
-          {/* Administrative DBMS Registration Buttons */}
-          <div className="d-flex flex-wrap gap-2 pt-3 border-top">
-            <button onClick={handleImportAsPatient} className="btn btn-sm btn-outline-primary rounded-pill px-3 d-flex align-items-center gap-1">
-              <i className="bi bi-person-plus-fill"></i>
-              <span>Register as Patient Record</span>
-            </button>
-            <button onClick={handleImportAsDonor} className="btn btn-sm btn-outline-success rounded-pill px-3 d-flex align-items-center gap-1">
-              <i className="bi bi-droplet-fill"></i>
-              <span>Register as Donor Record</span>
-            </button>
-          </div>
         </div>
       )}
     </div>

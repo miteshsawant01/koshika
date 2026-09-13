@@ -5,9 +5,11 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.conf import settings
 from .ocr_service import extract_text_from_image, parse_medical_report
+from .models import MedicalReport
 
 UPLOAD_DIR = settings.MEDIA_ROOT / 'uploads'
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
+
 
 class OCRAnalyzeView(APIView):
     def post(self, request):
@@ -27,9 +29,18 @@ class OCRAnalyzeView(APIView):
                     destination.write(chunk)
             file_path_str = str(file_path)
 
-            # Perform OCR extraction
-            extracted_text = extract_text_from_image(file_path)
-            
+            # Check if plain text file or image
+            file_ext = uploaded_file.name.lower().split('.')[-1]
+            if file_ext in ['txt', 'csv', 'log', 'json']:
+                try:
+                    with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
+                        extracted_text = f.read()
+                except Exception:
+                    extracted_text = ''
+            else:
+                # Perform OCR extraction
+                extracted_text = extract_text_from_image(file_path)
+
             # If tesseract was not installed or image unreadable, allow text fallback if passed
             if ('Tesseract engine not found' in extracted_text or not extracted_text.strip()) and raw_text_input:
                 extracted_text = raw_text_input
@@ -38,28 +49,74 @@ class OCRAnalyzeView(APIView):
 
         # Parse medical entities
         parsed = parse_medical_report(extracted_text)
+        is_valid = parsed.get('is_valid', True)
+        report_type = parsed.get('report_type', 'GENERAL')
+        status_label = 'Analyzed' if is_valid else 'Wrong Document'
+        file_name = uploaded_file.name if uploaded_file else 'manual_input.txt'
+
+        # PERSIST UPLOADED DOCUMENT TO BACKEND DATABASE
+        try:
+            report_obj = MedicalReport.objects.create(
+                file_name=file_name,
+                file_path=file_path_str,
+                report_type=report_type,
+                status=status_label,
+                extracted_text=extracted_text,
+                parsed_data=parsed,
+                is_valid=is_valid
+            )
+            report_id = report_obj.id
+            created_at_str = report_obj.created_at.strftime('%b %d, %Y, %I:%M %p')
+        except Exception as db_err:
+            report_id = 1
+            created_at_str = 'Just now'
 
         return Response({
             'success': True,
+            'id': report_id,
+            'name': file_name,
+            'file_name': file_name,
+            'report_type': report_type,
+            'status': status_label,
+            'date': created_at_str,
             'extracted_text': extracted_text,
             'parsed_data': parsed,
-            'file_name': uploaded_file.name if uploaded_file else 'manual_input.txt'
+            'is_valid': is_valid
         })
 
-class OCRSamplesView(APIView):
+
+class OCRReportsListView(APIView):
     def get(self, request):
-        samples = [
-            {
-                'title': 'Leukemia Patient Lab Report',
-                'text': 'STEM CELL TRANSPLANT LABORATORY\nPatient Name: Rajesh Sharma\nAge: 42 Years\nBlood Group: A Positive (A+)\nDiagnosis: Acute Myeloid Leukemia\nWBC Count: 3.2 x 10^3/uL\nStem Cell CD34+ Count: 6.8 x10^6 cells/kg\nCell Viability: 96.4%\nTest Date: 2026-08-15\nRecommendation: Cryopreservation approved for allogeneic graft.'
-            },
-            {
-                'title': 'Healthy Donor Screening Report',
-                'text': 'ADVANCED CELLULAR THERAPY CLINIC\nDonor Name: Ananya Sen\nAge: 29 Years\nBlood Group: O Negative (O-)\nStatus: Healthy Volunteer\nCell Viability: 98.1%\nStem Cell CD34+ Count: 8.2 x10^6 cells/kg\nDiagnosis: Healthy Donor'
-            },
-            {
-                'title': 'Aplastic Anemia Pediatric Report',
-                'text': 'CITY HEMATOLOGY CENTER\nPatient Name: Aarav Patel\nAge: 11 Years\nBlood Group: B Positive (B+)\nDiagnosis: Severe Aplastic Anemia\nStem Cell CD34+ Count: 4.1 x10^6 cells/kg\nCell Viability: 91.5%'
-            }
-        ]
-        return Response(samples)
+        reports = MedicalReport.objects.all().order_by('-id')
+        data = []
+        for r in reports:
+            data.append({
+                'id': r.id,
+                'name': r.file_name,
+                'file_name': r.file_name,
+                'file_path': r.file_path,
+                'report_type': r.report_type,
+                'status': r.status,
+                'is_valid': r.is_valid,
+                'date': r.created_at.strftime('%b %d, %Y, %I:%M %p'),
+                'created_at': r.created_at.isoformat(),
+                'extracted_text': r.extracted_text,
+                'parsed_data': r.parsed_data
+            })
+        return Response(data)
+
+
+class OCRReportDetailView(APIView):
+    def delete(self, request, pk):
+        try:
+            report = MedicalReport.objects.get(pk=pk)
+            # Remove file on disk if exists
+            if report.file_path and os.path.exists(report.file_path):
+                try:
+                    os.remove(report.file_path)
+                except Exception:
+                    pass
+            report.delete()
+            return Response({'success': True, 'message': f'Report {pk} removed successfully'})
+        except MedicalReport.DoesNotExist:
+            return Response({'error': 'Report not found'}, status=status.HTTP_404_NOT_FOUND)

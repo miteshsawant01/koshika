@@ -77,11 +77,17 @@ if DATABASE_URL:
         is_cloud = is_supabase or any(k in DATABASE_URL for k in ['render.com', 'neon.tech', 'aws', 'aiven'])
         is_transaction_pooler = ':6543' in DATABASE_URL
 
-        # Verify that the database host is resolvable to prevent local server crash
+        # Verify host resolution and TCP port reachability to prevent long server timeouts on restricted firewalls
         parsed = urlparse(DATABASE_URL)
         if parsed.hostname:
+            port = parsed.port or 5432
             try:
-                socket.getaddrinfo(parsed.hostname, parsed.port or 5432)
+                sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                sock.settimeout(1.0)
+                probe_res = sock.connect_ex((parsed.hostname, port))
+                sock.close()
+                if probe_res != 0:
+                    raise ConnectionError(f"PostgreSQL port {port} on '{parsed.hostname}' is blocked by local network firewall.")
             except socket.gaierror:
                 raise ConnectionError(f"Host '{parsed.hostname}' cannot be resolved from this environment.")
 

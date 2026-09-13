@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import { useRole, ROLES } from '../context/RoleContext';
 
 const Sidebar = ({ mobileOpen, onCloseMobile }) => {
   const { role, unreadCount } = useRole();
+  const location = useLocation();
 
   // Collapsible sub-groups state
   const [openGroups, setOpenGroups] = useState({
@@ -125,9 +126,9 @@ const Sidebar = ({ mobileOpen, onCloseMobile }) => {
                   <ul className="sidebar-sub-menu list-unstyled">
                     <li>
                       <NavLink
-                        to="/ocr-reports"
+                        to="/ocr-reports?tab=upload"
                         onClick={handleLinkClick}
-                        className={({ isActive }) => `sidebar-sub-link ${isActive ? 'active' : ''}`}
+                        className={({ isActive }) => `sidebar-sub-link ${isActive && (!location.search || location.search.includes('tab=upload')) ? 'active' : ''}`}
                       >
                         <i className="bi bi-cloud-arrow-up-fill me-2"></i>
                         <span>Upload Report</span>
@@ -137,7 +138,7 @@ const Sidebar = ({ mobileOpen, onCloseMobile }) => {
                       <NavLink
                         to="/ocr-reports?tab=insights"
                         onClick={handleLinkClick}
-                        className={({ isActive }) => `sidebar-sub-link ${isActive ? 'active' : ''}`}
+                        className={({ isActive }) => `sidebar-sub-link ${isActive && location.search.includes('tab=insights') ? 'active' : ''}`}
                       >
                         <i className="bi bi-magic me-2"></i>
                         <span>AI Report Insights</span>
