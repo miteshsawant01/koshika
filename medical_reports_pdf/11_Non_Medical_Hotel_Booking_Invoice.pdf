@@ -2,7 +2,7 @@
 %“Œ‹ž ReportLab Generated PDF document http://www.reportlab.com
 1 0 obj
 <<
-/F1 2 0 R /F2 3 0 R
+/F1 2 0 R /F2 3 0 R /F3 4 0 R
 >>
 endobj
 2 0 obj
@@ -17,7 +17,12 @@ endobj
 endobj
 4 0 obj
 <<
-/Contents 8 0 R /MediaBox [ 0 0 612 792 ] /Parent 7 0 R /Resources <<
+/BaseFont /Courier-Bold /Encoding /WinAnsiEncoding /Name /F3 /Subtype /Type1 /Type /Font
+>>
+endobj
+5 0 obj
+<<
+/Contents 9 0 R /MediaBox [ 0 0 612 792 ] /Parent 8 0 R /Resources <<
 /Font 1 0 R /ProcSet [ /PDF /Text /ImageB /ImageC /ImageI ]
 >> /Rotate 0 /Trans <<
 
@@ -25,50 +30,546 @@ endobj
   /Type /Page
 >>
 endobj
-5 0 obj
-<<
-/PageMode /UseNone /Pages 7 0 R /Type /Catalog
->>
-endobj
 6 0 obj
 <<
-/Author (\(anonymous\)) /CreationDate (D:20260913133651-05'00') /Creator (\(unspecified\)) /Keywords () /ModDate (D:20260913133651-05'00') /Producer (ReportLab PDF Library - www.reportlab.com) 
-  /Subject (\(unspecified\)) /Title (\(anonymous\)) /Trapped /False
+/PageMode /UseNone /Pages 8 0 R /Type /Catalog
 >>
 endobj
 7 0 obj
 <<
-/Count 1 /Kids [ 4 0 R ] /Type /Pages
+/Author (\(anonymous\)) /CreationDate (D:20260913141126-05'00') /Creator (\(unspecified\)) /Keywords () /ModDate (D:20260913141126-05'00') /Producer (ReportLab PDF Library - www.reportlab.com) 
+  /Subject (\(unspecified\)) /Title (\(anonymous\)) /Trapped /False
 >>
 endobj
 8 0 obj
 <<
-/Filter [ /ASCII85Decode /FlateDecode ] /Length 1999
+/Count 1 /Kids [ 5 0 R ] /Type /Pages
+>>
+endobj
+9 0 obj
+<<
+/Length 8336
 >>
 stream
-GauHM>BALX'RnB33;]qNZjVm?bI9U!!$QFsPCf:Wl#^OX"VKO!4"KYUg"@I^8%oNA`hZ&0AqH8"V!hQ2j<F^eIRsH$N;tSY34gG$./7j+9Om!f6f1-(qh11Y%1=`A_8/[kF.0U'WM\qU1qGKb!eV1cE$SRr;?Qh&Lb$N<>uDfBS?M1Sj%tK4WtX(dNEFEU/]<4h_78Oui+b(iIN3VemS?;^+'q6WjPBJlIlR"*KDu,Q2fO)t\aFS:e\B2MHi.];@0&0"GTs"sk$6;k.n;,BU:.s9%*cj8ckmq7A`dh)SNgQHh2R0F5+KII6\"+5jlh"Mb42<Cb!g@%"quLMSHH8]o$R!lOH8O1<\9sti01g,c`:UL&>m9!9V:5e>V<qh*[Y->$`AC&!lj.F&7NeV-c0f7"WmXZ"YndZ@@Xda-At%m+gceDbEV&r(V3ou0gCFX>QU.AA[sEaWSh.I7mXXILX-.TgNsONZUH(TJ!*q'<?b=XRRE-);C;8prg'4Ii$IP_RUp?j;`%gMlI9Q1%WQ3beLm%sR+0GO;n$&!clGF/D[F?Y41:*T*NEZeE`2[moQM[OMi9G2-"3\=3Z&8B"/ZId_+C.mMnl+u[S*"SBFQLu0:('lf?uBY2&AX&0X8U9F=(Ku/n<UC1*,*$$4cYd582GG[#@IH:5MBUYb_OYCnk6G,M3BnD<Qrj\a8Q'j/WlB/`Pr?4b;f9J.s_3k3@&*kIju.$gU8q0FkhdeH50KLk<<je5e!V3(Y=`0RC7]0;@F(&TNtf.E<!Bi6uD$0=+0/+WeF)aM34Nh6b9@MPTVlq"/>`N1h&`#>D_K4@WZVOE.=(>d4GfLf&-.c?6fd>\RN`![h,s5[nG9`=a-9&sHpadCBsJHQ,(94AOi^R2q1;j(7U)iZSo4<p2sL&c2#kjt(U,L1c/$kZ&mGPpa23&3QOJ*JiY6736bb[-%uH`RHup*]U>\lT>%A+uaa=E;S4V1@pbK&G$%@<)RW);81:b7qR[%ra:&?5:XgqOQ+;&jror-Jqd5'J=UF9*o[MFFp]/8M\Td7?C':K;7:87i=n]5QGf61Bqfd[&gq9PB!AC2-cJ#@+dRNB.anun(9%f>.oIDQb,$`.gnm)dM7rRYGAH88,XmQk`pJKticpb?:M8&7X/Q@HdP-OPHbHSFJZFWO2X,<&@n[o3(Z$gne_0ilBn(@^Q%0t90ZBePb4jmM6R?%d8i#0Y5KWD4gnkBtNo*5#O*mCmG_h.?#`tYcMM$^aFgDa\?if<8+Jd\=<8\UI5c\M3;1[f89O67l^"Hmp+Aq_APQgiFFaU3GgUTuL_H<Zp4>;M0N9?(VCd.#re+lR:_glhAUY/4<^ebl))&LO]U&p.XW-Q`YPXooK5odS@jAN]PPFXYq)ID@o3lp<KG_0#D_sd#V#Ot:.T[>nPpuC/I[GBtTSdH;9(I:)f1jXoa*9XPEr!tIs=QF^g:+-Y8.<HAWgak2]^'N`KS;Tk?:]ZQF#-02]CjLdB(d-^7M5tpJ:k:u;cJc.)!m#%XL\;-f-'.J%iknu>IrFr`(%i&$G^NX/k6R#iUD'RkBMapM^Bt8#EiH40:$,MX&t-DRr$mRILWlq'UY5Pp&.Y(7"iLemYGu-mO8R9\FDaPi4<JH&_d;p]Yl.b?Y28LJg.pbb:rfs%[&?X_\&YUSMd=mC=CI)H>)OpfP][Q(*NHP1O4c(n<7H'(KqOjWT<Pf-\.D\<Yuae.ZQs"XU7jUU)KmT6>uBfsFWFZ:F_(A#^h.$<R;.sq)*]O&)$O$K't'ps_e@k#M(EK3*c$aB\?tjj'[O#HgQt($i%Mq^b`Z\+QT;;m^bgll/uE']KZ1qO>$0W1bnC-Pq)-/A%A"\uB<WkheMLM`Lqgf*P3'Tc(%;d1,)Lr!rnIFVVe?:4VW&m(iMUU$leVd2?dMqq=#10OiulUbY4AA:q/+elohXUKXc1Fr<,N&<q-;Y9-BO*#qcOr\91cWCDC)P^q/QYjktKiQSHgPB!W%5b/H~>endstream
+1 0 0 1 0 0 cm  BT /F1 12 Tf 14.4 TL ET
+q
+1 0 0 1 36 691 cm
+q
+0 0 0 rg
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 6 43 cm
+q
+BT 1 0 0 1 0 3 Tm 16 TL /F2 13 Tf .058824 .090196 .164706 rg (GRAND HORIZON LUXURY PALACE & RESORT) Tj T* ET
+Q
+Q
+q
+1 0 0 1 366 26 cm
+q
+BT 1 0 0 1 0 24.5 Tm 11 TL /F2 8.5 Tf .007843 .517647 .780392 rg (ACCOUNTS & HOSPITALITY) Tj /F1 8.5 Tf .392157 .454902 .545098 rg  T* (GSTIN: 27AAAAA0000A1Z5 | TAX) Tj T* (INVOICE & FOLIO) Tj T* ET
+Q
+Q
+q
+1 0 0 1 6 13 cm
+q
+BT 1 0 0 1 0 2.5 Tm 11 TL /F1 8.5 Tf .392157 .454902 .545098 rg (Hospitality billing & front desk, MG Road, Mumbai - 400001) Tj T* ET
+Q
+Q
+q
+1 0 0 1 366 2 cm
+q
+BT 1 0 0 1 0 13.5 Tm 11 TL /F1 8.5 Tf .392157 .454902 .545098 rg (Report ID: ) Tj /F2 8.5 Tf (INV-2026-8812) Tj /F1 8.5 Tf  T* (Barcode: TAX-INV-0012) Tj T* ET
+Q
+Q
+q
+Q
+Q
+Q
+q
+1 0 0 1 42 685 cm
+Q
+q
+1 0 0 1 42 682.5 cm
+q
+1.5 w
+1 J
+.117647 .25098 .686275 RG
+n 0 0 m 528 0 l S
+Q
+Q
+q
+1 0 0 1 36 649.5 cm
+q
+0 0 0 rg
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 6 4 cm
+q
+BT 1 0 0 1 0 4 Tm 18 TL /F2 14 Tf .117647 .25098 .686275 rg (HOTEL ROOM BILLING STATEMENT & TAX INVOICE) Tj T* ET
+Q
+Q
+q
+1 0 0 1 406 7.5 cm
+q
+BT 1 0 0 1 0 2.5 Tm 11 TL /F1 8.5 Tf .392157 .454902 .545098 rg (Date: ) Tj /F2 8.5 Tf (September 13, 2026) Tj T* ET
+Q
+Q
+q
+Q
+Q
+Q
+q
+1 0 0 1 42 643.5 cm
+Q
+q
+1 0 0 1 36 586.5 cm
+q
+.972549 .980392 .988235 rg
+n 0 57 540 -57 re f*
+0 0 0 rg
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 6 42 cm
+q
+.117647 .160784 .231373 rg
+BT 1 0 0 1 0 2.5 Tm /F2 8.5 Tf 11 TL (Patient Name:) Tj T* ET
+Q
+Q
+q
+1 0 0 1 106 42 cm
+q
+.2 .254902 .333333 rg
+BT 1 0 0 1 0 2.5 Tm /F1 8.5 Tf 11 TL (Guest: Rajesh Verma) Tj T* ET
+Q
+Q
+q
+1 0 0 1 276 42 cm
+q
+.117647 .160784 .231373 rg
+BT 1 0 0 1 0 2.5 Tm /F2 8.5 Tf 11 TL (MRN / Patient ID:) Tj T* ET
+Q
+Q
+q
+1 0 0 1 396 42 cm
+q
+.117647 .25098 .686275 rg
+BT 1 0 0 1 0 2.5 Tm /F3 8.5 Tf 11 TL (FOLIO-HOTEL-9941) Tj T* ET
+Q
+Q
+q
+1 0 0 1 6 23 cm
+q
+.117647 .160784 .231373 rg
+BT 1 0 0 1 0 2.5 Tm /F2 8.5 Tf 11 TL (Age / Gender:) Tj T* ET
+Q
+Q
+q
+1 0 0 1 106 23 cm
+q
+.2 .254902 .333333 rg
+BT 1 0 0 1 0 2.5 Tm /F1 8.5 Tf 11 TL (N/A Yrs / Adult) Tj T* ET
+Q
+Q
+q
+1 0 0 1 276 23 cm
+q
+BT 1 0 0 1 0 2.5 Tm 11 TL /F2 8.5 Tf .117647 .160784 .231373 rg (Blood Group & Rh:) Tj T* ET
+Q
+Q
+q
+1 0 0 1 396 23 cm
+q
+.862745 .14902 .14902 rg
+BT 1 0 0 1 0 2.5 Tm /F2 8.5 Tf 11 TL (N/A \(Non-Medical\)) Tj T* ET
+Q
+Q
+q
+1 0 0 1 6 4 cm
+q
+.117647 .160784 .231373 rg
+BT 1 0 0 1 0 2.5 Tm /F2 8.5 Tf 11 TL (Clinical Diagnosis:) Tj T* ET
+Q
+Q
+q
+1 0 0 1 106 4 cm
+q
+.2 .254902 .333333 rg
+BT 1 0 0 1 0 2.5 Tm /F1 8.5 Tf 11 TL (Deluxe Suite 402 - Hotel Booking) Tj T* ET
+Q
+Q
+q
+1 0 0 1 276 4 cm
+q
+.117647 .160784 .231373 rg
+BT 1 0 0 1 0 2.5 Tm /F2 8.5 Tf 11 TL (Referring Consultant:) Tj T* ET
+Q
+Q
+q
+1 0 0 1 396 4 cm
+q
+.2 .254902 .333333 rg
+BT 1 0 0 1 0 2.5 Tm /F1 8.5 Tf 11 TL (Front Desk Manager) Tj T* ET
+Q
+Q
+q
+1 J
+1 j
+.796078 .835294 .882353 RG
+1 w
+n 0 57 m 540 57 l S
+n 0 0 m 540 0 l S
+n 0 0 m 0 57 l S
+n 540 0 m 540 57 l S
+.5 w
+n 0 38 m 540 38 l S
+n 0 19 m 540 19 l S
+n 100 0 m 100 57 l S
+n 270 0 m 270 57 l S
+n 390 0 m 390 57 l S
+Q
+Q
+Q
+q
+1 0 0 1 42 576.5 cm
+Q
+q
+1 0 0 1 36 429.5 cm
+q
+.886275 .909804 .941176 rg
+n 0 147 540 -19 re f*
+0 0 0 rg
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 6 132 cm
+q
+.117647 .160784 .231373 rg
+BT 1 0 0 1 0 2.5 Tm /F2 8.5 Tf 11 TL (Item Description) Tj T* ET
+Q
+Q
+q
+1 0 0 1 114 132 cm
+q
+.117647 .160784 .231373 rg
+BT 1 0 0 1 0 2.5 Tm /F2 8.5 Tf 11 TL (HSN / SAC Code) Tj T* ET
+Q
+Q
+q
+1 0 0 1 222 132 cm
+q
+.117647 .160784 .231373 rg
+BT 1 0 0 1 0 2.5 Tm /F2 8.5 Tf 11 TL (Quantity / Days) Tj T* ET
+Q
+Q
+q
+1 0 0 1 330 132 cm
+q
+.117647 .160784 .231373 rg
+BT 1 0 0 1 0 2.5 Tm /F2 8.5 Tf 11 TL (Rate \(INR\)) Tj T* ET
+Q
+Q
+q
+1 0 0 1 438 132 cm
+q
+.117647 .160784 .231373 rg
+BT 1 0 0 1 0 2.5 Tm /F2 8.5 Tf 11 TL (Total Amount \(INR\)) Tj T* ET
+Q
+Q
+q
+1 0 0 1 6 102 cm
+q
+.2 .254902 .333333 rg
+BT 1 0 0 1 0 13.5 Tm /F1 8.5 Tf 11 TL (Deluxe Room Charges) Tj T* (\(Night 1\)) Tj T* ET
+Q
+Q
+q
+1 0 0 1 114 102 cm
+q
+.2 .254902 .333333 rg
+BT 1 0 0 1 0 2.5 Tm /F1 8.5 Tf 11 TL (996311) Tj T* ET
+Q
+Q
+q
+1 0 0 1 222 102 cm
+q
+.2 .254902 .333333 rg
+BT 1 0 0 1 0 2.5 Tm /F1 8.5 Tf 11 TL (1 Night) Tj T* ET
+Q
+Q
+q
+1 0 0 1 330 102 cm
+q
+.2 .254902 .333333 rg
+BT 1 0 0 1 0 2.5 Tm /F1 8.5 Tf 11 TL (8,500.00) Tj T* ET
+Q
+Q
+q
+1 0 0 1 438 102 cm
+q
+.2 .254902 .333333 rg
+BT 1 0 0 1 0 2.5 Tm /F1 8.5 Tf 11 TL (8,500.00) Tj T* ET
+Q
+Q
+q
+1 0 0 1 6 72 cm
+q
+.2 .254902 .333333 rg
+BT 1 0 0 1 0 13.5 Tm /F1 8.5 Tf 11 TL (Deluxe Room Charges) Tj T* (\(Night 2\)) Tj T* ET
+Q
+Q
+q
+1 0 0 1 114 72 cm
+q
+.2 .254902 .333333 rg
+BT 1 0 0 1 0 2.5 Tm /F1 8.5 Tf 11 TL (996311) Tj T* ET
+Q
+Q
+q
+1 0 0 1 222 72 cm
+q
+.2 .254902 .333333 rg
+BT 1 0 0 1 0 2.5 Tm /F1 8.5 Tf 11 TL (1 Night) Tj T* ET
+Q
+Q
+q
+1 0 0 1 330 72 cm
+q
+.2 .254902 .333333 rg
+BT 1 0 0 1 0 2.5 Tm /F1 8.5 Tf 11 TL (8,500.00) Tj T* ET
+Q
+Q
+q
+1 0 0 1 438 72 cm
+q
+.2 .254902 .333333 rg
+BT 1 0 0 1 0 2.5 Tm /F1 8.5 Tf 11 TL (8,500.00) Tj T* ET
+Q
+Q
+q
+1 0 0 1 6 53 cm
+q
+.2 .254902 .333333 rg
+BT 1 0 0 1 0 2.5 Tm /F1 8.5 Tf 11 TL (In-Room Dining Dinner) Tj T* ET
+Q
+Q
+q
+1 0 0 1 114 53 cm
+q
+.2 .254902 .333333 rg
+BT 1 0 0 1 0 2.5 Tm /F1 8.5 Tf 11 TL (996331) Tj T* ET
+Q
+Q
+q
+1 0 0 1 222 53 cm
+q
+.2 .254902 .333333 rg
+BT 1 0 0 1 0 2.5 Tm /F1 8.5 Tf 11 TL (2 Orders) Tj T* ET
+Q
+Q
+q
+1 0 0 1 330 53 cm
+q
+.2 .254902 .333333 rg
+BT 1 0 0 1 0 2.5 Tm /F1 8.5 Tf 11 TL (2,400.00) Tj T* ET
+Q
+Q
+q
+1 0 0 1 438 53 cm
+q
+.2 .254902 .333333 rg
+BT 1 0 0 1 0 2.5 Tm /F1 8.5 Tf 11 TL (2,400.00) Tj T* ET
+Q
+Q
+q
+1 0 0 1 6 34 cm
+q
+.2 .254902 .333333 rg
+BT 1 0 0 1 0 2.5 Tm /F1 8.5 Tf 11 TL (Airport Cab Transfer) Tj T* ET
+Q
+Q
+q
+1 0 0 1 114 34 cm
+q
+.2 .254902 .333333 rg
+BT 1 0 0 1 0 2.5 Tm /F1 8.5 Tf 11 TL (996412) Tj T* ET
+Q
+Q
+q
+1 0 0 1 222 34 cm
+q
+.2 .254902 .333333 rg
+BT 1 0 0 1 0 2.5 Tm /F1 8.5 Tf 11 TL (1 Trip) Tj T* ET
+Q
+Q
+q
+1 0 0 1 330 34 cm
+q
+.2 .254902 .333333 rg
+BT 1 0 0 1 0 2.5 Tm /F1 8.5 Tf 11 TL (1,800.00) Tj T* ET
+Q
+Q
+q
+1 0 0 1 438 34 cm
+q
+.2 .254902 .333333 rg
+BT 1 0 0 1 0 2.5 Tm /F1 8.5 Tf 11 TL (1,800.00) Tj T* ET
+Q
+Q
+q
+1 0 0 1 6 4 cm
+q
+.2 .254902 .333333 rg
+BT 1 0 0 1 0 13.5 Tm /F1 8.5 Tf 11 TL (CGST \(9%\) + SGST) Tj T* (\(9%\)) Tj T* ET
+Q
+Q
+q
+1 0 0 1 114 4 cm
+q
+.2 .254902 .333333 rg
+BT 1 0 0 1 0 2.5 Tm /F1 8.5 Tf 11 TL (Tax) Tj T* ET
+Q
+Q
+q
+1 0 0 1 222 4 cm
+q
+.2 .254902 .333333 rg
+BT 1 0 0 1 0 2.5 Tm /F1 8.5 Tf 11 TL (18%) Tj T* ET
+Q
+Q
+q
+1 0 0 1 330 4 cm
+q
+.2 .254902 .333333 rg
+BT 1 0 0 1 0 2.5 Tm /F1 8.5 Tf 11 TL (3,816.00) Tj T* ET
+Q
+Q
+q
+1 0 0 1 438 4 cm
+q
+.2 .254902 .333333 rg
+BT 1 0 0 1 0 2.5 Tm /F1 8.5 Tf 11 TL (3,816.00) Tj T* ET
+Q
+Q
+q
+1 J
+1 j
+.796078 .835294 .882353 RG
+1 w
+n 0 147 m 540 147 l S
+n 0 0 m 540 0 l S
+n 0 0 m 0 147 l S
+n 540 0 m 540 147 l S
+.5 w
+n 0 128 m 540 128 l S
+n 0 98 m 540 98 l S
+n 0 68 m 540 68 l S
+n 0 49 m 540 49 l S
+n 0 30 m 540 30 l S
+n 108 0 m 108 147 l S
+n 216 0 m 216 147 l S
+n 324 0 m 324 147 l S
+n 432 0 m 432 147 l S
+Q
+Q
+Q
+q
+1 0 0 1 42 419.5 cm
+Q
+q
+1 0 0 1 42 408.5 cm
+q
+BT 1 0 0 1 0 2.5 Tm 11 TL /F2 8.5 Tf .117647 .160784 .231373 rg (CLINICAL INTERPRETATION & RECOMMENDATIONS:) Tj T* ET
+Q
+Q
+q
+1 0 0 1 42 405.5 cm
+Q
+q
+1 0 0 1 42 394.5 cm
+q
+BT 1 0 0 1 0 3 Tm 11 TL /F1 8 Tf .278431 .333333 .411765 rg (\177 This is an official commercial tax invoice for hotel lodging and food services.) Tj T* ET
+Q
+Q
+q
+1 0 0 1 42 392.5 cm
+Q
+q
+1 0 0 1 42 381.5 cm
+q
+BT 1 0 0 1 0 3 Tm 11 TL /F1 8 Tf .278431 .333333 .411765 rg (\177 Payment received in full via Corporate Credit Card ending in 4921.) Tj T* ET
+Q
+Q
+q
+1 0 0 1 42 379.5 cm
+Q
+q
+1 0 0 1 42 368.5 cm
+q
+BT 1 0 0 1 0 3 Tm 11 TL /F1 8 Tf .278431 .333333 .411765 rg (\177 THIS IS A NON-MEDICAL DOCUMENT. Use this document to test the KOSHIKA Clinical Ingestion Gatekeeper!) Tj T* ET
+Q
+Q
+q
+1 0 0 1 42 366.5 cm
+Q
+q
+1 0 0 1 42 351.5 cm
+Q
+q
+1 0 0 1 36 309.5 cm
+q
+0 0 0 rg
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 6 3 cm
+q
+BT 1 0 0 1 0 24.5 Tm 11 TL /F2 8.5 Tf .392157 .454902 .545098 rg (Prepared By:) Tj /F1 8.5 Tf  T* (Technical Specialist) Tj  T* (Transplant Immunology Lab) Tj T* ET
+Q
+Q
+q
+1 0 0 1 186 3 cm
+q
+BT 1 0 0 1 0 24.5 Tm 11 TL /F2 8.5 Tf .392157 .454902 .545098 rg (Verified By:) Tj /F1 8.5 Tf  T* (Dr. S. Damodar, MD, DM) Tj  T* (Head of Hemato-Oncology & BMT) Tj T* ET
+Q
+Q
+q
+1 0 0 1 366 3 cm
+q
+BT 1 0 0 1 0 24.5 Tm 11 TL /F2 8.5 Tf .392157 .454902 .545098 rg (Laboratory Director:) Tj /F1 8.5 Tf  T* (Dr. Meenakshi Sundaram, FRCPath) Tj  T* (Director of Cellular Therapy) Tj T* ET
+Q
+Q
+q
+1 J
+1 j
+.796078 .835294 .882353 RG
+1 w
+n 0 42 m 540 42 l S
+Q
+Q
+Q
+ 
+endstream
 endobj
 xref
-0 9
+0 10
 0000000000 65535 f 
 0000000073 00000 n 
-0000000114 00000 n 
-0000000221 00000 n 
-0000000333 00000 n 
-0000000526 00000 n 
-0000000594 00000 n 
-0000000877 00000 n 
-0000000936 00000 n 
+0000000124 00000 n 
+0000000231 00000 n 
+0000000343 00000 n 
+0000000453 00000 n 
+0000000646 00000 n 
+0000000714 00000 n 
+0000000997 00000 n 
+0000001056 00000 n 
 trailer
 <<
 /ID 
-[<a391803a28ba7276d98d2a3a0f3e0754><a391803a28ba7276d98d2a3a0f3e0754>]
+[<db30ae7d0cc1fec990db58cdb7816283><db30ae7d0cc1fec990db58cdb7816283>]
 % ReportLab generated PDF document -- digest (http://www.reportlab.com)
 
-/Info 6 0 R
-/Root 5 0 R
-/Size 9
+/Info 7 0 R
+/Root 6 0 R
+/Size 10
 >>
 startxref
-3026
+9443
 %%EOF

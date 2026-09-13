@@ -971,15 +971,26 @@ const api = {
         fileObj = body.file || null;
       }
 
-      // If uploaded file is a text/readable document, read its text
+      // If uploaded file is a text/readable document or PDF, read and parse tokens
       if (fileObj && typeof fileObj.text === 'function') {
         try {
           const fileText = await fileObj.text();
           if (fileText && fileText.trim().length > 10) {
-            text = (text ? text + '\n' : '') + fileText;
+            // Check if raw PDF stream, extract human-readable text tokens
+            if (fileText.includes('%PDF') || fileText.includes('/Filter') || fileText.includes('stream')) {
+              const pdfTokens = fileText.match(/\(([^()]+)\)/g);
+              if (pdfTokens && pdfTokens.length > 5) {
+                const cleanedPdfText = pdfTokens.map(t => t.slice(1, -1).replace(/\\/g, '')).join(' ');
+                text = (text ? text + '\n' : '') + cleanedPdfText;
+              } else {
+                text = (text ? text + '\n' : '') + fileText;
+              }
+            } else {
+              text = (text ? text + '\n' : '') + fileText;
+            }
           }
         } catch (e) {
-          // Binary file like image/pdf
+          // Binary file error handled gracefully
         }
       }
 
@@ -1021,7 +1032,12 @@ const api = {
         'BIOPSY', 'BLAST', 'CELLULARITY', 'CYTOGENETICS', 'KARYOTYPE', 'FISH',
         'CMV', 'SEROLOGY', 'HEPATITIS', 'HIV', 'CBC', 'WBC', 'RBC', 'PLATELET',
         'NEUTROPHIL', 'SPECIMEN', 'RESULT', 'REFERENCE RANGE', 'UNITS', 'MRN',
-        'HEMATOLOGY', 'ONCOLOGY', 'PATHOLOGY', '7-AAD', 'ACD-A', 'DMSO', 'CR1', 'CR2'
+        'HEMATOLOGY', 'ONCOLOGY', 'PATHOLOGY', '7-AAD', 'ACD-A', 'DMSO', 'CR1', 'CR2',
+        'MEDICAL', 'REPORT', 'TEST', 'COUNT', 'CELL', 'DONOR', 'TISSUE', 'MARROW',
+        'PLATELETS', 'CHIMERISM', 'ENGRAFTMENT', 'GRAFT', 'ALLOGENEIC', 'AUTOLOGOUS',
+        'INFUSION', 'CRYOPRESERVED', 'APLASTIC', 'THALASSEMIA', 'SICKLE', 'MYELOMA',
+        'MALIGNANCY', 'LYMPHOCYTE', 'MONOCYTE', 'EOSINOPHIL', 'BASOPHIL', 'CYTO',
+        'MUTATION', 'GENETICS'
       ];
 
       const nonMedicalMarkers = [
@@ -1032,10 +1048,9 @@ const api = {
       ];
 
       const matchedMarkers = medicalMarkers.filter(m => upper.includes(m));
-      const hasExplicitNonMedical = nonMedicalMarkers.some(nm => upper.includes(nm)) && matchedMarkers.length < 3;
-      const isFileNameSuspicious = /^(IMG|DSC|PHOTO|SCREENSHOT|PICTURE|IMAGE|BILL|INVOICE|REC|DOC|SCAN)[\-_0-9\.]+/i.test(fileObj?.name || '') && matchedMarkers.length < 2;
-      const isTooShort = text.trim().length < 15 && matchedMarkers.length < 2;
-      const isValidMedicalReport = (matchedMarkers.length >= 2 || (matchedMarkers.length >= 1 && text.length > 80)) && !hasExplicitNonMedical && !isFileNameSuspicious && !isTooShort;
+      const hasExplicitNonMedical = nonMedicalMarkers.some(nm => upper.includes(nm));
+      const isTooShort = !fileObj && text.trim().length < 15;
+      const isValidMedicalReport = !hasExplicitNonMedical && !isTooShort && (matchedMarkers.length >= 2 || (fileObj && fileObj.size > 100));
       const isValid = Boolean(isValidMedicalReport);
 
       // REJECT INVALID / WRONG REPORT
@@ -1131,10 +1146,12 @@ const api = {
       }
 
       // Regex Extractions
-      const nameMatch = text.match(/(?:Patient|Donor)\s*Name\s*[:\-]\s*([^\n\r,\|]+)/i);
-      const ageMatch = text.match(/Age\s*[:\-]\s*(\d+)/i);
-      const bgMatch = text.match(/Blood\s*Group[^\n\r:]*[:\-]\s*([A-Za-z0-9\+\-]+)/i);
-      const diseaseMatch = text.match(/(?:Diagnosis|Indication|Disease)\s*[:\-]\s*([^\n\r]+)/i);
+      const nameMatch = text.match(/(?:Patient|Donor)\s*Name\s*[:\-]?\s*([A-Za-z\s]+?)(?:Age|MRN|DOB|Gender|Diagnosis|UHID|Locus|$)/i) ||
+                        text.match(/(?:Patient|Donor)\s*Name\s*[:\-]\s*([^\n\r,\|]+)/i);
+      const ageMatch = text.match(/(\d+)\s*(?:Yrs|Years|y\/o)/i) || text.match(/Age\s*[:\-]?\s*(\d+)/i);
+      const bgMatch = text.match(/\b(A|B|AB|O)\s*[\+\-]\s*(?:Pos|Positive|Neg|Negative)?\b/i) || text.match(/Blood\s*Group[^\n\r:]*[:\-]\s*([A-Za-z0-9\+\-]+)/i);
+      const diseaseMatch = text.match(/(?:Diagnosis|Indication|Disease)\s*[:\-]?\s*([A-Za-z0-9\s,\-]+?)(?:Referring|Physician|Dr\.|Sample|Collected|AML|ALL|$)/i) ||
+                           text.match(/(?:Diagnosis|Indication|Disease)\s*[:\-]\s*([^\n\r]+)/i);
       const cd34Match = text.match(/CD34[^\d]*(\d+(?:\.\d+)?)/i);
       const viabilityMatch = text.match(/Viability[^\d]*(\d+(?:\.\d+)?)/i);
       const blastMatch = text.match(/Blast[^\d]*(\d+(?:\.\d+)?)/i);
