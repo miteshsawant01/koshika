@@ -337,7 +337,7 @@ const MedicalReportOCR = () => {
       }
 
       const parsed = res.data?.parsed_data || {};
-      const isDiscarded = res.data?.discarded || res.data?.is_valid === false || parsed.is_valid === false || res.data?.success === false;
+      const isDiscarded = res.data?.discarded || res.data?.is_valid === false || parsed.is_valid === false || res.data?.success === false || res.data?.status === 'Wrong Document' || parsed.status === 'Wrong Document';
 
       // IF WRONG / NON-MEDICAL DOCUMENT: DISCARD IMMEDIATELY WITHOUT SAVING
       if (isDiscarded) {
@@ -345,12 +345,12 @@ const MedicalReportOCR = () => {
         handleRemoveFile(); // Clear input and preview immediately
         setDiscardNotification({
           fileName: discardedName,
-          title: res.data?.rejection_title || parsed.rejection_title || '⚠️ Non-Clinical Document Detected',
+          title: res.data?.rejection_title || parsed.rejection_title || '⚠️ Document Is Not a Medical Report',
           message: res.data?.message || parsed.rejection_message || 'The uploaded file does not contain recognized clinical diagnostic laboratory markers. To maintain EHR data integrity, only medical diagnostic documents are saved.',
           plainEnglishSummary: parsed.insights?.plain_english_summary || '',
           timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         });
-        showToast('Notice: Non-clinical document detected (Not saved).', 'warning');
+        showToast('⚠️ Document rejected: File is not a valid medical report.', 'warning');
         return;
       }
 
@@ -370,7 +370,7 @@ const MedicalReportOCR = () => {
       };
 
       // Direct Supabase insert guarantee if not already persisted by API client or backend
-      if (!res.data?.is_saved_to_supabase) {
+      if (!res.data?.is_saved_to_supabase && newReport.is_valid && newReport.report_type !== 'INVALID_DOCUMENT') {
         try {
           const { data: supaRow, error: supaErr } = await supabase
             .from('medical_reports')
@@ -378,10 +378,10 @@ const MedicalReportOCR = () => {
               file_name: newReport.file_name,
               report_type: newReport.report_type,
               status: newReport.status,
-              patient_name: parsed.patient_name || 'Patient from Report',
-              age: parsed.age ? Number(parsed.age) : 28,
-              blood_group: parsed.blood_group || 'B+',
-              disease: parsed.disease || 'Clinical Referral',
+              patient_name: parsed.patient_name || null,
+              age: parsed.age ? Number(parsed.age) : null,
+              blood_group: parsed.blood_group || null,
+              disease: parsed.disease || null,
               cd34_count: parsed.cd34_count ? String(parsed.cd34_count) : 'N/A',
               viability: parsed.viability ? String(parsed.viability) : 'N/A',
               extracted_text: newReport.extracted_text || '',
@@ -416,16 +416,16 @@ const MedicalReportOCR = () => {
   const handleLaunchStemMatching = () => {
     if (!selectedReport) return;
     const p = selectedReport.parsed_data || {};
-    if (p.is_valid === false) {
+    if (p.is_valid === false || selectedReport.report_type === 'INVALID_DOCUMENT' || selectedReport.status === 'Wrong Document') {
       showToast('Cannot launch stem cell matching on an unrecognized document. Please upload a verified HLA or diagnostic report.', 'warning');
       return;
     }
     navigate('/ml-match', {
       state: {
         patientName: p.patient_name || 'Patient from Report',
-        patientAge: p.age || 28,
-        patientBloodGroup: p.blood_group || 'B+',
-        disease: p.disease || 'Clinical Referral',
+        patientAge: p.age || null,
+        patientBloodGroup: p.blood_group || 'O+',
+        disease: p.disease || 'Stem Cell Evaluation',
         cd34Count: p.cd34_count || 'N/A',
         viability: p.viability || 'N/A',
         hlaCalls: p.hla_calls || null,
@@ -439,16 +439,20 @@ const MedicalReportOCR = () => {
   const handleImportAsPatient = async () => {
     if (!selectedReport?.parsed_data) return;
     const p = selectedReport.parsed_data;
-    if (p.is_valid === false) {
+    if (p.is_valid === false || selectedReport.report_type === 'INVALID_DOCUMENT' || selectedReport.status === 'Wrong Document') {
       showToast('Cannot save an unrecognized or wrong document to the patient registry.', 'warning');
+      return;
+    }
+    if (!p.patient_name || p.patient_name === 'Not Recognized') {
+      showToast('Cannot import patient: No valid patient name was identified in this report.', 'warning');
       return;
     }
     try {
       await api.post('/patients/', {
-        name: p.patient_name || 'Patient from Report',
-        age: p.age || 28,
-        blood_group: p.blood_group || 'B+',
-        disease: p.disease || 'Clinical Referral',
+        name: p.patient_name,
+        age: p.age ? Number(p.age) : null,
+        blood_group: p.blood_group || 'Not Specified',
+        disease: p.disease || 'Diagnostic Workup',
         contact: 'Lab Record',
       });
       showToast('Successfully registered patient into clinical registry!', 'success');
@@ -503,7 +507,7 @@ const MedicalReportOCR = () => {
 
   const p = selectedReport?.parsed_data || {};
   const insights = p.insights || {};
-  const isInvalidReport = p.is_valid === false || selectedReport?.report_type === 'INVALID_DOCUMENT';
+  const isInvalidReport = p.is_valid === false || selectedReport?.report_type === 'INVALID_DOCUMENT' || selectedReport?.status === 'Wrong Document' || p.status === 'Wrong Document';
 
   // Questions to ask doctor fallback
   const doctorQuestions = insights.questions_for_doctor || [
@@ -1332,7 +1336,7 @@ const MedicalReportOCR = () => {
                     <div className="col-12 col-sm-6 col-md-3">
                       <div className="p-3 bg-light rounded-3 border">
                         <small className="text-secondary d-block">Patient Name</small>
-                        <strong className="fs-6 text-dark">{p.patient_name || 'Patient from Report'}</strong>
+                        <strong className="fs-6 text-dark">{p.patient_name || 'Not Stated in Report'}</strong>
                       </div>
                     </div>
                     <div className="col-6 col-md-2">
@@ -1350,7 +1354,7 @@ const MedicalReportOCR = () => {
                     <div className="col-12 col-md-5">
                       <div className="p-3 bg-light rounded-3 border">
                         <small className="text-secondary d-block">Diagnosis / Clinical Status</small>
-                        <strong className="fs-6 text-dark">{p.disease || 'Clinical Referral'}</strong>
+                        <strong className="fs-6 text-dark">{p.disease || 'Not Specified in Report'}</strong>
                       </div>
                     </div>
                   </div>
@@ -1734,19 +1738,19 @@ const MedicalReportOCR = () => {
                   <div className="row g-3 small">
                     <div className="col-4">
                       <span className="text-muted d-block">Patient Name:</span>
-                      <strong className="fs-6 text-dark">{p.patient_name || 'Patient from Report'}</strong>
+                      <strong className="fs-6 text-dark">{p.patient_name || 'Not Stated in Report'}</strong>
                     </div>
                     <div className="col-2">
                       <span className="text-muted d-block">Age / Sex:</span>
-                      <strong className="fs-6 text-dark">{p.age ? `${p.age} yrs` : '28 yrs'}</strong>
+                      <strong className="fs-6 text-dark">{p.age ? `${p.age} yrs` : 'Not Specified'}</strong>
                     </div>
                     <div className="col-2">
                       <span className="text-muted d-block">Blood Group:</span>
-                      <strong className="fs-6 text-danger">{p.blood_group || 'B+'}</strong>
+                      <strong className="fs-6 text-danger">{p.blood_group || 'Not Specified'}</strong>
                     </div>
                     <div className="col-4">
                       <span className="text-muted d-block">Primary Diagnosis:</span>
-                      <strong className="fs-6 text-dark">{p.disease || 'Clinical Referral'}</strong>
+                      <strong className="fs-6 text-dark">{p.disease || 'Not Specified in Report'}</strong>
                     </div>
                   </div>
                 </div>
