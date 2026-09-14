@@ -504,6 +504,18 @@ const api = {
 
     // 10. OCR Reports List (Persisted to Supabase & Backend Database)
     if (cleanUrl === 'ocr/reports' || cleanUrl === 'ocr/samples') {
+      const isReportClean = (r) => {
+        if (!r) return false;
+        if (r.is_valid === false || r.status === 'Wrong Document' || r.status === 'Discarded' || r.report_type === 'INVALID_DOCUMENT') return false;
+        const pName = String(r.patient_name || r.parsed_data?.patient_name || '').trim().toLowerCase();
+        const disease = String(r.disease || r.parsed_data?.disease || '').trim().toLowerCase();
+        const fName = String(r.file_name || r.name || '').trim().toLowerCase();
+        if (pName.includes('patient from report') || pName.includes('not recognized')) return false;
+        if (disease.includes('clinical referral')) return false;
+        if (fName.includes('frontend') || fName.includes('invoice') || fName.includes('booking') || fName.includes('receipt')) return false;
+        return true;
+      };
+
       // Check Supabase first
       try {
         const { data: supaData, error: supaErr } = await supabase
@@ -513,30 +525,32 @@ const api = {
           .order('created_at', { ascending: false });
 
         if (!supaErr && Array.isArray(supaData) && supaData.length > 0) {
-          const validRows = supaData.filter(r => r.is_valid !== false && r.status !== 'Wrong Document' && r.status !== 'Discarded');
-          return {
-            data: validRows.map(r => ({
-              id: r.id,
-              name: r.file_name,
-              file_name: r.file_name,
-              report_type: r.report_type,
-              status: r.status,
-              is_valid: true,
-              date: r.created_at ? new Date(r.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'Just now',
-              created_at: r.created_at,
-              extracted_text: r.extracted_text || '',
-              parsed_data: r.parsed_data || {
-                patient_name: r.patient_name,
-                age: r.age,
-                blood_group: r.blood_group,
-                disease: r.disease,
-                cd34_count: r.cd34_count,
-                viability: r.viability,
+          const validRows = supaData.filter(isReportClean);
+          if (validRows.length > 0) {
+            return {
+              data: validRows.map(r => ({
+                id: r.id,
+                name: r.file_name,
+                file_name: r.file_name,
                 report_type: r.report_type,
-                is_valid: true
-              }
-            }))
-          };
+                status: r.status,
+                is_valid: true,
+                date: r.created_at ? new Date(r.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'Just now',
+                created_at: r.created_at,
+                extracted_text: r.extracted_text || '',
+                parsed_data: r.parsed_data || {
+                  patient_name: r.patient_name || null,
+                  age: r.age || null,
+                  blood_group: r.blood_group || null,
+                  disease: r.disease || null,
+                  cd34_count: r.cd34_count || 'N/A',
+                  viability: r.viability || 'N/A',
+                  report_type: r.report_type || 'GENERAL',
+                  is_valid: true
+                }
+              }))
+            };
+          }
         }
       } catch (err) {}
 
@@ -552,10 +566,11 @@ const api = {
           if (resp.ok) {
             const list = await resp.json();
             if (Array.isArray(list)) {
+              const cleaned = list.filter(isReportClean);
               if (typeof localStorage !== 'undefined') {
-                localStorage.setItem('koshika_uploaded_reports', JSON.stringify(list));
+                localStorage.setItem('koshika_uploaded_reports', JSON.stringify(cleaned));
               }
-              return { data: list };
+              return { data: cleaned };
             }
           }
         } catch (e) {
@@ -563,12 +578,17 @@ const api = {
         }
       }
 
-      // Read from localStorage cache
+      // Read from localStorage cache and sanitize
       if (typeof localStorage !== 'undefined') {
         const cached = localStorage.getItem('koshika_uploaded_reports');
         if (cached) {
           try {
-            return { data: JSON.parse(cached) };
+            const parsed = JSON.parse(cached);
+            if (Array.isArray(parsed)) {
+              const cleaned = parsed.filter(isReportClean);
+              localStorage.setItem('koshika_uploaded_reports', JSON.stringify(cleaned));
+              return { data: cleaned };
+            }
           } catch (e) {}
         }
       }
@@ -1129,9 +1149,12 @@ const api = {
         // Legal / Real Estate
         'RENT AGREEMENT', 'LEASE AGREEMENT', 'TENANCY AGREEMENT', 'POWER OF ATTORNEY',
         'SALE DEED', 'AFFIDAVIT', 'TERMS OF SERVICE', 'PRIVACY POLICY',
-        // Software / Code / Technical
+        // Software / Code / Technical / Media / Web Development
         'IMPORT REACT', 'CONSOLE.LOG', 'FUNCTION()', 'SOURCE CODE', 'GITHUB.COM',
-        'NPM INSTALL', 'GIT COMMIT', 'PACKAGE.JSON'
+        'NPM INSTALL', 'GIT COMMIT', 'PACKAGE.JSON', 'FRONTEND', 'BOOTSTRAP',
+        'HTML', 'CSS', 'JAVASCRIPT', 'WEB APPLICATION', 'DEVELOPER', 'CODING',
+        'SCREENSHOT', 'WALLPAPER', 'MEME', 'GRAPHIC DESIGN', 'POSTER', 'FLYER',
+        'BROCHURE', 'LOGO', 'DESIGN MOCKUP', 'FIGMA', 'PHOTOSHOP'
       ];
 
       // Positive Clinical & Laboratory Markers
@@ -1177,20 +1200,20 @@ const api = {
 
       if (isInvalidDocument) {
         const invalidParsedData = {
-          patient_name: 'Not Recognized',
+          patient_name: null,
           age: null,
-          blood_group: 'N/A',
-          disease: 'Non-Medical or Unreadable File',
+          blood_group: null,
+          disease: null,
           report_type: 'INVALID_DOCUMENT',
           accreditation: 'Clinical Ingestion Safety Gatekeeper',
-          cd34_count: 'N/A',
-          viability: 'N/A',
-          blast_percentage: 'N/A',
-          cellularity: 'N/A',
+          cd34_count: null,
+          viability: null,
+          blast_percentage: null,
+          cellularity: null,
           chimerism_percentage: null,
           mrd_percentage: null,
           hla_calls: null,
-          hla_summary: 'N/A',
+          hla_summary: null,
           is_valid: false,
           discarded: true,
           status: 'Wrong Document',

@@ -149,10 +149,36 @@ const MedicalReportOCR = () => {
     fetchUploadedReports();
   }, []);
 
+  const isReportClean = (r) => {
+    if (!r) return false;
+    if (r.is_valid === false || r.status === 'Wrong Document' || r.status === 'Discarded' || r.report_type === 'INVALID_DOCUMENT') return false;
+    const pName = String(r.patient_name || r.parsed_data?.patient_name || '').trim().toLowerCase();
+    const disease = String(r.disease || r.parsed_data?.disease || '').trim().toLowerCase();
+    const fName = String(r.file_name || r.name || '').trim().toLowerCase();
+    if (pName.includes('patient from report') || pName.includes('not recognized')) return false;
+    if (disease.includes('clinical referral')) return false;
+    if (fName.includes('frontend') || fName.includes('invoice') || fName.includes('booking') || fName.includes('receipt')) return false;
+    return true;
+  };
+
   const fetchUploadedReports = async () => {
     setLoadingReports(true);
     try {
-      // 1. Direct Supabase Query First (only valid medical reports)
+      // 0. Auto-clean browser localStorage cache of any legacy dummy data
+      if (typeof localStorage !== 'undefined') {
+        try {
+          const raw = localStorage.getItem('koshika_uploaded_reports');
+          if (raw) {
+            const parsed = JSON.parse(raw);
+            if (Array.isArray(parsed)) {
+              const cleaned = parsed.filter(isReportClean);
+              localStorage.setItem('koshika_uploaded_reports', JSON.stringify(cleaned));
+            }
+          }
+        } catch (e) {}
+      }
+
+      // 1. Direct Supabase Query First (only strictly clean valid medical reports)
       const { data: supaReports, error: supaErr } = await supabase
         .from('medical_reports')
         .select('*')
@@ -160,40 +186,42 @@ const MedicalReportOCR = () => {
         .order('created_at', { ascending: false });
 
       if (!supaErr && Array.isArray(supaReports) && supaReports.length > 0) {
-        const validSupa = supaReports.filter(r => r.is_valid !== false && r.status !== 'Wrong Document' && r.status !== 'Discarded');
-        const formatted = validSupa.map(r => ({
-          id: r.id,
-          name: r.file_name,
-          file_name: r.file_name,
-          report_type: r.report_type,
-          status: r.status,
-          is_valid: true,
-          date: r.created_at ? new Date(r.created_at).toLocaleDateString('en-US', {
-            month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit'
-          }) : 'Just now',
-          created_at: r.created_at,
-          extracted_text: r.extracted_text || '',
-          parsed_data: r.parsed_data || {
-            patient_name: r.patient_name,
-            age: r.age,
-            blood_group: r.blood_group,
-            disease: r.disease,
-            cd34_count: r.cd34_count,
-            viability: r.viability,
+        const validSupa = supaReports.filter(isReportClean);
+        if (validSupa.length > 0) {
+          const formatted = validSupa.map(r => ({
+            id: r.id,
+            name: r.file_name,
+            file_name: r.file_name,
             report_type: r.report_type,
-            accreditation: r.accreditation || 'EFI & NABL ISO 15189 Certified',
-            is_valid: true
-          }
-        }));
-        setRecentReports(formatted);
-        setSelectedReport(formatted.length > 0 ? formatted[0] : null);
-        return;
+            status: r.status,
+            is_valid: true,
+            date: r.created_at ? new Date(r.created_at).toLocaleDateString('en-US', {
+              month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit'
+            }) : 'Just now',
+            created_at: r.created_at,
+            extracted_text: r.extracted_text || '',
+            parsed_data: r.parsed_data || {
+              patient_name: r.patient_name || null,
+              age: r.age || null,
+              blood_group: r.blood_group || null,
+              disease: r.disease || null,
+              cd34_count: r.cd34_count || 'N/A',
+              viability: r.viability || 'N/A',
+              report_type: r.report_type || 'GENERAL',
+              accreditation: r.accreditation || 'EFI & NABL ISO 15189 Certified',
+              is_valid: true
+            }
+          }));
+          setRecentReports(formatted);
+          setSelectedReport(formatted.length > 0 ? formatted[0] : null);
+          return;
+        }
       }
 
-      // 2. Fallback to API Client (only valid medical reports)
+      // 2. Fallback to API Client (only strictly clean valid medical reports)
       const res = await api.get('/ocr/reports/');
       const rawReports = res.data || [];
-      const validReports = rawReports.filter(r => r.is_valid !== false && r.status !== 'Wrong Document' && r.status !== 'Discarded');
+      const validReports = (Array.isArray(rawReports) ? rawReports : []).filter(isReportClean);
       setRecentReports(validReports);
       if (validReports.length > 0) {
         setSelectedReport(validReports[0]);
@@ -292,6 +320,24 @@ const MedicalReportOCR = () => {
       return filtered;
     });
     showToast('Report removed successfully from database records.', 'success');
+  };
+
+  // CLEAR ALL STORED REPORTS & SANITIZE DATABASE & LOCALSTORAGE
+  const handleClearAllReports = async () => {
+    if (typeof window !== 'undefined' && !window.confirm('Are you sure you want to remove all saved report records?')) {
+      return;
+    }
+    try {
+      await supabase.from('medical_reports').delete().neq('id', 0);
+    } catch (supaErr) {
+      console.warn('Supabase clear error:', supaErr);
+    }
+    if (typeof localStorage !== 'undefined') {
+      localStorage.removeItem('koshika_uploaded_reports');
+    }
+    setRecentReports([]);
+    setSelectedReport(null);
+    showToast('All saved medical reports cleared successfully.', 'info');
   };
 
   const handleDrop = (e) => {
@@ -422,10 +468,10 @@ const MedicalReportOCR = () => {
     }
     navigate('/ml-match', {
       state: {
-        patientName: p.patient_name || 'Patient from Report',
+        patientName: (p.patient_name && p.patient_name !== 'Patient from Report' && p.patient_name !== 'Not Recognized') ? p.patient_name : 'Not Specified',
         patientAge: p.age || null,
-        patientBloodGroup: p.blood_group || 'O+',
-        disease: p.disease || 'Stem Cell Evaluation',
+        patientBloodGroup: p.blood_group || 'Not Specified',
+        disease: (p.disease && p.disease !== 'Clinical Referral') ? p.disease : 'Not Specified',
         cd34Count: p.cd34_count || 'N/A',
         viability: p.viability || 'N/A',
         hlaCalls: p.hla_calls || null,
@@ -980,16 +1026,29 @@ const MedicalReportOCR = () => {
                 <i className="bi bi-clock-history text-secondary"></i>
                 Uploaded Documents Saved in Database ({recentReports.length})
               </h5>
-              <button
-                type="button"
-                onClick={fetchUploadedReports}
-                disabled={loadingReports}
-                className="btn btn-sm btn-light border rounded-pill px-3 d-flex align-items-center gap-1"
-                title="Refresh reports from backend database"
-              >
-                <i className={`bi bi-arrow-clockwise ${loadingReports ? 'spin' : ''}`}></i>
-                <span>Refresh</span>
-              </button>
+              <div className="d-flex align-items-center gap-2">
+                {recentReports.length > 0 && (
+                  <button
+                    type="button"
+                    onClick={handleClearAllReports}
+                    className="btn btn-sm btn-outline-danger border rounded-pill px-3 d-flex align-items-center gap-1"
+                    title="Remove all saved reports from database and cache"
+                  >
+                    <i className="bi bi-trash3"></i>
+                    <span>Clear All</span>
+                  </button>
+                )}
+                <button
+                  type="button"
+                  onClick={fetchUploadedReports}
+                  disabled={loadingReports}
+                  className="btn btn-sm btn-light border rounded-pill px-3 d-flex align-items-center gap-1"
+                  title="Refresh reports from backend database"
+                >
+                  <i className={`bi bi-arrow-clockwise ${loadingReports ? 'spin' : ''}`}></i>
+                  <span>Refresh</span>
+                </button>
+              </div>
             </div>
 
             {loadingReports ? (
@@ -1336,13 +1395,17 @@ const MedicalReportOCR = () => {
                     <div className="col-12 col-sm-6 col-md-3">
                       <div className="p-3 bg-light rounded-3 border">
                         <small className="text-secondary d-block">Patient Name</small>
-                        <strong className="fs-6 text-dark">{p.patient_name || 'Not Stated in Report'}</strong>
+                        <strong className="fs-6 text-dark">
+                          {(p.patient_name && p.patient_name !== 'Patient from Report' && p.patient_name !== 'Not Recognized') ? p.patient_name : 'Not Stated in Report'}
+                        </strong>
                       </div>
                     </div>
                     <div className="col-6 col-md-2">
                       <div className="p-3 bg-light rounded-3 border">
                         <small className="text-secondary d-block">Blood Group</small>
-                        <span className="badge bg-danger fs-6">{p.blood_group || 'Not Specified'}</span>
+                        <span className="badge bg-danger fs-6">
+                          {(p.blood_group && p.blood_group !== 'N/A') ? p.blood_group : 'Not Specified'}
+                        </span>
                       </div>
                     </div>
                     <div className="col-6 col-md-2">
@@ -1354,7 +1417,9 @@ const MedicalReportOCR = () => {
                     <div className="col-12 col-md-5">
                       <div className="p-3 bg-light rounded-3 border">
                         <small className="text-secondary d-block">Diagnosis / Clinical Status</small>
-                        <strong className="fs-6 text-dark">{p.disease || 'Not Specified in Report'}</strong>
+                        <strong className="fs-6 text-dark">
+                          {(p.disease && p.disease !== 'Clinical Referral' && p.disease !== 'Non-Medical or Unreadable File') ? p.disease : 'Not Specified in Report'}
+                        </strong>
                       </div>
                     </div>
                   </div>
@@ -1738,7 +1803,9 @@ const MedicalReportOCR = () => {
                   <div className="row g-3 small">
                     <div className="col-4">
                       <span className="text-muted d-block">Patient Name:</span>
-                      <strong className="fs-6 text-dark">{p.patient_name || 'Not Stated in Report'}</strong>
+                      <strong className="fs-6 text-dark">
+                        {(p.patient_name && p.patient_name !== 'Patient from Report' && p.patient_name !== 'Not Recognized') ? p.patient_name : 'Not Stated in Report'}
+                      </strong>
                     </div>
                     <div className="col-2">
                       <span className="text-muted d-block">Age / Sex:</span>
@@ -1746,11 +1813,15 @@ const MedicalReportOCR = () => {
                     </div>
                     <div className="col-2">
                       <span className="text-muted d-block">Blood Group:</span>
-                      <strong className="fs-6 text-danger">{p.blood_group || 'Not Specified'}</strong>
+                      <strong className="fs-6 text-danger">
+                        {(p.blood_group && p.blood_group !== 'N/A') ? p.blood_group : 'Not Specified'}
+                      </strong>
                     </div>
                     <div className="col-4">
                       <span className="text-muted d-block">Primary Diagnosis:</span>
-                      <strong className="fs-6 text-dark">{p.disease || 'Not Specified in Report'}</strong>
+                      <strong className="fs-6 text-dark">
+                        {(p.disease && p.disease !== 'Clinical Referral' && p.disease !== 'Non-Medical or Unreadable File') ? p.disease : 'Not Specified in Report'}
+                      </strong>
                     </div>
                   </div>
                 </div>

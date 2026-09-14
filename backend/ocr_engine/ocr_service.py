@@ -128,11 +128,9 @@ def extract_text_from_image(image_path):
         if vision_text and len(vision_text.strip()) > 20:
             return vision_text
 
-    # 3. Graceful fallback for images: do not crash or produce hard tesseract error
+    # 3. If no OCR text could be extracted from image, return only filename reference without fake clinical tokens
     file_name = Path(image_path).name
-    text = f"CLINICAL DIAGNOSTIC SCAN: {file_name}\n"
-    text += "Patient Diagnostic Image Document Processed under Clinical Protocol Standards.\n"
-    return text
+    return f"FILE: {file_name}\n"
 
 
 def parse_medical_report(text, file_name=None):
@@ -169,7 +167,10 @@ def parse_medical_report(text, file_name=None):
         'MEME', 'SCREENSHOT', 'WALLPAPER', 'MOVIE TICKET', 'EVENT TICKET',
         'BONAFIDE CERTIFICATE', 'MARKSHEET', 'TRANSCRIPT', 'SUBTOTAL', 'GSTIN',
         'HOTEL ROOM BILLING', 'ROOM CHARGES', 'DELUXE SUITE', 'FRONT DESK',
-        'IMPORT REACT', 'CONSOLE.LOG', 'FUNCTION()', 'SOURCE CODE', 'PACKAGE.JSON'
+        'IMPORT REACT', 'CONSOLE.LOG', 'FUNCTION()', 'SOURCE CODE', 'PACKAGE.JSON',
+        'FRONTEND', 'BOOTSTRAP', 'HTML', 'CSS', 'JAVASCRIPT', 'WEB APPLICATION',
+        'DEVELOPER', 'CODING', 'GRAPHIC DESIGN', 'POSTER', 'FLYER', 'BROCHURE',
+        'LOGO', 'DESIGN MOCKUP', 'FIGMA', 'PHOTOSHOP'
     ]
 
     specific_medical_markers = [
@@ -201,18 +202,18 @@ def parse_medical_report(text, file_name=None):
                 'The uploaded file does not contain recognized clinical laboratory, pathology, or diagnostic markers. '
                 'To protect clinical record integrity, this document was rejected and not registered in your medical records.'
             ),
-            'patient_name': 'Not Recognized',
+            'patient_name': None,
             'age': None,
-            'blood_group': 'N/A',
-            'disease': 'Non-Medical or Unreadable File',
-            'cd34_count': 'N/A',
-            'viability': 'N/A',
-            'blast_percentage': 'N/A',
-            'cellularity': 'N/A',
+            'blood_group': None,
+            'disease': None,
+            'cd34_count': None,
+            'viability': None,
+            'blast_percentage': None,
+            'cellularity': None,
             'chimerism_percentage': None,
             'mrd_percentage': None,
             'hla_calls': None,
-            'hla_summary': 'N/A',
+            'hla_summary': None,
             'flags': ['Non-Clinical Document Filtered'],
             'insights': {
                 'report_type': 'INVALID_DOCUMENT',
